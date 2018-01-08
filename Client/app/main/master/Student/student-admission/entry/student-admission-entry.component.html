@@ -1,0 +1,700 @@
+<form #frmAdmissionEntry="ngForm" (ngSubmit)="frmAdmissionEntry.valid && btnSave_click(frmAdmissionEntry)" novalidate autocomplete="off">
+    <div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel" id="pnPersonalDetails" >
+                <div class="panel-header  error-style">
+                    <h2><strong>Personal Details</strong></h2>
+                    <div class="panel-tools" style='width: 120px;'>
+                        <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" name="ddlAcademicYear" [disabled]="isDisableActiveAcademicYear"
+                            [selectedvalue]="activeAcademicYear" [(ngModel)]="StudentDetails.Personal.AcademicYearSysID" #ddlAcademicYear="ngModel"
+                            required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="ddlAcademicYear.errors && frmAdmissionEntry.submitted">
+                                <div *ngIf="ddlAcademicYear.errors?.required">
+                                    Academic YearID is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Student Name<span class="important">*</span></label>
+                            <input type="text" class="form-control" name="StudentName" [(ngModel)]="StudentDetails.Personal.StudentName" #StudentName="ngModel"
+                                required maxlength="50" />
+                            <div class="error-message">
+                                <div *ngIf="StudentName.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="StudentName.errors?.required">
+                                        Student Name is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Class<span class="important">*</span></label>
+                            <select-guru [data]="dsClassData" [allowClear]="true" [placeholder]="'::SELECT::'" name="ddlClass" [(ngModel)]="StudentDetails.Personal.ClassSysID"
+                                #ddlClass="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlClass.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="ddlClass.errors?.required">
+                                        Class is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="form-group col-md-3">
+                            <label class="control-label">Section<span class="important">*</span></label>
+                            <select-guru [data]="dsSectionData" [allowClear]="true" [placeholder]="'::SELECT::'" name="ddlSection" [(ngModel)]="StudentDetails.Personal.SectionSysID"
+                                #ddlSection="ngModel" required minlength="1"></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlSection.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="ddlSection.errors?.required">
+                                        Class is required
+                                    </div>
+                                    <div *ngIf="ddlSection.errors?.minlength">
+                                        Class is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Gender<span class="important">*</span></label>
+                            <div style="height: 30px !important;padding: 2px 0px;">
+                                <p-radioButton name="Gender" value="MALE" label="Male" [(ngModel)]="StudentDetails.Personal.Gender" #Gender="ngModel" required></p-radioButton>
+                                <p-radioButton name="Gender" value="FEMALE" label="Female" [(ngModel)]="StudentDetails.Personal.Gender" #Gender="ngModel"
+                                    required></p-radioButton>
+                            </div>
+                            <div class="error-message">
+                                <div *ngIf="Gender.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="Gender.errors?.required">
+                                        Gender is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Date of Birth<span class="important">*</span></label>
+                            <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="txtDOB" [(ngModel)]="StudentDetails.Personal.DOB"
+                                #txtDOB="ngModel" required></p-calendar>
+                            <div class="error-message">
+                                <div *ngIf="txtDOB.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="txtDOB.errors?.required">
+                                        DOB is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Place of Birth<span class="important">*</span></label>
+                            <input type="text" class="form-control" name="PlaceOfBirth" [(ngModel)]="StudentDetails.Personal.PlaceOfBirth" #PlaceOfBirth="ngModel"
+                                maxlength="50" />
+                            <div class="error-message">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3" *ngIf="(false)">
+                            <label class="control-label">Language at Home<span class="important">*</span></label>
+                            <input type="text" class="form-control" name="LanguageAtHome" [(ngModel)]="StudentDetails.Personal.LanguageAtHome" #LanguageAtHome="ngModel"
+                                required maxlength="15" />
+                            <div class="error-message">
+                                <div *ngIf="LanguageAtHome.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="LanguageAtHome.errors?.required">
+                                        Language at Home is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Mother Tongue<span class="important">*</span></label>
+                            <select-guru name="ddlMotherTongue" [(ngModel)]="StudentDetails.Personal.MotherTongueSysID" #ddlMotherTongue="ngModel" [data]="dsMotherTongue"
+                                [allowClear]="true" [placeholder]="'::SELECT::'" required>
+                            </select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlMotherTongue.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="ddlMotherTongue.errors?.required">
+                                        Mother Tongue at Home is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">BloodGroup<span class="important">*</span></label>
+                            <select-guru name="dsBloodGroup" [(ngModel)]="StudentDetails.Personal.BloodGroup" #ddlBloodGroup="ngModel" [data]="dsBloodGroup"
+                                [allowClear]="true" [placeholder]="'::SELECT::'">
+                            </select-guru>
+                            <div class="error-message">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Community<span class="important">*</span></label>
+                            <select-guru name="CommunitySysID" [(ngModel)]="StudentDetails.Personal.CommunitySysID" #CommunitySysID="ngModel" [data]="dsComunity"
+                                [allowClear]="true" [placeholder]="'::SELECT::'" required>
+                            </select-guru>
+                            <div class="error-message">
+                                <div *ngIf="CommunitySysID.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="CommunitySysID.errors?.required">
+                                        Community is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Nationality<span class="important">*</span></label>
+                            <select-guru placeholder="Select Nationality" name="NationalitySysID" [(ngModel)]="StudentDetails.Personal.NationalitySysID"
+                                #NationalitySysID="ngModel" [data]="dsNationality" [allowClear]="true" required>
+                            </select-guru>
+                            <div class="error-message">
+                                <div *ngIf="NationalitySysID.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="NationalitySysID.errors?.required">
+                                        Nationality is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Religion<span class="important">*</span></label>
+                            <select-guru placeholder="Select Religion" name="ReligionSysID" [(ngModel)]="StudentDetails.Personal.ReligionSysID" #ReligionSysID="ngModel"
+                                [data]="dsReligion" [allowClear]="true" required>
+                            </select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ReligionSysID.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="ReligionSysID.errors?.required">
+                                        Religion is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Caste<span class="important">*</span></label>
+                            <select-guru placeholder="Select Caste" name="CasteSysID" [(ngModel)]="StudentDetails.Personal.CasteSysID" #CasteSysID="ngModel"
+                                [data]="dsCaste" [allowClear]="true" required>
+                            </select-guru>
+                            <div class="error-message">
+                                <div *ngIf="CasteSysID.errors && frmAdmissionEntry.submitted">
+                                    <div *ngIf="CasteSysID.errors?.required">
+                                        Caste is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel" id="pnImageUpLoad">
+                    <div class="panel-header">
+                            <h2><strong>Image Upload</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <div style="text-align: center">
+                                    <img src="{{ImageBaseUrl}}/{{StudentDetails.Personal.ImageName}}" class="h-150">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                    <input type="file"(change)="fileChange($event)" accept="image/*" />
+                                    <div class="error-message">
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel" id="pnList">
+        <div class="panel-header">
+                <h2><strong>Communication Details</strong></h2>
+            <div class="panel-tools">
+                <button type="button" class="btn btn-sm btn-primary" name="btnCommunicationAdd" (click)="btnCommunicationAdd_click()">
+                    <i class="fa fa-plus-circle"></i>
+                </button>
+            </div>
+        </div>
+            <div class="panel-content">
+                <p-dataTable [value]="StudentDetails.Address" [(selection)]="StudentPrimaryAddress">
+                    <p-column [style]="{'width':'38px'}" selectionMode="single"></p-column>
+                    <p-column header="#" [style]="{'width':'20px','text-align':'center'}">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="Address1" header="Street"></p-column>
+                    <p-column field="Address2" header="Area"></p-column>
+                    <p-column field="CityName" header="City" hidden=true></p-column>
+                    <p-column field="StateName" header="State" hidden=true></p-column>
+                    <p-column field="CountryName" header="Country" hidden=true></p-column>
+                    <p-column field="Pincode" header="Pincode" [style]="{'width':'120px','text-align':'center'}"></p-column>
+                    <p-column field="Mobile" header="Mobile" [style]="{'width':'120px','text-align':'center'}"></p-column>
+                    <p-column field="AlternateMobileNo" header="Alt Mobile" [style]="{'width':'120px','text-align':'center'}"></p-column>
+                    <p-column field="Email" header="Email" hidden=true></p-column>
+                    <p-column [styleClass]="col-button" header="Option" [style]="{'width':'100px','text-align':'center'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <button type="button" class="btn btn-sm btn-danger" tooltip="Deleted" tooltipPlacement="top" (click)="btnCommunicationDelete_click(data)"
+                                *ngIf="data.IsDeleted">
+                                 <i class="fa fa-trash-o"> Deleted</i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-blue" tooltip="Edit" tooltipPlacement="top" (click)="btnCommunicationEdit_click(data, rowIndex)"
+                                *ngIf="!data.IsDeleted">
+                                 <i class="fa fa-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" tooltip="Delete" tooltipPlacement="top" (click)="btnCommunicationDelete_click(data)"
+                                *ngIf="!data.IsDeleted">
+                                 <i class="fa fa-trash-o"></i>
+                            </button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+        <div class="panel" id="pnList">
+            <div class="panel-header">
+                <div class="panel-tools">
+                    <button type="button" class="btn btn-sm btn-primary" name="btnCommunicationAdd" (click)="btnFamilyDetailsAdd_click()">
+                        <i class="fa fa-plus-circle"></i>
+                    </button>
+                </div>
+                <h2><strong>Family Details</strong></h2>
+            </div>
+            <div class="panel-content">
+                <p-dataTable [value]="StudentDetails.Family" [(selection)]="StudentPrimaryFamily">
+                    <p-column [style]="{'width':'38px'}" selectionMode="single"></p-column>
+                    <p-column header="#" [style]="{'width':'20px','text-align':'center'}">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="FamilyType" header="Type"></p-column>
+                    <p-column field="Name" header="Name"></p-column>
+                    <p-column field="Qualification" header="Qualification"></p-column>
+                    <p-column field="Occupation" header="Occupation"></p-column>
+                    <p-column field="AnnualIncome" header="Annual Income"></p-column>
+                    <p-column field="OfficePhone" header="Office Phone"></p-column>
+                    <p-column [styleClass]="col-button" header="Option" [style]="{'width':'100px','text-align':'center'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <button type="button" class="btn btn-sm btn-danger" tooltip="Deleted" tooltipPlacement="top" (click)="btnFamilyDelete_click(data)"
+                                *ngIf="data.IsDeleted">
+                                 <i class="fa fa-trash-o"> Deleted</i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-blue" tooltip="Edit" tooltipPlacement="top" (click)="btnFamilyEdit_click(data, rowIndex)"
+                                *ngIf="!data.IsDeleted">
+                                 <i class="fa fa-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" tooltip="Delete" tooltipPlacement="top" (click)="btnFamilyDelete_click(data)"
+                                *ngIf="!data.IsDeleted">
+                                       <i class="fa fa-trash-o"></i>
+                                </button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel" id="pnList">
+                    <div class="panel-header">
+                        <div class="panel-tools">
+                            <button type="button" class="btn btn-sm btn-primary" name="btnCommunicationAdd" (click)="btnDocumentDetailsAdd_click()">
+                            <i class="fa fa-plus-circle"></i>
+                        </button>
+                        </div>
+                        <h2><strong>Document Details</strong></h2>
+                    </div>
+                    <div class="panel-content">
+                        <p-dataTable [value]="StudentDetails.Document">
+                            <p-column [style]="{'width':'20px','text-align':'center'}" header="#">
+                                <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                    <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                                </ng-template>
+                            </p-column>
+                            <p-column field="CertificateName" header="Certificate"></p-column>
+                            <p-column field="ReceivedDate" header="Received Date" [style]="{'width':'110px','text-align':'center'}">
+                            </p-column>
+                            <p-column [styleClass]="col-button" header="Option" [style]="{'width':'100px','text-align':'center'}">
+                                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                    <button type="button" class="btn btn-sm btn-danger" tooltip="Deleted" tooltipPlacement="top" (click)="btnDocumentDelete_click(data)"
+                                        *ngIf="data.IsDeleted">
+                                 <i class="fa fa-trash-o"> Deleted</i>
+                            </button>
+                                    <button type="button" class="btn btn-sm btn-blue" tooltip="Edit" tooltipPlacement="top" (click)="btnDocumentEdit_click(data, rowIndex)"
+                                        *ngIf="!data.IsDeleted">
+                                 <i class="fa fa-pencil"></i>
+                            </button>
+                                    <button type="button" class="btn btn-sm btn-danger" tooltip="Delete" tooltipPlacement="top" (click)="btnDocumentDelete_click(data)"
+                                        *ngIf="!data.IsDeleted">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                                </ng-template>
+                            </p-column>
+                        </p-dataTable>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel" id="pnList">
+                    <div class="panel-header">
+                        <div class="panel-tools">
+                            <button type="button" class="btn btn-sm btn-primary" name="btnCommunicationAdd" (click)="btnEducationDetailsAdd_click()">
+                                <i class="fa fa-plus-circle"></i>
+                            </button>
+                        </div>
+                        <h2><strong>Education Details</strong></h2>
+                    </div>
+                    <div class="panel-content">
+                        <p-dataTable [value]="StudentDetails.Education">
+                            <p-column [style]="{'width':'20px','text-align':'center'}" header="#">
+                                <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                    <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                                </ng-template>
+                            </p-column>
+                            <p-column field="ClassName" header="Class" [style]="{'width':'75px','text-align':'center'}"></p-column>
+                            <p-column field="SchoolName" header="School"></p-column>
+                            <p-column field="AcademicYearID" header="Academic" [style]="{'width':'80px','text-align':'center'}"></p-column>
+                            <p-column [styleClass]="col-button" header="Option" [style]="{'width':'100px','text-align':'center'}">
+                                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                    <button type="button" class="btn btn-sm btn-danger" tooltip="Deleted" tooltipPlacement="top" (click)="btnEducationDelete_click(data)"
+                                        *ngIf="data.IsDeleted">
+                                 <i class="fa fa-trash-o"> Deleted</i>
+                            </button>
+                                    <button type="button" class="btn btn-sm btn-blue" tooltip="Edit" tooltipPlacement="top" (click)="btnEducationEdit_click(data, rowIndex)"
+                                        *ngIf="!data.IsDeleted">
+                                 <i class="fa fa-pencil"></i>
+                            </button>
+                                    <button type="button" class="btn btn-sm btn-danger" tooltip="Delete" tooltipPlacement="top" (click)="btnEducationDelete_click(data)"
+                                        *ngIf="!data.IsDeleted">
+                                        <i class="fa fa-trash-o"></i>
+                                    </button>
+                                </ng-template>
+                            </p-column>
+                        </p-dataTable>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pull-right">
+                <button class="btn btn-success" name="btnSave" type="submit">Save</button>
+                <button class="btn btn-danger" name="btnCancel" type="button" (click)="btnCancel_click(); frmAdmissionEntry.resetForm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<modal #mdCommunicationEntry [keyboard]="false" [backdrop]="'static'" id="CommunicationModal">
+    <form #frmCommunicationEntry="ngForm" (ngSubmit)="frmCommunicationEntry.valid && btnCommunicationSave_click(frmCommunicationEntry)"
+        novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Communication</strong> Enty</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Address Type<span class="important">*</span></label>
+                    <select-guru placeholder="Select Address Type" [data]="dsAddressData" [dropdownParent]="'CommunicationModal'" [allowClear]="true"
+                        name="ContactTypeSysID" [(ngModel)]="CommunicationData.ContactTypeSysID" #ContactTypeSysID="ngModel"
+                        required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="ContactTypeSysID.errors && frmCommunicationEntry.submitted">
+                            <div *ngIf="ContactTypeSysID.errors?.required">
+                                Address Type is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Street<span class="important">*</span></label>
+                    <input type="text" class="form-control" name="Address1" [(ngModel)]="CommunicationData.Address1" #Address1="ngModel" maxlength="50"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="Address1.errors && frmCommunicationEntry.submitted">
+                            <div *ngIf="Address1.errors?.required">
+                                Street is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Area</label>
+                    <input type="text" class="form-control" name="Address2" [(ngModel)]="CommunicationData.Address2" #Address2="ngModel" maxlength="50"
+                        required/>
+                    <div class="error-message">
+                        <div *ngIf="Address2.errors && frmCommunicationEntry.submitted">
+                            <div *ngIf="Address2.errors?.required">
+                                Street is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Country</label>
+                    <select-guru placeholder="Select Country" [data]="Country" [dropdownParent]="'CommunicationModal'" (valueChanged)="CountryChange($event.value)"
+                        name="CountrySysID" #CountrySysID="ngModel" [(ngModel)]="CommunicationData.CountrySysID" [allowClear]="true"></select-guru>
+                    <div class="error-message">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">State<span class="important">*</span></label>
+                    <select-guru placeholder="Select State" [data]="State" [dropdownParent]="'CommunicationModal'" (valueChanged)="StateChange($event.value)"
+                        name="StateSysID" #StateSysID="ngModel" [(ngModel)]="CommunicationData.StateSysID" [allowClear]="true"></select-guru>
+                    <div class="error-message">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">City<span class="important">*</span></label>
+                    <select-guru placeholder="Select City" [data]="City" [dropdownParent]="'CommunicationModal'" [allowClear]="true" name="CitySysID"
+                        [(ngModel)]="CommunicationData.CitySysID" #CitySysID="ngModel" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="CitySysID.errors && frmCommunicationEntry.submitted">
+                            <div *ngIf="CitySysID.errors?.required">
+                                City is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Pincode<span class="important">*</span></label>
+                    <input type="number" class="form-control" name="Pincode" [(ngModel)]="CommunicationData.Pincode" #Pincode="ngModel" pattern="([0-9]{6})"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="Pincode.errors && frmCommunicationEntry.submitted">
+                            <div *ngIf="Pincode.errors?.required">
+                                Pincode is required
+                            </div>
+                            <div *ngIf="Pincode.errors?.pattern">
+                                Invalid Pincode.
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Mobile<span class="important">*</span></label>
+                    <input type="number" class="form-control" name="Mobile" [(ngModel)]="CommunicationData.Mobile" #Mobile="ngModel" required
+                        pattern="^([7-9]{1})([0-9]{9})$" />
+                    <div class="error-message">
+                        <div *ngIf="Mobile.errors && frmCommunicationEntry.submitted">
+                            <div *ngIf="Mobile.errors?.required">
+                                Mobile is required
+                            </div>
+                            <div *ngIf="Mobile.errors?.pattern">
+                                Invalid Mobile No.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Alternate Mobile</label>
+                    <input type="number" class="form-control" name="AlternateMobileNo" [(ngModel)]="CommunicationData.AlternateMobileNo" #AlternateMobileNo="ngModel"
+                        pattern="^([7-9]{1})([0-9]{9})$" />
+                    <div class="error-message">
+                        <div *ngIf="AlternateMobileNo.errors?.pattern">
+                            Invalid Mobile No.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Email</label>
+                    <input type="text" class="form-control" name="Email" [(ngModel)]="CommunicationData.Email" #Email="ngModel" pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
+                    />
+                    <div class="error-message">
+                        <div *ngIf="Email.errors?.pattern">
+                            Invalid Email.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveCommunication" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseCommunicationEntry" class="btn btn-danger" (click)="mdCommunicationEntry.close(); frmCommunicationEntry.resetForm()">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+<modal #mdFamilyEntry [keyboard]="false" [backdrop]="'static'" id="FamilyModal">
+    <form #frmFamilyEntry="ngForm" (ngSubmit)="frmFamilyEntry.valid && btnFamilySave_click(frmFamilyEntry)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Family Details</strong> Enty</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Member Type<span class="important">*</span></label>
+                    <select-guru placeholder="Select Member Type" [data]="dsMemberData" [dropdownParent]="'FamilyModal'" [allowClear]="true"
+                        (valueChanged)="FamilyChange($event)" name="FamilyTypeSysID" [(ngModel)]="FamilyData.FamilyTypeSysID"
+                        #FamilyTypeSysID="ngModel" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="FamilyTypeSysID.errors && frmFamilyEntry.submitted">
+                            <div *ngIf="FamilyTypeSysID.errors?.required">
+                                Member Type is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Name<span class="important">*</span></label>
+                    <input type="text" class="form-control" name="Name" [(ngModel)]="FamilyData.Name" #Name="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="Name.errors && frmFamilyEntry.submitted">
+                            <div *ngIf="Name.errors?.required">
+                                Name is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Qualification</label>
+                    <input type="text" class="form-control" name="Qualification" [(ngModel)]="FamilyData.Qualification" #Qualification="ngModel"
+                    />
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Occupation</label>
+                    <input type="text" class="form-control" name="Occupation" [(ngModel)]="FamilyData.Occupation" #Occupation="ngModel" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Annual Income</label>
+                    <input type="number" class="form-control" name="AnnualIncome" [(ngModel)]="FamilyData.AnnualIncome" #AnnualIncome="ngModel"
+                        maxlength=16/>
+                </div>
+
+                <div class="col-md-6 p-t-10">
+                    <div class="form-group">
+                        <label class="control-label">Office Phone</label>
+                        <input type="number" class="form-control" name="OfficePhone" [(ngModel)]="FamilyData.OfficePhone" #OfficePhone="ngModel"
+                            pattern="^([0-9]{4})([0-9]{6})$" />
+                        <div class="error-message">
+                            <div *ngIf="OfficePhone.errors && OfficePhone.touched">
+                                <div *ngIf="OfficePhone.errors?.pattern">
+                                    Office Phone is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Office Email</label>
+                        <input type="text" class="form-control" name="OfficeEmail" [(ngModel)]="FamilyData.OfficeEmail" #OfficeEmail="ngModel" pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
+                        />
+                        <div class="error-message">
+                            <div *ngIf="OfficeEmail.errors && OfficeEmail.touched">
+                                <div *ngIf="OfficeEmail.errors?.pattern">
+                                    Office Email is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 p-t-10">
+                    <div class="form-group">
+                        <label class="control-label">Office Address</label>
+                        <textarea rows="5" style="width:100% !important;height: 100% !important;" name="OfficeAddress" [(ngModel)]="FamilyData.OfficeAddress"
+                            #OfficeAddress="ngModel" maxlength="250"></textarea>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveFamily" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseFamilyEntry" class="btn btn-danger" (click)="mdFamilyEntry.close(); frmFamilyEntry.resetForm()">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+<modal #mdDocumentEntry [keyboard]="false" [backdrop]="'static'" id="DocumentModal">
+    <form #frmDocumentEntry="ngForm" (ngSubmit)="frmDocumentEntry.valid && btnDocumentSave_click(frmDocumentEntry)" novalidate
+        autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Document Details</strong> Enty</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Certificate<span class="important">*</span></label>
+                    <select-guru [data]="Certificate" [placeholder]="'::SELECT::'" (valueChanged)="CertificateChange($event)" [dropdownParent]="'DocumentModal'"
+                        name="CertificateTypeSysID" [(ngModel)]="DocumentData.CertificateTypeSysID" #CertificateTypeSysID="ngModel"
+                        required>
+                    </select-guru>
+                    <div class="error-message">
+                        <div *ngIf="CertificateTypeSysID.errors && frmDocumentEntry.submitted">
+                            <div *ngIf="CertificateTypeSysID.errors?.required">
+                                Certificate is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Received Date<span class="important">*</span></label>
+                    <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="ReceivedDate" [(ngModel)]="DocumentData.ReceivedDate"
+                        #ReceivedDate="ngModel" required></p-calendar>
+                    <div class="error-message">
+                        <div *ngIf="ReceivedDate.errors && frmDocumentEntry.submitted">
+                            <div *ngIf="ReceivedDate.errors?.required">
+                                Received Date is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveDocument" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseDocumentEntry" class="btn btn-danger" (click)="mdDocumentEntry.close(); frmDocumentEntry.resetForm()">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+<modal #mdEducationEntry [keyboard]="false" [backdrop]="'static'" id="EducationModal">
+    <form #frmEducationEntry="ngForm" (ngSubmit)="frmEducationEntry.valid && btnEducationSave_click(frmEducationEntry)" novalidate
+        autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Education Details</strong> Enty</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label class="control-label">Class<span class="important">*</span></label>
+                    <select-guru [data]="dsClassData" [dropdownParent]="'EducationModal'" [placeholder]="'::SELECT::'" name="ClassSysID" [(ngModel)]="EducationData.ClassSysID"
+                        (valueChanged)="EducationData.ClassName=($event.data.length === 0) ? '': $event.data[0].text" #ClassSysID="ngModel"
+                        required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="ClassSysID.errors && frmEducationEntry.submitted">
+                            <div *ngIf="ClassSysID.errors?.required">
+                                Class is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="control-label">School Name<span class="important">*</span></label>
+                    <input type="text" class="form-control" name="SchoolName" [(ngModel)]="EducationData.SchoolName" #SchoolName="ngModel" required
+                    />
+                    <div class="error-message">
+                        <div *ngIf="SchoolName.errors && frmEducationEntry.submitted">
+                            <div *ngIf="SchoolName.errors?.required">
+                                School Name is required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="control-label">Academic YearID<span class="important">*</span></label>
+                    <select-guru [data]="dsAcademicYear" [dropdownParent]="'EducationModal'" [placeholder]="'::SELECT::'" name="AcademicYearSysID"
+                        (valueChanged)="EducationData.AcademicYearID=($event.data.length === 0) ? '': $event.data[0].text" [(ngModel)]="EducationData.AcademicYearSysID"
+                        #AcademicYearSysID="ngModel" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="AcademicYearSysID.errors &&  frmEducationEntry.submitted">
+                            <div *ngIf="AcademicYearSysID.errors?.required">
+                                Academic YearID is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveEducation" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEducationEntry" class="btn btn-danger" (click)="mdEducationEntry.close(); frmEducationEntry.resetForm()">Close</button>
+        </modal-footer>
+    </form>
+</modal>

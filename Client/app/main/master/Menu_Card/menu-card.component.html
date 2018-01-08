@@ -1,0 +1,71 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnMenuCardList">
+        <div class="panel-content">
+            <p-dataTable [value]="MenuCardList">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="MenuCardDate" header="Date" [style]="{'width':'75px','text-align':'center'}"></p-column>
+                <p-column field="MenuCard" header="Menu card"></p-column>
+                <p-column header="Option" [style]="{'width':'100px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" tooltipPlacement="left" (click)="btnEdit_Click(data)" tooltip="Edit">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" name="btnDelete" tooltipPlacement="left" tooltip="Delete" (click)="btnDelete_Click(data)" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" tooltip="Add" tooltipPlacement="left" name="btnAdd" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<modal #mdMenuCardEntry [keyboard]="false" [backdrop]="'static'" id="CategoryModal">
+    <form #frmMenuEntry="ngForm" (ngSubmit)="frmMenuEntry.valid && btnSave_click(frmMenuEntry.value,frmMenuEntry)" novalidate
+        autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Entry</strong> ({{(isEditMode)? mlmenuentry.MenuCardDate: 'New' }})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label class="control-label">Date<span class="important">*</span></label>
+                    <p-calendar dateFormat="dd/mm/yy" dataType="string" showIcon="true" name="txMenuDate" [(ngModel)]="mlmenuentry.MenuCardDate"
+                        #txMenuDate="ngModel" required></p-calendar>
+                    <div class="error-message">
+                        <div *ngIf="txMenuDate.errors && frmMenuEntry.submitted">
+                            <div *ngIf="txMenuDate.errors?.required">
+                                Menu Date is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-8">
+                    <label class="control-label">Menu Name<span class="important">*</span></label>
+                    <textarea name="MenuCardName" cols="50" rows="5" [(ngModel)]="mlmenuentry.MenuCard" #MenuCardName="ngModel" required></textarea>
+                    <div class="error-message">
+                        <div *ngIf="MenuCardName.errors && frmMenuEntry.submitted">
+                            <div *ngIf="MenuCardName.errors?.required">
+                                Menu Name is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveMenu" class="btn btn-success">{{isEditMode ? 'Update': 'Save' }}</button>
+            <button type="button" name="btnCloseMenuEntry" class="btn btn-danger" (click)="mdMenuCardEntry.close(); frmMenuEntry.resetForm();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

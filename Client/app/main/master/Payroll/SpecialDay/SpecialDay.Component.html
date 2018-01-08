@@ -1,0 +1,129 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnSpecialDaylist" *ngIf="isListMode">
+        <div class="panel-content">
+            <p-dataTable [value]="SpecialDayList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="SpecialDayDate" header="Date" [style]="{'width':'75px'}"></p-column>
+                <p-column field="Reason" header="Reason" [filter]="true" filterMatchMode="contains"></p-column>
+                <p-column header="Option" [style]="{'width':'140px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Approve" tooltipPlacement="left" (click)="btnApprove_Click(data)" *ngIf="!data.IsApproved && !data.IsCancelled">
+                            <i class="fa fa-check"></i>
+                        </button>
+                        <label class="btn btn-sm btn-danger" *ngIf="!data.IsApproved  && data.IsCancelled " style="width: 70px !important;">Cancelled</label>
+                        <label class="btn btn-sm btn-success" *ngIf="data.IsApproved  && !data.IsCancelled " style="width: 70px !important;">Approved</label>
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="left" (click)="btnEdit_Click(data)" *ngIf="!data.IsApproved  && !data.IsCancelled">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" tooltip="Cancel" tooltipPlacement="left" (click)="btnSpecialDay_Cancel_Click(data)" *ngIf="!data.IsApproved  && !data.IsCancelled">
+                            <i class="icon-rounded-cross"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+    </div>
+    <div class="col-md-4" *ngIf="!isListMode">
+        <form #frmSpecialDay="ngForm" (ngSubmit)="frmSpecialDay.valid && btnSave_Click()" novalidate autocomplete="off">
+            <div class="panel" id="pnSpecialDayData">
+                <div class="panel-content">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="control-label">SpecialDay Date<span class="important">*</span></label>
+                            <p-calendar [disabled]="true" dateFormat="dd-mm-yy" dataType="string" readonlyInput="true" showIcon="true" name="SpecialDayDate" [(ngModel)]="SpecialDayData.SpecialDayDate" #SpecialDayDate="ngModel" required></p-calendar>
+                            <div class="error-message">
+                                <div *ngIf="SpecialDayDate.errors && frmSpecialDay.submitted">
+                                    <div *ngIf="SpecialDayDate.errors?.required">
+                                        SpecialDay Date No is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Reason</label>
+                            <textarea rows="5" style="width:100% !important;height: 100% !important;" name="Reason" [(ngModel)]="SpecialDayData.Reason" #Reason="ngModel" maxlength="250" required></textarea>
+                            <div class="error-message">
+                                <div *ngIf="Reason.errors && frmSpecialDay.submitted">
+                                    <div *ngIf="Reason.errors?.required">
+                                        Reason is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="submit" class="btn btn-primary" name="btnSave">Save</button>
+                                <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="btnEntryCancel_Click();">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-8" *ngIf="!isListMode">
+        <p-dataTable [value]="StaffList" [(selection)]="SpecialDayData.Trans" [tableStyleClass]="'tbl-list-guru'" sortField="Department" rowGroupMode="subheader" groupField="Department" expandableRowGroups="true" [sortableRowGroup]="false">
+            <p-column selectionMode="multiple" [style]="{'width':'30px','text-align':'center'}"></p-column>
+            <ng-template pTemplate="rowgroupheader" let-rowData>{{rowData['Department']}}</ng-template>
+            <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                    <div style="text-align:right !important">{{rowIndex+1}}</div>
+                </ng-template>
+            </p-column>
+            <p-column field="StaffID" header="StaffID"></p-column>
+            <p-column field="StaffName" header="StaffName"></p-column>
+            <p-column field="IsPaidWorkingDay" header="IsPaidDay" [style]="{'width' : '70px', 'text-align': 'center'}">
+                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                    <p-checkbox [(ngModel)]="data.IsPaidWorkingDay" [binary]="true" [value]="data.IsPaidWorkingDay"></p-checkbox>
+                </ng-template>
+            </p-column>
+            <p-column field="IsAllowLeaveReducation" header="Leave" [style]="{'width' : '70px', 'text-align': 'center'}">
+                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                    <p-checkbox [(ngModel)]="data.IsAllowLeaveReducation" [binary]="true" [value]="data.IsAllowLeaveReducation"></p-checkbox>
+                </ng-template>
+            </p-column>
+            <p-column field="IsAllowPermissionReducation" header="Permission" [style]="{'width' : '70px', 'text-align': 'center'}">
+                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                    <p-checkbox [(ngModel)]="data.IsAllowPermissionReducation" [binary]="true" [value]="data.IsAllowPermissionReducation"></p-checkbox>
+                </ng-template>
+            </p-column>
+            <p-column field="Department" header="Department"></p-column>
+            <p-column field="Designation" header="Designation"></p-column>
+        </p-dataTable>
+    </div>
+</div>
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmSpecialDayCancel="ngForm" (ngSubmit)="frmSpecialDayCancel.valid && btnCancel_Click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>SpecialDay </strong>Cancellation</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="SpecialDayData.CancelledReason" #CancelledReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmSpecialDayCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

@@ -1,0 +1,98 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="panel" id="pnAcademicFeesList">
+            <div class="panel-header">
+                <h2><strong>{{AccountName}} - {{AcademicYear}} - {{FeeName}} - Concession List</strong></h2>
+                <div class="panel-tools" style="width:150px">
+                    <select-guru [data]="dsTermData" (valueChanged)="dsTermDataChanged($event.value)" [placeholder]="':: SELECT TERM ::'" name="TermSysID"
+                        [(ngModel)]="TermSysID" required>
+                    </select-guru>
+                </div>
+            </div>
+            <div class="panel-content">
+                <p-dataTable [value]="AcademicApproveData" rowGroupMode="subheader" groupField="TermName" sortField="TermName" [sortableRowGroup]="false">
+                    <ng-template pTemplate="rowgroupheader" let-rowData>{{rowData['TermName']}}</ng-template>
+                    <p-column [style]="{ 'width': '30px', 'text-align': 'center'} " header="# ">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="FeeCategoryName" header="Category Name"></p-column>
+                    <p-column field="TotalAmount" header="Total" [style]="{'width' : '90px'}">
+                        <ng-template let-data="rowData" pTemplate="body">
+                            <div style="text-align:right !important"> {{data.TotalAmount | number:'1.2-2'}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="PaidAmount" header="Paid" [style]="{'width' : '90px'}">
+                        <ng-template let-data="rowData" pTemplate="body">
+                            <div style="text-align:right !important"> {{data.PaidAmount | number:'1.2-2'}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column header="Receivable" [style]="{'width' : '90px'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important"> {{data.Receivable | number:'1.2-2'}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column header="Prev Concession" [style]="{'width' : '125px'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important"> {{data.PrevConcession | number:'1.2-2'}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="ConcessionAmount" header="Consession" [style]="{'width' : '120px'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <input type="number" class="form-control" style="text-align : right" [(ngModel)]="data.ConcessionAmount" name="{{rowIndex + 1}}"
+                                [disabled]="data.Receivable===0" />
+                        </ng-template>
+                    </p-column>
+                    <p-footerColumnGroup>
+                        <p-row>
+                            <p-column footer="Totals:" colspan="2"></p-column>
+                            <p-column>
+                                <ng-template let-data pTemplate="footer">
+                                    <div style="text-align:right !important">
+                                        {{(calculateTotal()) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                            <p-column>
+                                <ng-template let-data pTemplate="footer">
+                                    <div style="text-align:right !important">
+                                        {{(calculatePaid()) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                            <p-column>
+                                <ng-template let-data pTemplate="footer">
+                                    <div style="text-align:right !important">
+                                        {{(calculateReceivable()) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                            <p-column>
+                                <ng-template let-data pTemplate="footer">
+                                    <div style="text-align:right !important">
+                                        {{(calculatePrevConsession()) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                            <p-column>
+                                <ng-template let-data pTemplate="footer">
+                                    <div style="text-align:right !important">
+                                        {{(calculateConsession()) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                        </p-row>
+                    </p-footerColumnGroup>
+                </p-dataTable>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-sm btn-success" name="frmAcademicFeeConcession_save" (click)="frmAcademicFeeConcession_save()">Save</button>
+                        <button type="button" (click)="BtnCancelAcedmicFeeConcession_Click()" class="btn btn-sm btn-danger" name="btnAcademicCancelEntry">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

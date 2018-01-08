@@ -1,0 +1,49 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <form #frmTermMappingEntry="ngForm" (ngSubmit)="frmTermMappingEntry.valid && frmTermMappingEntry_Submit(ddlAcademicYear.selectedvalue)"
+        novalidate autocomplete="off">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2><strong>Term Mapping</strong></h2>
+                    <div class="panel-tools" style='width: 120px;'>
+                        <select-guru [data]="dsAcademicYear" (valueChanged)="onAcademicYear_Changed($event)" [placeholder]="'::SELECT::'" name="ddlAcademicYear"
+                            #ddlAcademicYear></select-guru>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="dsFeeTermList" [(selection)]="slFeeTermFeeList" [tableStyleClass]="'tbl-list-guru'">
+                        <p-column [style]="{'width':'28px'}" selectionMode="multiple"></p-column>
+                        <p-column header="#" [style]="{'width':'28px','text-align':'right'}">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="TermName" header="Term" [style]="{'width':'100px'}"></p-column>
+                        <p-column field="FromMonth" header="From Date">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <p-calendar [monthNavigator]="true" [yearNavigator]="true" yearRange="{{YearRange}}" dataType="string" dateFormat="dd/mm/yy"
+                                    [showIcon]="true" [(ngModel)]="data.FromMonth" name="FMonth-{{rowIndex}}"></p-calendar>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ToMonth" header="To Date">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <p-calendar [monthNavigator]="true" [yearNavigator]="true" yearRange="{{YearRange}}" dataType="string" dateFormat="dd/mm/yy"
+                                    [showIcon]="true" [(ngModel)]="data.ToMonth" name="TMonth-{{rowIndex}}"></p-calendar>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-sm btn-warning" *ngIf="(dsFeeTermList.length > 0)" (click)="Reset_From_To_Date(ddlAcademicYear.selectedvalue)">Reset Date</button>
+                                <button class="btn btn-sm btn-success" name="btnSave" type="submit" [disabled]="(slFeeTermFeeList.length <= 0)">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

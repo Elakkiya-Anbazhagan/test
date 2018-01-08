@@ -1,0 +1,167 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-3">
+            <form #frmBankInfo="ngForm" (ngSubmit)="frmBankInfo.valid && btnView_click()" novalidate autocomplete="off">
+                <div class="panel" id="pnCategoryList">
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Bank Name<span class="important">*</span></label>
+                                <select-guru [data]="dsLedgerdata" [placeholder]="'::SELECT::'" name="ddlLedger" [(ngModel)]="LedgerData.LedgerSysID" #ddlLedger="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlLedger.errors && frmBankInfo.submitted">
+                                        <div *ngIf="ddlLedger.errors?.required">
+                                            Bank Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label">From Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="FromDate" required [(ngModel)]="LedgerData.FromDate"
+                                    #FromDate="ngModel"></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="FromDate.errors && frmBankInfo.submitted">
+                                        <div *ngIf="FromDate.errors?.required">
+                                            From Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label">To Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="ToDate" required [(ngModel)]="LedgerData.ToDate"
+                                    #ToDate="ngModel"></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="ToDate.errors && frmBankInfo.submitted">
+                                        <div *ngIf="ToDate.errors?.required">
+                                            To Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-sm btn-info" (click)="frmBankInfo.valid && BtnPrint_Click()"><i class="fa fa-print"></i> Print</button>
+                                    <button type="submit" class="btn btn-sm btn-blue" tooltip="View" tooltipPlacement="top"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div style="height:200px;"></div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel" id="pnBankList">
+                <div class="panel-content">
+                    <p-dataTable [value]="BankBookList.LedgerTransaction" [rows]="10" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]">
+                        <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                            <ng-template let-pageno="page" let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="JournalNo" header="Trans. No." [style]="{'width':'80px','text-align':'center'}"></p-column>
+                        <p-column field="JournalDate" header="Trans.Date" [style]="{'width':'80px'}"></p-column>
+                        <p-column field="Narration" header="Narration" [style]="{'width':'200px'}">
+                        </p-column>
+                        <p-column field="Debit" header="Debit" [style]="{'width':'100px','text-align':'center'}">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <div style="text-align:right !important"> {{data.Debit | number:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="Credit" header="Credit" [style]="{'width':'100px'}">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <div style="text-align:right !important"> {{data.Credit | number:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+
+                        <p-footerColumnGroup>
+
+                            <p-row>
+                                <p-column footer="Totals:" colspan="4" [style]="{'text-align': 'right'}"></p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(Debit) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(Credit) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+
+                            </p-row>
+                            <p-row>
+                                <p-column footer="LedgerBalance:" colspan="5" [style]="{'text-align': 'right'}"></p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(Credit-Debit) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                            </p-row>
+                            <p-row>
+                                <p-column footer="Opening Balance:" colspan="5" [style]="{'text-align': 'right'}">
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(BankBookList.ChequeTransaction.OpeningBalance) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                            </p-row>
+                            <p-row>
+                                <p-column footer="Inward Unpresent:" colspan="5" [style]="{'text-align': 'right'}">
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(BankBookList.ChequeTransaction.InWardUnPresent) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                            </p-row>
+                            <p-row>
+                                <p-column footer="Outward Unpresent:" colspan="5" [style]="{'text-align': 'right'}">
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(BankBookList.ChequeTransaction.OutWardUnPresent) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                            </p-row>
+                            <p-row>
+                                <p-column footer="Actual Bank Balance:" colspan="5" [style]="{'text-align': 'right'}">
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{((openingBalance)+((Credit)-(Debit))) - ((InWardUnPresent)-(OutWardUnPresent)) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                            </p-row>
+                        </p-footerColumnGroup>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

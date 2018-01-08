@@ -1,0 +1,120 @@
+﻿<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnTermList">
+        <div class="panel-header">
+            <h2><strong>Stop List</strong></h2>
+        </div>
+        <div class="panel-content">
+            <p-dataTable [value]="StopList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="StopName" header="Stop"></p-column>
+                <p-column field="Lat" header="Lat" [style]="{'width':'135px'}"></p-column>
+                <p-column field="Long" header="Long" [style]="{'width':'135px'}"></p-column>
+                <p-column header="Option" [style]="{'width':'85px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" *ngIf="isAllowEdit" tooltip="Edit" tooltipPlacement="top" (click)="btnEdit_Click(data)">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-success" tooltip="Lock" tooltipPlacement="top" *ngIf="!data.Locked.IsLocked && isAllowLock"
+                            (click)="btnLock_Click(data,frmStopLock)">
+                            <i class="fa fa-unlock-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" tooltip="UnLock" tooltipPlacement="top" *ngIf="data.Locked.IsLocked && isAllowUnLock"
+                            (click)="btnLock_Click(data,frmStopLock)">
+                            <i class="fa fa-lock"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" *ngIf="isAllowAdd" tooltip="Add" tooltipPlacement="left" name="btnAdd" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<modal #mdStopEntry [keyboard]="false" [backdrop]="'static'">
+    <form #frmStopEntry="ngForm" (ngSubmit)="frmStopEntry.valid && btnSave_click(frmStopEntry.value, frmStopEntry)" novalidate
+        autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Stop</strong> Enty({{(isEditMode)? StopEntry.StopName : 'New'}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Stop  <span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="StopName" [(ngModel)]="StopEntry.StopName" #StopName="ngModel" required
+                    />
+                    <div class="error-message">
+                        <div *ngIf="StopName.errors &&  frmStopEntry.submitted">
+                            <div *ngIf="StopName.errors?.required">
+                                Stop is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Lat  <span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="Lat" [(ngModel)]="StopEntry.Lat" #Lat="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="Lat.errors &&  frmStopEntry.submitted">
+                            <div *ngIf="Lat.errors?.required">
+                                Lat is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Long  <span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="Long" [(ngModel)]="StopEntry.Long" #Long="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="Long.errors &&  frmStopEntry.submitted">
+                            <div *ngIf="Long.errors?.required">
+                                Long is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveTerm" class="btn btn-success">{{isEditMode ? 'Update': 'Save' }}</button>
+            <button type="button" name="btnCloseTermEntry" class="btn btn-danger" (click)="mdStopEntry.close(); frmStopEntry.resetForm();">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+<modal #mdLock [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmStopLock="ngForm" (ngSubmit)="frmStopLock.valid && LockStop(frmStopLock)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Stop</strong> Lock ({{formLock.StopName}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="LockedReason" [(ngModel)]="formLock.Locked.LockedReason" #LockedReason="ngModel"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="LockedReason.errors &&  frmStopLock.submitted">
+                            <div *ngIf="LockedReason.errors?.required">
+                                LockedReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Lock</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdLock.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

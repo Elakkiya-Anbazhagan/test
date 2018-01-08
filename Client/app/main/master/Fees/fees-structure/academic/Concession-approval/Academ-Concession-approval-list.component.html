@@ -1,0 +1,126 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-12">
+            <div class=" panel " id="pnCategoryList ">
+                <div class="panel-header ">
+                    <h2><strong>Concession Info</strong></h2>
+                    <div class="panel-tools" style="width: 320px">
+                        <form #frmConcessionInfo="ngForm" (ngSubmit)="frmConcessionInfo.valid && btnView_click()" novalidate autocomplete="off">
+                            <!--<div class="form-group col-md-6">
+                                <label class="control-label ">Academic Year <span class="important">*</span></label>
+                                <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" name="ddlAcademicYear" [(ngModel)]="mlConcessionInfo.AcademicYearSysID"
+                                    #ddlAcademicYear="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlAcademicYear.errors && frmConcessionInfo.submitted">
+                                        <div *ngIf="ddlAcademicYear.errors?.required">
+                                            AcademicYear is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                            <div class="form-group col-md-6">
+                                <p-calendar dateFormat="dd/mm/yy" dataType="string" [(ngModel)]="mlConcessionInfo.FromDate" #FromDate="ngModel" name="FromDate"></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="FromDate.errors && frmConcessionInfo.submitted">
+                                        <div *ngIf="FromDate.errors?.required">
+                                            From Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div class=" input-group">
+                                    <p-calendar dateFormat="dd/mm/yy" dataType="string" name="ToDate" required [(ngModel)]="mlConcessionInfo.ToDate" #ToDate="ngModel"></p-calendar>
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="ConcessionList" [responsive]="true" [tableStyleClass]="'tbl-list-guru'" [rows]="30" [paginator]="true"
+                        [pageLinks]="6" [rowsPerPageOptions]="[5,10,20,30,50,100,200]" scrollable="true" scrollHeight="380px">
+                        <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                            <ng-template let-pageno="page" let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ConcessionNo" header="Con. #" [filter]="true" [style]="{'width':'100px'}" [sortable]="true"></p-column>
+                        <p-column field="ConcessionDate" header="Date" [style]="{'width':'100px'}" [filter]="true" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <span>{{data.ConcessionDate }}</span>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="StudentName" header="Student" [filter]="true" [sortable]="true"></p-column>
+                        <p-column field="ClassName" header="Class" [style]="{'width':'80px','text-align':'center'}" [filter]="true" [sortable]="true">
+                        </p-column>
+                        <p-column field="SectionName" header="Sec." [style]="{'width':'80px','text-align':'center'}" [filter]="true" [sortable]="true">
+                        </p-column>
+                        <!--<p-column field="IsApproved" header="Approved" [filter]="true" [style]="{'width':'100px'}" [sortable]="true"></p-column>
+                            <p-column field="IsCancelled" header="Cancelled" [filter]="true" [style]="{'width':'100px'}" [sortable]="true"></p-column>-->
+                        <p-column field="Amount" header="Amount" [style]="{'width':'100px'}" [filter]="true" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <div style="text-align:right !important"> {{data.Amount | number:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Status" [filter]="true" [style]="{'width':'100px','text-align':'center'}" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <label class="label label-sm label-warning" *ngIf="data.IsCancelled"> Cancelled</label>
+                                <label class="label label-sm label-success" *ngIf="data.IsApproved"> Approved</label>
+                            </ng-template>
+                        </p-column>
+
+                        <p-column header="Options" [style]="{'width': '160px'}">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <button class="btn btn-sm btn-blue" *ngIf="!data.IsCancelled && !data.IsApproved" (click)="BtnApprove(data)"> Approve</button>
+                                <button class="btn btn-sm btn-danger" *ngIf="!data.IsCancelled && !data.IsApproved" (click)="BtnCancel(data)"><i class="fa fa-crosshairs"></i> Cancel</button>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="submit" class="btn btn-sm btn-blue"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height:200px;"></div>
+</div>
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmConcessionCancel="ngForm" (ngSubmit)="frmConcessionCancel.valid && btnConcessionCancel_Click(frmConcessionCancel)"
+        novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Concession </strong>Cancellation({{mlConcessionInfo.ConcessionNo}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="mlConcessionInfo.CancelledReason" #CancelledReason="ngModel"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmConcessionCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

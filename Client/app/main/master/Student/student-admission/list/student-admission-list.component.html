@@ -1,0 +1,83 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnAdmissionList" [hidden]="IsAdmissionMode">
+        <div class="panel-header">
+            <h2><strong>List</strong></h2>
+            <div class="panel-tools" style='width: 120px;'>
+                <select-guru [data]="AcademicYearID" (valueChanged)="AcademicYearChanged($event.value)" [placeholder]="'::SELECT::'" name="AcademicYearID"
+                    [(ngModel)]="ActiveAcademicYearSysID" required></select-guru>
+            </div>
+        </div>
+        <div class="panel-content">
+            <p-dataTable [value]="AdmissionList" [rows]="5" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-pageno="page" let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="AdmissionNo" header="Admission #" [filter]="true" [style]="{'width':'105px','text-align':'center'}"></p-column>
+                <p-column field="AdmissionDate" header="Admission DT" [filter]="true" [style]="{'width':'105px','text-align':'center'}"></p-column>
+                <p-column field="StudentName" header="Student Name" [filter]="true"></p-column>
+                <p-column field="ClassName" header="Class" [filter]="true" [style]="{'width':'80px','text-align':'center'}"></p-column>
+                <p-column header="Option" [style]="{'width':'145px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-blue" *ngIf="isAllowEdit" tooltip="Edit" tooltipPlacement="top" (click)="dtRowCommand_Click('Edit Admission', data, frmCancelAdmission)"><i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" *ngIf="!data.IsAdmissionCancelled && (data.AdmissionYearSysID ===ActiveAcademicYearSysID ) && isAllowCancel"
+                            class="btn btn-sm btn-danger" tooltip="Cancel" tooltipPlacement="top" (click)="dtRowCommand_Click('Cancel Admission', data, frmCancelAdmission)"><i class="icon-rounded-cross"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary btn-sm" tooltip="Add" tooltipPlacement="left" name="btnAdd" *ngIf="isAllowAdd" type="button"
+                            (click)="EnquirySysID = 0;StudentSysID=0;IsAdmissionMode=true;">New Admission</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <student-admission-entry *ngIf="IsAdmissionMode" [EnquirySysID]="EnquirySysID" [StudentSysID]="StudentSysID" (onclose)="onAdmissionClose()">
+    </student-admission-entry>
+</div>
+
+
+
+<modal #mdCancelAdmission [keyboard]="false" [backdrop]="'static'" id="mdCancelAdmission">
+    <form #frmCancelAdmission="ngForm" (ngSubmit)="frmCancelAdmission.valid && frmCancelAdmission_Submit(frmCancelAdmission)"
+        novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title">Cancel <strong>{{mlAdmission.StudentName}}({{mlAdmission.AdmissionNo}})</strong> Admisssion</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="important">*</span></label>
+                    <input type="text" class="form-control" name="txtCancelReason" [(ngModel)]="mlAdmission.AdmissionCancelledReason" #txtCancelReason="ngModel"
+                        maxlength="50" required />
+                    <div class="error-message">
+                        <div *ngIf="txtCancelReason.errors && frmCancelAdmission.submitted">
+                            <div *ngIf="txtCancelReason.errors?.required">
+                                Cancel reason required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-sm btn-success">Cancel Admission</button>
+                        <button type="button" class="btn btn-sm btn-warning" (click)="btnCloseCancelAdmission_Click(frmCancelAdmission)">Close</button>
+                    </div>
+                </div>
+            </div>
+
+        </modal-footer>
+    </form>
+</modal>

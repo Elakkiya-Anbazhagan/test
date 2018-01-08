@@ -1,0 +1,119 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnEntry" *ngIf="!PanelVisiable">
+        <form #frmAssignmentInfo="ngForm" (ngSubmit)="frmAssignmentInfo.valid && btnView_click()" novalidate autocomplete="off">
+            <div class="panel-header">
+                <h2><strong>Home Work</strong></h2>
+                <div class="panel-tools" style="width: 430px">
+                    <div class="form-group col-md-3">
+                        <p-calendar dateFormat="dd-mm-yy" dataType="string" name="txtDate" [(ngModel)]="Assignment.Date" [inputStyleClass]="((txtDate.errors && txtDate.errors?.required && frmAssignmentInfo.submitted) ? 'validation_error' : '')"
+                            [disabled]="IsEditMode" #txtDate="ngModel" required></p-calendar>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <select-guru [allowClear]="true" [data]="dsClass" [placeholder]="'::SELECT::'" [(ngModel)]="Assignment.ClassSysID" #ddlClass="ngModel"
+                            [options]="{'containerCssClass':((ddlClass.errors && ddlClass.errors?.required && frmAssignmentInfo.submitted) ? 'validation_error' : '')}"
+                            (valueChanged)="dsClassDataChanged($event)" name="ddlClass" [disabled]="IsEditMode" required></select-guru>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <select-guru [allowClear]="true" [data]="dsSection" [placeholder]="'::SELECT::'" [(ngModel)]="Assignment.SectionSysID" [options]="{'containerCssClass':((ddlSection.errors && ddlSection.errors?.required && frmAssignmentInfo.submitted) ? 'validation_error' : '')}"
+                            [disabled]="IsEditMode" #ddlSection="ngModel" name="ddlSection" required></select-guru>
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <div class="input-group">
+                            <button type="submit" class="btn btn-sm btn-primary h-30"><i class="fa fa-search"></i></button>
+                            </ div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel-content error-style">
+                    <p-dataTable [value]="Assignment.WorkList" [responsive]="true" selectionMode="single" [tableStyleClass]="'tbl-list-guru'"
+                        #dt>
+                        <p-column [style]="{'width':'35px','text-align':'center'}" header="#">
+                            <ng-template let-rowIndex="rowIndex" pTemplate type="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="SubjectName" header="Subject" [style]="{'width':'35%'}"></p-column>
+                        <p-column header="Work" [style]="{'width':'30%', 'text-align':'center'}">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <textarea cols="35" rows="5" name="Work_{{rowIndex + 1}}" [(ngModel)]="data.Work">
+                                    </textarea>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ReferenceURL" header="Reference" [style]="{'width':'30%', 'text-align':'center'}">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <textarea name="url" cols="35" rows="5" name="ReferenceURL_{{rowIndex + 1}}" [(ngModel)]="data.ReferenceURL">{{data.ReferenceURL}}</textarea>
+                            </ng-template>
+                        </p-column>
+
+                    </p-dataTable>
+
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="button" name="btnAssignmentSave" (click)="btnSave_Click();" class="btn btn-success">Save</button>
+                                <button type="button" name="btnAssignmentClose" (click)="btnClose_Click()" class="btn btn-danger">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </form>
+        </div>
+    </div>
+    <div class="panel" id="pnList" *ngIf="PanelVisiable">
+        <div class="panel-header">
+            <h2><strong>Home work List</strong> </h2>
+            <!--<form #frmAssignment="ngForm" (ngSubmit)="frmAssignment.valid && LoadData()" novalidate autocomplete="off">
+                <div class="form-group col-md-3">
+                    <div class="input-group">
+                        <p-calendar dateFormat="dd-mm-yy" dataType="string" name="AssignmentDate" [(ngModel)]="AssignmentDate" [inputStyleClass]="((AssignmentDate.errors && AssignmentDate.errors?.required && frmAssignment.submitted) ? 'validation_error' : '')"
+                            #AssignmentDate="ngModel" required></p-calendar>
+                        <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+                                    </span>
+                    </div>
+                </div>
+            </form>-->
+        </div>
+        <div class="panel-content">
+            <div class="row">
+                <p-dataTable [value]="dsAssignmentApprovalList" [responsive]="true" [(selection)]="SelectedAssignmentApprovalList" [tableStyleClass]="'tbl-list-guru'"
+                    rowGroupMode="subheader" groupField="ClassName" expandableRowGroups="true" #dt>
+                    <p-column [style]="{'width':'30px','text-align': 'center'}" selectionMode="multiple"></p-column>
+                    <ng-template pTemplate="rowgroupheader" let-rowData>{{rowData['ClassName']}}</ng-template>
+                    <p-column [style]="{'width':'35px','text-align':'center'}" header="#">
+                        <ng-template let-rowIndex="rowIndex" pTemplate type="body">
+                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="AssignmentDate" header="Date" [style]="{'width':'85px', 'text-align':'center'}">
+                    </p-column>
+                    <p-column field="ClassName" header="Class" [style]="{'width':'85px', 'text-align':'center'}"></p-column>
+                    <p-column field="SectionName" header="Section" [style]="{'width':'85px', 'text-align':'center'}"></p-column>
+                    <p-column field="Subject" header="Subject"></p-column>
+                    <p-column styleClass="col-button" header="Options" [style]="{'width':'87px', 'text-align':'center'}">
+                        <ng-template let-data="rowData" pTemplate type="body">
+                            <button type="button" class="btn btn-sm btn-primary" (click)="btnEdit_Click(data)"><i class="fa fa-pencil"></i>
+                                </button>
+                            <button type="button" class="btn btn-sm btn-danger" (click)="btnDelete_Click(data)"><i class="fa fa-trash-o"></i>
+                                </button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-md btn-success" name="btnAssignmentApprove" (click)="btnApprove_click()">Approve</button>
+                        <button class="btn btn-md btn-primary" name="btnAssignmentAdd" (click)="btnAdd_click()"><i class="fa fa-plus-circle"></i>
+                </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,74 @@
+﻿<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnList">
+        <div class="panel-header">
+            <h2><strong>Gallery</strong> List</h2>
+        </div>
+        <div class="panel-content">
+            <div class="row">
+                <p-dataTable [value]="lstGallery" [rows]="10" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]">
+                    <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                        <template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                        </template>
+                    </p-column>
+                    <p-column field="GalleryName" header="GalleryName" [sortable]="true"></p-column>
+                    <p-column field="Description" header="Description" [sortable]="true"></p-column>
+                    <p-column styleClass="col-button" header="Options" [style]="{'width':'125px', 'text-align':'center'}">
+                        <template let-data="rowData" pTemplate="body">
+                            <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="top" (click)="btnClassGallery_Click(data)">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                        </template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-md btn-primary" name="btnClassAdd" (click)="btnGalleryAdd_Click()" tooltip="Add" tooltipPlacement="top">
+                            <i class="fa fa-plus-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <modal #mdEntry [keyboard]="false" [backdrop]="'static'" cssClass="modal-md">
+        <form [formGroup]="frmGallery" (ngSubmit)="frmGallery.valid && btnSaveGallery_Click(frmGallery.value)" novalidate autocomplete="off">
+            <modal-header>
+                <h1 class="modal-title"><strong>{{(frmGallery.value.GallerySysID == 0)? "NEW Gallery" : "EDIT Gallery"}}</strong></h1>
+            </modal-header>
+            <modal-body>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Gallery Name <span class="Validation">*</span></label>
+                        <input autofocus type="text" class="form-control" formControlName="GalleryName" />
+                        <div class="Validation" *ngIf="frmGallery.controls.GalleryName.dirty  || frmGallery.submitted">
+                            <span *ngIf="frmGallery.controls.GalleryName.errors?.required">Gallery Name is required</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Description <span class="Validation">*</span></label>
+                        <input type="text" class="form-control" formControlName="Description" />
+                        <div class="Validation" *ngIf="frmGallery.controls.Description.dirty  || frmGallery.submitted">
+                            <span *ngIf="frmGallery.controls.Description.errors?.required">Description is required</span>
+                        </div>
+                    </div>
+                    <input type="hidden" formControlName="GallerySysID" />
+                    <input type="hidden" formControlName="BranchSysID" />
+                </div>
+            </modal-body>
+            <modal-footer>
+                <button type="submit" name="btnSaveGallery" class="btn btn-success" [disabled]="!frmGallery.valid">{{(frmGallery.value.GallerySysID == 0)? "Save" : "Update"}}</button>
+                <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdEntry.close();">Close</button>
+            </modal-footer>
+        </form>
+    </modal>
+
+
+
+
+</div>

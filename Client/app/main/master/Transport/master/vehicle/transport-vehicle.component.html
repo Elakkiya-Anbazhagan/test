@@ -1,0 +1,117 @@
+﻿<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnTermList">
+        <div class="panel-header">
+            <h2><strong>Vehicle List</strong></h2>
+        </div>
+        <div class="panel-content">
+            <div class="table-responsive">
+                <p-dataTable [value]="VehicleList" [rows]="10" [paginator]="true" [pageLinks]="6" [tableStyleClass]="'tbl-list-guru'" [rowsPerPageOptions]="[5,10,20]">
+                    <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="VehicleName" header="Vehicle Type"></p-column>
+                    <p-column field="DeviceID" header="Device ID"></p-column>
+                    <p-column field="VehicleNo" header="Vehicle No"></p-column>
+                    <p-column header="Option" [style]="{'width':'135px','text-align':'center'}">
+                        <ng-template let-data="rowData" pTemplate="body">
+                            <button type="button" class="btn btn-sm btn-primary" *ngIf="isAllowEdit" tooltip="Edit" tooltipPlacement="top" (click)="btnEdit_Click(data)">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                            <button type="button" class="btn btn-sm btn-success" tooltip="Lock" tooltipPlacement="top" *ngIf="!data.Locked.IsLocked && isAllowLock"
+                                (click)="btnLock_Click(data,frmVehicleLock)">
+                            <i class="fa fa-unlock-alt"></i>
+                        </button>
+                            <button type="button" class="btn btn-sm btn-danger" tooltip="UnLock" tooltipPlacement="top" *ngIf="data.Locked.IsLocked && isAllowUnLock"
+                                (click)="btnLock_Click(data,frmVehicleLock)">
+                            <i class="fa fa-lock"></i>
+                        </button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" name="btnAdd" tooltip="Add" tooltipPlacement="left" type="button" *ngIf="isAllowAdd" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<modal #mdVehicleEntry [keyboard]="false" [backdrop]="'static'" id="helloModal">
+    <form #frmVehicleEntry="ngForm" (ngSubmit)="frmVehicleEntry.valid && btnSave_click(frmVehicleEntry)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Vehicle</strong> Enty({{ (isEditMode)? VehicleEntry.VehicleNo : 'New' }})</h1>
+        </modal-header>
+        <modal-body>
+            <div class="row">
+                <div class="form-group col-md-3">
+                    <label class="control-label">Vehicle type  <span class="Validation">*</span></label>
+                    <select-guru [data]="VehicleData" [placeholder]="'::SELECT::'" [dropdownParent]="'helloModal'" name="VehicleTypeSysID" [(ngModel)]="VehicleEntry.VehicleTypeSysID"
+                        #vehicleTypeSysID="ngModel" required></select-guru>
+                    <div *ngIf="vehicleTypeSysID.errors &&  frmVehicleEntry.submitted" class="text-danger">
+                        <div *ngIf="vehicleTypeSysID.errors?.required">
+                            Vehicle type is required
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Vehicle No. <span class="Validation">*</span></label>
+                    <input type="text" class="form-control toUppercase" name="VehicleNo" [(ngModel)]="VehicleEntry.VehicleNo" #VehicleNo="ngModel"
+                        required />
+                    <div *ngIf="VehicleNo.errors &&  frmVehicleEntry.submitted" class="text-danger">
+                        <div *ngIf="VehicleNo.errors?.required">
+                            Vehicle No. is required
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Device ID  <span class="Validation">*</span></label>
+                    <input type="text" class="form-control" name="DeviceID" [(ngModel)]="VehicleEntry.DeviceID" #DeviceID="ngModel" required
+                    />
+                    <div *ngIf="DeviceID.errors &&  frmVehicleEntry.submitted" class="text-danger">
+                        <div *ngIf="DeviceID.errors?.required">
+                            Device ID is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveTerm" class="btn btn-success">{{isEditMode ? 'Update': 'Save' }}</button>
+            <button type="button" name="btnCloseTermEntry" class="btn btn-danger" (click)="mdVehicleEntry.close(); frmVehicleEntry.resetForm();">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+
+
+<modal #mdLock [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmVehicleLock="ngForm" (ngSubmit)="frmVehicleLock.valid && LockVehicle(frmVehicleLock)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Vehicle</strong> Lock({{VehicleLock.VehicleNo}})</h1>
+        </modal-header>
+        <modal-body>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="LockedReason" [(ngModel)]="VehicleLock.Locked.LockedReason" #LockedReason="ngModel"
+                        required />
+                    <div *ngIf="LockedReason.errors &&  frmVehicleLock.submitted" class="text-danger">
+                        <div *ngIf="LockedReason.errors?.required">
+                            LockedReason is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Lock</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdLock.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

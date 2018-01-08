@@ -1,0 +1,98 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnlist">
+        <div class="panel-header">
+            <h2><strong>Menu</strong></h2>
+        </div>
+        <div class="panel-content">
+            <p-treeTable [value]="MenuList">
+                <p-column field="Name" header="Name"></p-column>
+                <p-column field="ParentMenuName" header="Parent Menu"></p-column>
+                <p-column field="Icon" header="Icon"></p-column>
+                <p-column field="Url" header="Url"></p-column>
+                <p-column header="Option" [style]="{'width' : '180px'}">
+                    <ng-template let-node="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                        <input type="hidden" class="form-control" [(ngModel)]="node.data.SpecialValue" name="{{rowIndex + 1}}" />
+                        <button class="btn btn-sm btn-success" (click)="btnAdd_click(node.data)" tooltip="Add" tooltipPlacement="top" *ngIf="node.data.IsAllowSubMenu"><i class="fa fa-plus-circle"></i></button>
+                        <button class="btn btn-sm btn-primary" (click)="btnAddEdit_click(node.data)" tooltip="Edit" tooltipPlacement="top"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-sm btn-danger" (click)="btnDelete_click(node)" tooltip="Delete" tooltipPlacement="top"><i class="fa fa-trash-o"></i></button>
+                    </ng-template>
+                </p-column>
+            </p-treeTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-sm btn-success" (click)="btnNewAdd_click()" tooltip="Add" tooltipPlacement="top"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<modal #mdEntry [keyboard]="false" id="mdLedgerEntry" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmMenuEntry="ngForm" (ngSubmit)="frmMenuEntry.valid && btnSave_click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Account Ledger </strong>({{MenuDetail.MenuSysID==0 ? MenuDetail.ParentMenuName : MenuDetail.Name}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Parent Menu</label>
+                    <input type="text" class="form-control" [disabled]="true" name="ParentMenuName" [(ngModel)]="MenuDetail.ParentMenuName" #ParentMenuName="ngModel" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Menu Name<span class="important">*</span></label>
+                    <input type="text" class="form-control" name="Name" [(ngModel)]="MenuDetail.Name" #Name="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="Name.errors && frmMenuEntry.submitted">
+                            <div *ngIf="Name.errors?.required">
+                                Menu Name is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Url <span class="important">*</span></label>
+                    <input type="text" class="form-control" name="Url" [(ngModel)]="MenuDetail.Url" #Url="ngModel" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Icon <span class="important">*</span></label>
+                    <input type="text" class="form-control" name="Icon" [(ngModel)]="MenuDetail.Icon" #Icon="ngModel" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">SortOrder <span class="important">*</span></label>
+                    <input type="text" class="form-control" name="SortOrder" [(ngModel)]="MenuDetail.SortOrder" #SortOrder="ngModel" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">IsAllowSubMenu</label>
+                    <div>
+                        <p-checkbox binary="true" name="IsAllowSubMenu" [(ngModel)]="MenuDetail.IsAllowSubMenu" #IsAllowSubMenu="ngModel"></p-checkbox>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">IsSuperAdminMenu</label>
+                    <div>
+                        <p-checkbox binary="true" name="IsSuperAdminMenu" [(ngModel)]="MenuDetail.IsSuperAdminMenu" #IsSuperAdminMenu="ngModel"></p-checkbox>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">IsAction</label>
+                    <div>
+                        <p-checkbox binary="true" name="IsAction" [(ngModel)]="MenuDetail.IsAction" #IsAction="ngModel"></p-checkbox>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">Special Value <span class="important">*</span></label>
+                    <textarea class="form-control" rows="5" name="SpecialValue" [(ngModel)]="MenuDetail.SpecialValue" #SpecialValue="ngModel"></textarea>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button class="btn btn-success" name="btnSave" type="submit">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="btnCancel_click(); mdEntry.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

@@ -1,0 +1,311 @@
+﻿<div class="wrapper wrapper-content animated fadeInRight">
+    <form #frmVoucherEntry="ngForm" (ngSubmit)="frmVoucherEntry.valid && btnSave_click()" novalidate autocomplete="off">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="panel" id="Panelent" *ngIf="PanelEntry">
+                    <div class="panel-header">
+                        <h2><strong>Account Voucher</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Account Type<span class="important">*</span></label>
+                                <select-guru [data]="dsAccountType" (valueChanged)="dsAccountTypeDataChanged($event)" [allowClear]="true" [placeholder]="'::SELECT::'" name="AccountTypeSysID" [(ngModel)]="mlVoucher.AccountSysID" #AccountTypeSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="AccountTypeSysID.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="AccountTypeSysID.errors?.required">
+                                            Account Type is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Voucher Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="VoucherDate" [(ngModel)]="mlVoucher.VoucherDate" [disabled]="false" #VoucherDate="ngModel" required></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="VoucherDate.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="VoucherDate.errors?.required">
+                                            Voucher Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Voucher Type<span class="important">*</span></label>
+                                <select-guru [data]="dsVoucherTypeData" [allowClear]="true" [placeholder]="'::SELECT::'" [(ngModel)]="mlVoucher.VoucherType" [disabled]="true" #VoucherTypeSysID="ngModel" name="VoucherTypeSysID" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="VoucherTypeSysID.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="VoucherTypeSysID.errors?.required">
+                                            Voucher Type is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Transaction Type<span class="important">*</span></label>
+                                <select-guru [data]="dsTransactionTypeData" (valueChanged)="dsTransactionTypeDataChanged($event)" [allowClear]="true" [placeholder]="'::SELECT::'" name="TransactionTypeSysID" [(ngModel)]="mlVoucher.TransactionType" #TransactionTypeSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="TransactionTypeSysID.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="TransactionTypeSysID.errors?.required">
+                                            Transaction Type is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label class="control-label">Account Head<span class="important">*</span></label>
+                                <select-guru [data]="dsAccountHeadData" [allowClear]="true" [placeholder]="'::SELECT::'" [(ngModel)]="mlVoucher.LedgerSysID" #AccountHeadSysID="ngModel" name="AccountHeadSysID" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="AccountHeadSysID.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="AccountHeadSysID.errors?.required">
+                                            Account Head is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Contact Mobile</label>
+                                <input type="text" class="form-control" name="ContactMobile" [(ngModel)]="mlVoucher.ContactMobile" #ContactMobile="ngModel" maxlength="10" />
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label class="control-label">Contact Name<span class="important">*</span></label>
+                                <p-autoComplete name="ContactName" [(ngModel)]="mlVoucher.ContactName" #ContactName="ngModel" [suggestions]="lstFilteredContactName" [inputStyleClass]="'form-control'" (completeMethod)="filterContactName($event)" [size]="30" placeholder="Contact Name"
+                                    [minLength]="1" required>
+                                </p-autoComplete>
+                                <div class="error-message">
+                                    <div *ngIf="ContactName.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="ContactName.errors?.required">
+                                            Contact Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Amount<span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="Amount" [(ngModel)]="mlVoucher.Amount" #Amount="ngModel" maxlength="18" min="1" pattern="^\d+(?:\.\d+|)$" required/>
+                                <div class="error-message">
+                                    <div *ngIf="Amount.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="Amount.errors?.required">
+                                            Amount is required
+                                        </div>
+                                        <div *ngIf="Amount.errors?.pattern">
+                                            Invalid Amount
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Tax<span class="important">*</span></label>
+                                <input type="text" class="form-control" name="Tax" [(ngModel)]="mlVoucher.Tax" #Tax="ngModel" required/>
+                                <div class="error-message">
+                                    <div *ngIf="Tax.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="Tax.errors?.required">
+                                            Tax is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Narration<span class="important">*</span></label>
+                                <textarea rows="5" class="form-control" style="width:100% !important;height: 100% !important;text-transform:uppercase" [(ngModel)]="mlVoucher.Narration" #Narration="ngModel" name="Narration" maxlength="1000" required></textarea>
+                                <div class="error-message">
+                                    <div *ngIf="Narration.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="Narration.errors?.required">
+                                            Narration is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel" id="PanelEntry" *ngIf="PanelEntry">
+                    <div class="panel-header">
+                        <h2><strong>Payment Info</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Payment Type<span class="important">*</span></label>
+                                    <select-guru [data]="dsPaymentType" (valueChanged)="dsPaymentTypeDataChanged($event)" [allowClear]="true" [placeholder]="'::SELECT::'" [disabled]="mlVoucher.AccountSysID === ''" name="ddlPaymentType" [(ngModel)]="mlPaymodeMaster.PaymodeTypeSysID" #ddlPaymentType="ngModel"
+                                        required></select-guru>
+                                    <div class="error-message">
+                                        <div *ngIf="ddlPaymentType.errors && frmVoucherEntry.submitted">
+                                            <div *ngIf="ddlPaymentType.errors?.required">
+                                                Payment Type is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Transaction No.<span class="important" *ngIf="!paymentDisabled">*</span></label>
+                                    <input type="text" class="form-control" name="TransactionNo" [(ngModel)]="mlPaymodeMaster.TransactionNo" #TransactionNo="ngModel" [disabled]="paymentDisabled" required/>
+                                    <div class="error-message">
+                                        <div *ngIf="TransactionNo.errors && frmVoucherEntry.submitted && !paymentDisabled">
+                                            <div *ngIf="TransactionNo.errors?.required">
+                                                Transaction No is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Transaction Date<span class="important" *ngIf="!paymentDisabled">*</span></label>
+                                    <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="TransactionDate" [(ngModel)]="mlPaymodeMaster.TransactionDate" [disabled]="paymentDisabled" #TransactionDate="ngModel" required></p-calendar>
+                                    <div class="error-message">
+                                        <div *ngIf="TransactionDate.errors && frmVoucherEntry.submitted && !paymentDisabled">
+                                            <div *ngIf="TransactionDate.errors?.required">
+                                                Transaction Date No is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Transaction Bank Name<span class="important" *ngIf="!paymentDisabled">*</span></label>
+                                    <select-guru [data]="dsBankName" [allowClear]="true" [placeholder]="'::SELECT::'" [(ngModel)]="mlPaymodeMaster.TransactionBankSysID" #BankSysID="ngModel" [disabled]="paymentDisabled" name="BankSysID" required></select-guru>
+                                    <div class="error-message">
+                                        <div *ngIf="BankSysID.errors && frmVoucherEntry.submitted && !paymentDisabled">
+                                            <div *ngIf="BankSysID.errors?.required">
+                                                Transaction Bank is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">{{LabelName}}<span class="important" *ngIf="!paymentDisabled">*</span></label>
+                                    <select-guru [data]="dsCompanyBankName" [allowClear]="true" [placeholder]="'::SELECT::'" [(ngModel)]="mlPaymodeMaster.LedgerSysID" #LedgerSysID="ngModel" [disabled]="paymentDisabled" name="LedgerSysID" required></select-guru>
+                                    <div class="error-message">
+                                        <div *ngIf="LedgerSysID.errors && frmVoucherEntry.submitted && !paymentDisabled">
+                                            <div *ngIf="LedgerSysID.errors?.required">
+                                                {{LabelName}} is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-sm btn-success" type="submit" name="btnSave">Save</button>
+                                    <button class="btn btn-sm btn-danger" name="btnCancel" (click)="btnCancel_Click(data)">cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="panel" id="pnList" *ngIf="PanelList">
+    <div class="panel-header">
+        <h2><strong>Voucher List</strong></h2>
+        <div class="panel-tools" style="width: 600px">
+            <div class="form-group col-md-4">
+                <select-guru [data]="dsRoleData" (valueChanged)="dsRoleDataChanged($event.value)" [placeholder]="':: SELECT ROLE ::'" name="RoleSysID" [(ngModel)]="RoleSysID" required>
+                </select-guru>
+            </div>
+            <div class="form-group col-md-4">
+                <p-calendar dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="2014:2030" readonlyInput="readonlyInput" dataType="string" [yearNavigator]="true" name="FromDate" [(ngModel)]="FromDate"></p-calendar>
+            </div>
+            <div class="form-group col-md-4">
+                <div class="input-group">
+                    <p-calendar dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="2014:2030" readonlyInput="readonlyInput" dataType="string" name="ToDate" [(ngModel)]="ToDate"></p-calendar>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="LoadData()"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-content">
+        <p-dataTable [value]="dsVoucherList" [responsive]="true" [rows]="30" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" scrollable="true" scrollHeight="380px" selectionMode="single" #dt>
+
+            <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                    <div style="text-align:right !important">{{rowIndex+1}}</div>
+                </ng-template>
+            </p-column>
+            <p-column field="VoucherNo" header="Voucher#" [style]="{'width' : '75px','text-align':'center'}" [filter]="true" filterMatchMode="contains">
+            </p-column>
+            <p-column field="VoucherDate" header="Date" [style]="{'width' : '75px','text-align':'center'}">
+                <ng-template let-data="rowData" pTemplate type="body">
+                    {{lib.datafunc.YMD_TO_DMY(data.VoucherDate)}}
+                </ng-template>
+            </p-column>
+            <p-column field="Narration" header="Narration" [filter]="true" filterMatchMode="contains">
+                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                    <div style="text-transform: uppercase"> {{data.Narration}}</div>
+                </ng-template>
+            </p-column>
+            <p-column field="Paymode" header="PayMode" [style]="{'width':'125px','text-align' : 'center'}" [filter]="true">
+                <ng-template pTemplate="filter" let-col>
+                    <p-dropdown [options]="dsPayModeFilter" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+                </ng-template>
+            </p-column>
+            <p-column field="Amount" header="Amount" [style]="{'width':'100px'}" [filter]="true" filterMatchMode="contains">
+                <ng-template let-data="rowData" pTemplate type="body">
+                    <div style="text-align:right !important"> {{data.Amount | number:'1.2-2'}}
+                    </div>
+                </ng-template>
+            </p-column>
+            <p-column header="Options" [style]="{'width': '130px'}">
+                <ng-template let-data="rowData" pTemplate type="body">
+                    <button class="btn btn-sm btn-info" tooltip="Print" tooltipPlacement="left" *ngIf="!data.IsCancelled &&isAllowPrint" (click)="btnPrint_Click(data)"><i class="fa fa-print" ></i> </button>
+                    <button class="btn btn-sm btn-blue" tooltip="ChequePrint" tooltipPlacement="left" *ngIf="!data.IsCancelled  && data.Paymode ==='Cheque'" (click)="btnChequeBookPrint_Click(data)"><i class="fa fa-print" ></i> </button>
+                    <button class="btn btn-sm btn-danger" tooltip="Cancel" tooltipPlacement="left" (click)="btnCancelVoucher_Click(data)" *ngIf="!data.IsCancelled && isAllowCancel"><i class="icon-rounded-cross"></i></button>
+                    <label class="btn btn-sm btn-warning" *ngIf="data.IsCancelled" style="width: 116px;"> Cancelled</label>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pull-right">
+                    <button class="btn btn-primary" name="btnAdd" tooltip="Add" tooltipPlacement="left" *ngIf="isAllowAdd" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmVoucherCancel="ngForm" (ngSubmit)="frmVoucherCancel.valid && btnVoucherCancel_Click(frmVoucherCancel)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Voucher </strong>Cancellation({{mlVoucher.VoucherNo}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="mlVoucher.CancelledReason" #CancelledReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmVoucherCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

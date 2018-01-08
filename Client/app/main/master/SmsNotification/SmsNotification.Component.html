@@ -1,0 +1,129 @@
+<div class="col-md-6">
+    <div class="panel" id="pnEntry">
+        <form #frmMessage="ngForm" (submit)="frmMessage.valid && btnSave_Click()" novalidate autocomplete="off">
+            <div class="panel-header">
+                <h2>
+                    <strong>Message Details</strong>
+                </h2>
+            </div>
+            <div class="panel-content error-style">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Mobile Numbers</label>
+                        <textarea rows="6" style="width:100% !important;height: 100% !important;" name="MobileNo" [(ngModel)]="MessageModel.MobileNo"
+                            (ngModelChange)="btnGetMobilenoCount()" #MobileNo="ngModel" required></textarea>
+
+                        Total Numbers: {{MobileNoCount}}
+                        <div class="error-message">
+                            <div *ngIf="MobileNo.errors && frmMessage.submitted">
+                                <div *ngIf="MobileNo.errors?.required">
+                                    Mobile No. is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-sm btn-blue" (click)="btnImport_Click()">
+                                <i class="fa fa-upload"></i> Import</button>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Message</label>
+                        <textarea rows="4" style="width:100% !important;height: 100% !important;" name="Message" [(ngModel)]="MessageModel.Message"
+                            (ngModelChange)="btnMessage()" #Message="ngModel" maxlength="250" required></textarea>
+                        <div class="row">
+
+                            <div class="col-md-9">
+                                Message Length: {{MessageLength}}
+                                <div class="pull-right">
+                                    Total Credits: {{MessageCount}}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-sm btn-primary" (click)="btnMessage_Clear()">
+                                        <i class="fa fa-recycle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message">
+                            <div *ngIf="Message.errors && frmMessage.submitted">
+                                <div *ngIf="Message.errors?.required">
+                                    Message is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fa fa-envelope-o"></i> Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<modal #mdSmsNotification [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm" id="SmsNotificationModal">
+    <form #frmSmsNotification="ngForm" (ngSubmit)="frmSmsNotification.valid && btnImport_Save_click()" novalidate autocomplete="off">
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Type
+                        <span class="important">*</span>
+                    </label>
+                    <select-guru [data]="dsType" [dropdownParent]="'SmsNotificationModal'" name="Type" [(ngModel)]="ViewData.Type" #Type="ngModel"
+                        [placeholder]="':: SELECT ::'" required>
+                    </select-guru>
+                    <div class="error-message">
+                        <div *ngIf="Type.errors && frmSmsNotification.submitted">
+                            <div *ngIf="Type.errors?.required">
+                                Type is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label ">Class
+                        <span class="important">*</span>
+                    </label>
+                    <p-multiSelect [options]="dsClass" [(ngModel)]="ViewData.selectedClass" name="msClass" #msClass="ngModel" (onChange)="Class_Change($event)"
+                        required></p-multiSelect>
+                    <div *ngIf="msClass.errors && frmSmsNotification.submitted">
+                        <div class="error-message">
+                            <div *ngIf="msClass.errors?.required">
+                                Class is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label">Section
+                        <span class="important">*</span>
+                    </label>
+                    <p-multiSelect [options]="dsSection" [(ngModel)]="ViewData.selectedSection" name="selectedSection" #selectedSection="ngModel"
+                        required></p-multiSelect>
+                    <div *ngIf="selectedSection.errors && frmSmsNotification.submitted">
+                        <div class="error-message">
+                            <div *ngIf="selectedSection.errors?.required">
+                                Term is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Ok</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="btnModel_Cancel_Click()">Close</button>
+        </modal-footer>
+    </form>
+</modal>

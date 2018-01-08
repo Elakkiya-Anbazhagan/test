@@ -1,0 +1,239 @@
+<div class="panel-content">
+    <div class="row">
+        <div class="table-responsive" style="width:1009.5px;">
+            <p-dataTable [value]="StaffSalaryIssueData" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]"  [tableStyleClass]="'tbl-list-guru'">
+                <p-headerColumnGroup>
+                    <p-row>
+                        <p-column [style]="{'width':'30px','text-align':'center'}" header="#" rowspan="2"></p-column>
+                        <p-column header="StaffID" field="StaffID" filter="true" filterMatchMode="contains" [style]="{'width':'55px'}" rowspan="2"></p-column>
+                        <p-column header="Name" field="StaffName" filter="true" filterMatchMode="contains" rowspan="2" [style]="{'width':'120px'}"></p-column>
+                        <p-column header="Salary" rowspan="2" [style]="{'width':'80px'}"></p-column>
+                        <p-column header="Account" rowspan="2" [style]="{'width':'60px'}"></p-column>
+                        <p-column header="Payable" colspan="6" [style]="{'width':'340px'}"></p-column>
+                        <p-column header="Deduction" colspan="4" [style]="{'width':'230px'}"></p-column>
+                        <p-column header="GrossSalary" rowspan="2" [style]="{'width':'80px'}"></p-column>
+                        <p-column header="NetSalary" rowspan="2" [style]="{'width':'80px'}"></p-column>
+                        <p-column header="Option" rowspan="2" [style]="{'width':'80px'}"></p-column>
+                    </p-row>
+                    <p-row>
+                        <p-column header="Basic" colspan="1" [style]="{'width':'60px'}"></p-column>
+                        <p-column header="Grade" colspan="1" [style]="{'width':'60px'}"></p-column>
+                        <p-column header="DA" colspan="1" [style]="{'width':'55px'}"></p-column>
+                        <p-column header="CA" colspan="1" [style]="{'width':'55px'}"></p-column>
+                        <p-column header="HRA" colspan="1" [style]="{'width':'55px'}"></p-column>
+                        <p-column header="MA" colspan="1" [style]="{'width':'55px'}"></p-column>
+                        <p-column header="PF" colspan="1"></p-column>
+                        <p-column header="TDS" colspan="1"></p-column>
+                        <p-column header="Permis." colspan="1"></p-column>
+                        <p-column header="Loan" colspan="1"></p-column>
+                    </p-row>
+                </p-headerColumnGroup>
+                <p-column>
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="StaffID" [filter]="true" filterMatchMode="contains"></p-column>
+                <p-column field="StaffName" [filter]="true" filterMatchMode="contains"></p-column>
+                <p-column field="ActualSalary">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.ActualSalary | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="AccountName" [filter]="true" filterMatchMode="contains"></p-column>
+                <p-column field="BasicPay">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.BasicPay | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="GradePay">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.GradePay | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="DA">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.DA | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="CA">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.CA | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="HRA">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.HRA | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="MA">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.MA | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="PF" [style]="{ 'width': '40px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.PF | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="TDS" [style]="{ 'width': '40px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.TDS | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="PermissionDeduct" [style]="{ 'width': '80px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.PermissionDeduct | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="LoanAmount" header="Stu. Cnt." [style]="{ 'width': '70px'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <div class="" style="text-align:right !important;">
+                            <div style="text-align:right !important"> {{data.LoanAmount | number:'1.2-2'}}
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="GrossSalary">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.GrossSalary | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="NetSalary">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.NetSalary | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column>
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <button class="btn btn-sm btn-primary" style="width: 70px;" (click)="btnSalaryIssue_Click(data)" *ngIf="!data.IsIssued">Issue</button>
+                        <label class="btn btn-sm btn-success" style="width: 77px;" *ngIf="data.IsIssued">Issued</label>
+                    </ng-template>
+                </p-column>
+                <p-footerColumnGroup>
+                    <p-row>
+                        <p-column colspan="3">
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700;">Totals:</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateActualSalary()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column></p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateBasicPay()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateGradePay()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateDA()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateCA()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateHRA()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateMA()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculatePF()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateTDS()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculatePermissionDeduct()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateLoanAmount()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateGrossSalary()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column>
+                            <ng-template let-data pTemplate="footer">
+                                <div class="" style="text-align:right !important; font-weight: 700; ">
+                                    {{(calculateNetSalary()) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column></p-column>
+                    </p-row>
+                </p-footerColumnGroup>
+            </p-dataTable>
+        </div>
+    </div>
+</div>
+<div class="panel-footer">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sm btn-danger" (click)="btnCancel_click()">GoBack</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,103 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnList">
+        <div class="panel-content error-style">
+            <div class="row">
+                <form #frmExamMarkEntry="ngForm" (ngSubmit)="frmExamMarkEntry.valid && btnView_Click(frmExamMarkEntry.value,frmExamMarkEntry)" novalidate autocomplete="off">
+                    <div class="form-group col-md-3">
+                        <label class="control-label">Exam<span class="important">*</span></label>
+                        <select-guru [data]="dsExamData" [allowClear]="true" [placeholder]="'::SELECT::'" name="ddlExam" (valueChanged)="dsExamDataChanged($event)" [(ngModel)]="mlSearchinfo.ExamSysID" #ddlExam="ngModel" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="ddlExam.errors && frmExamMarkEntry.submitted">
+                                <div *ngIf="ddlExam.errors?.required">
+                                    Exam is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">Class<span class="important">*</span></label>
+                        <select-guru [data]="dsClassData" [allowClear]="true" [placeholder]="'::SELECT::'" name="ddlClass" (valueChanged)="dsClassDataChanged($event)" [(ngModel)]="mlSearchinfo.ClassSysID" #ddlClass="ngModel" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="ddlClass.errors && frmExamMarkEntry.submitted">
+                                <div *ngIf="ddlClass.errors?.required">
+                                    Class is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">Section<span class="important">*</span></label>
+                        <select-guru [data]="dsSectionData" [allowClear]="true" [placeholder]="'::SELECT::'" name="ddlSection" [(ngModel)]="mlSearchinfo.SectionSysID" #ddlSection="ngModel" required minlength="1"></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="ddlSection.errors && frmExamMarkEntry.submitted">
+                                <div *ngIf="ddlSection.errors?.required">
+                                    Section is required
+                                </div>
+                                <div *ngIf="ddlSection.errors?.minlength">
+                                    Section is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label>&nbsp;</label>
+                        <div class="input-group">
+                            <button type="submit" name="btnSaveMenu" class="btn btn-sm btn-primary h-30"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row" *ngIf="lstStudentMark.length != 0">
+                <div class="col-md-12 ">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <thead>
+                                <tr>
+                                    <th style="min-width:100px" rowspan="2">Admission No</th>
+                                    <th style="min-width:130px" rowspan="2">Student Name</th>
+                                    <th style="text-align:center;" colspan="5" *ngFor="let sub of lstSubjects">{{sub.SubjectName}}</th>
+                                </tr>
+                                <tr>
+                                    <ng-template ngFor let-sub [ngForOf]="lstSubjects">
+                                        <th>Theory</th>
+                                        <th>Practical</th>
+                                        <th>Assessment</th>
+                                        <th>Total</th>
+                                        <th>Grade</th>
+                                    </ng-template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let dt of lstStudentMark">
+                                    <td>{{dt.AdmissionNo}}</td>
+                                    <td>{{dt.StudentName}}</td>
+                                    <ng-template let-mrk ngFor [ngForOf]="dt.Mark">
+                                        <td style="width:40px; text-align:right">{{(mrk.Theory == null)? "-" : mrk.Theory}}</td>
+                                        <td style="width:40px; text-align:right">{{(mrk.Practical == null)? "-" : mrk.Practical}}</td>
+                                        <td style="width:40px; text-align:right">{{(mrk.Assessment == null)? "-" : mrk.Assessment}}</td>
+                                        <td style="width:40px; text-align:right">{{(mrk.Total == null)? "-" : mrk.Total}}</td>
+                                        <td style="width:30px">{{(mrk.Grade == null)? "-" : mrk.Grade}}</td>
+                                    </ng-template>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button type="button" name="btnMarkApprove" *ngIf="lstStudentMark.length != 0" class="btn btn-success" (click)="btnMarkApprove_Click()">
+                                Approve
+                            </button>
+                            <button type="button" name="btnMarkApproveClose" class="btn btn-danger" (click)="btnCancel_Click()">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

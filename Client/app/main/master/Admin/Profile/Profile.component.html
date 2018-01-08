@@ -1,0 +1,170 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <form #frmVoucherEntry="ngForm" (ngSubmit)="frmVoucherEntry.valid && btnSave_click()" novalidate autocomplete="off">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel" id="Panelent" *ngIf="PanelEntry">
+                    <div class="panel-header">
+                        <h3>
+                            <strong>Profile</strong> Enty({{(isEditMode)? mlProfile.UserName: 'New' }})</h3>
+
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label class="control-label">User Name
+                                    <span class="important">*</span>
+                                </label>
+                                <input autofocus type="text" class="form-control" name="txtUserName" [(ngModel)]="mlProfile.UserName" #txtUserName="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtUserName.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="txtUserName.errors?.required">
+                                            User Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Full Name
+                                    <span class="important">*</span>
+                                </label>
+                                <input autofocus type="text" class="form-control" name="txtFullName" [(ngModel)]="mlProfile.FullName" #txtFullName="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtFullName.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="txtFullName.errors?.required">
+                                            Full Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Password
+                                    <span class="important">*</span>
+                                </label>
+                                <input autofocus type="text" class="form-control" type="password" name="txtPassword" [(ngModel)]="mlProfile.Password" #txtPassword="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtPassword.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="txtPassword.errors?.required">
+                                            Passsword is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">role
+                                    <span class="important">*</span>
+                                </label>
+                                <select-guru [data]="dsRole" [placeholder]="'::SELECT::'" name="ddlRole" [(ngModel)]="mlProfile.RoleSysID" #ddlRole="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlRole.errors && frmVoucherEntry.submitted">
+                                        <div *ngIf="ddlRole.errors?.required">
+                                            role is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="submit" name="btnSaveTerm" class="btn btn-success">{{isEditMode ? 'Update': 'Save' }}</button>
+                                    <button class="btn btn-danger" name="btnCancel" (click)="btnCancel_Click()">cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="panel" id="pnList" *ngIf="PanelList">
+    <div class="panel-header">
+        <h2>
+            <strong>Profile List</strong>
+        </h2>
+    </div>
+    <div class="panel-content">
+        <p-dataTable [value]="dsProfileList" [responsive]="true" [rows]="30" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]"
+            scrollable="true" scrollHeight="380px" selectionMode="single" #dt>
+            <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                    <div style="text-align:right !important">{{rowIndex+1}}</div>
+                </ng-template>
+            </p-column>
+            <p-column field="UserName" header="User Name" [style]="{'width' : '115px'}" [filter]="true" [sortable]="true"></p-column>
+            <!--<p-column header="Voucher Date" [style]="{'width' : '125px'}" [filter]="true" [sortable]="true">
+                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                    <div style="text-align:center !important"> {{data.VoucherDate | date:'dd/MM/yyyy'}}</div>
+                </ng-template>
+            </p-column>-->
+            <p-column field="FullName" header="Full Name" [filter]="true" [sortable]="true"></p-column>
+            <p-column field="RoleName" header="Role" [style]="{'width': '130px'}" [filter]="true" [sortable]="true"></p-column>
+            <p-column field="BranchName" header="Branch" [style]="{'width': '150px'}" [filter]="true" [sortable]="true"></p-column>
+            <p-column field="CompanyName" header="Company" [style]="{'width': '200px'}" [filter]="true" [sortable]="true"></p-column>
+            <p-column header="Options" [style]="{'width': '100px'}">
+                <ng-template let-data="rowData" pTemplate type="body">
+                    <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="top" (click)="btnEdit_Click(data)">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-success" tooltip="Lock" tooltipPlacement="top" *ngIf="!data.Locked.IsLocked"
+                        (click)="btnLock_Click(data,frmProfileLock)">
+                        <i class="fa fa-unlock-alt"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" tooltip="UnLock" tooltipPlacement="top" *ngIf="data.Locked.IsLocked"
+                        (click)="btnLock_Click(data,frmProfileLock)">
+                        <i class="fa fa-lock"></i>
+                    </button>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pull-right">
+                    <button class="btn btn-primary" name="btnAdd" tooltip="Add" tooltipPlacement="left" type="button" (click)="btnAdd_Click()">
+                        <i class="fa fa-plus-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal #mdLock [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmProfileLock="ngForm" (ngSubmit)="frmProfileLock.valid && LockRoute(frmProfileLock)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title">
+                <strong>Profile </strong>Lock({{mlProfile.UserName}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason
+                        <span class="Validation">*</span>
+                    </label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="ProfileLock.LockedReason" #CancelledReason="ngModel"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmProfileLock.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                Locked Reason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdLock.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

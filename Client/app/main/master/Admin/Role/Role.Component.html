@@ -1,0 +1,150 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnTermList" *ngIf="!isEditMode">
+        <div class="panel-header">
+            <h2><strong>Role List</strong></h2>
+        </div>
+        <div class="panel-content">
+            <p-dataTable [value]="RoleList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="RoleName" header="Role"></p-column>
+                <p-column header="Option" [style]="{'width':'85px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="top" (click)="btnEdit_Click(data)">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-success" tooltip="Lock" tooltipPlacement="top" *ngIf="!data.IsLocked" (click)="btnLock_Click(data,frmRoleLock)">
+                            <i class="fa fa-unlock-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" tooltip="UnLock" tooltipPlacement="top" *ngIf="data.IsLocked" (click)="btnLock_Click(data,frmRoleLock)">
+                            <i class="fa fa-lock"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" name="btnAdd" tooltip="Add" tooltipPlacement="left" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="panel" id="pnEntry" *ngIf="isEditMode">
+            <form #frmRoleEntry="ngForm" (ngSubmit)="frmRoleEntry.valid && btnSave_click(frmRoleEntry.value, frmRoleEntry)" novalidate
+                autocomplete="off">
+                <div class="panel-header">
+                    <h2><strong>Role</strong> Enty({{RoleEntry.RoleSysID == 0 ? 'New' : RoleEntry.RoleName}})</h2>
+                </div>
+                <div class="panel-body error-style">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Role  <span class="Validation">*</span></label>
+                            <input autofocus type="text" class="form-control" name="RoleName" [(ngModel)]="RoleEntry.RoleName" #RoleName="ngModel" required
+                            />
+                            <div class="error-message">
+                                <div *ngIf="RoleName.errors &&  frmRoleEntry.submitted">
+                                    <div *ngIf="RoleName.errors?.required">
+                                        Role is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="submit" name="btnSaveTerm" class="btn btn-success">{{RoleEntry.RoleSysID == 0 ? 'Save':'Update' }}</button>
+                                <button type="button" name="btnCloseTermEntry" class="btn btn-danger" (click)="btnCancel_Click()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="panel" id="pnEntry" *ngIf="isEditMode">
+            <div class="panel-body">
+                <div class="table-responsive" style="height: 350px">
+                    <p-treeTable [value]="MenuList">
+                        <p-column header="Name">
+                            <ng-template let-node="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <input type="hidden" class="form-control" [(ngModel)]="node.data.SpecialValue" name="{{rowIndex + 1}}" />
+                                <p-checkbox [label]="node.data.Name" [(ngModel)]="node.data.IsMapped" [binary]="true" [value]="node.data.IsMapped" (onChange)="OnMenu_Change($event, node)"></p-checkbox>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Special" [style]="{'width':'85px','text-align':'center'}">
+                            <ng-template let-node="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <button type="button" name="btnSpecialValue" class="btn btn-primary" (click)="btnSpecialValue_Click(node,rowIndex)"><i class="fa fa-edit"></i></button>
+                            </ng-template>
+                        </p-column>
+                    </p-treeTable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<modal #mdLock [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmRoleLock="ngForm" (ngSubmit)="frmRoleLock.valid && LockRole(frmRoleLock)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Role</strong>Lock({{formLock.RoleName}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="LockedReason" [(ngModel)]="formLock.LockedReason" #LockedReason="ngModel"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="LockedReason.errors &&  frmRoleLock.submitted">
+                            <div *ngIf="LockedReason.errors?.required">
+                                LockedReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Lock</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdLock.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+<modal #mdSpecial [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmSpecial="ngForm" (ngSubmit)="frmSpecial.valid && btnSaveSpecialValue_Click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Special Value</strong></h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Special Value <span class="important">*</span></label>
+                    <textarea class="form-control" rows="5" name="SpecialValue" [(ngModel)]="mlSpecialValueNode.data.SpecialValue" #SpecialValue="ngModel"
+                        required></textarea>
+                    <div class="error-message">
+                        <div *ngIf="SpecialValue.errors && frmSpecial.submitted">
+                            <div *ngIf="SpecialValue.errors?.required">
+                                Special Value is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSplSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnSplCloseEntry" class="btn btn-danger" (click)="mdSpecial.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

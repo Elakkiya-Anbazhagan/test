@@ -1,0 +1,289 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnLoanData" *ngIf="isListMode">
+        <div class="panel-content">
+            <p-dataTable [value]="LoanList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="StaffID" header="StaffID" [style]="{'width':'60px'}" [filter]="true" filterMatchMode="contains"></p-column>
+                <p-column field="StaffName" header="Name" [filter]="true" filterMatchMode="contains"></p-column>
+                <p-column field="LoanDate" header="Date" [style]="{'width':'75px'}"></p-column>
+                <p-column field="Amount" header="Amount" [style]="{'width' : '85px'}" [filter]="true" filterMatchMode="contains">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.Amount | number:'1.2-2'}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="Installment" header="Installment" [style]="{'width':'85px','text-align':'center'}" [filter]="true" filterMatchMode="contains"></p-column>
+                <p-column header="Option" [style]="{'width':'135px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Approve" tooltipPlacement="top" (click)="btnApprove_Click(data)" *ngIf="!data.IsApproved && !data.IsCancelled && !data.IsIssued">
+                            <i class="fa fa-check"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary" (click)="btnLoan_Issue_Click(data)" *ngIf="data.IsApproved  && !data.IsCancelled && !data.IsIssued" style="width: 70px !important;">
+                            Issue
+                        </button>
+                        <label class="btn btn-sm btn-danger" *ngIf="!data.IsApproved  && data.IsCancelled && !data.IsIssued" style="width: 70px !important;">Cancelled</label>
+                        <label class="btn btn-sm btn-success" *ngIf="data.IsApproved  && !data.IsCancelled && data.IsIssued" style="width: 70px !important;">Issued</label>
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="top" (click)="btnEdit_Click(data)" *ngIf="!data.IsApproved  && !data.IsCancelled && !data.IsIssued">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" tooltip="Cancel" tooltipPlacement="top" (click)="btnLoan_Cancel_Click(data)" *ngIf="!data.IsApproved  && !data.IsCancelled && !data.IsIssued">
+                            <i class="icon-rounded-cross"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" tooltip="Add" tooltipPlacement="left" name="btnAdd" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" *ngIf="!isListMode">
+        <div class="panel" id="pnEntry">
+            <form #frmStaffLoan="ngForm" (submit)="frmStaffLoan.valid && btnSave_Click()" novalidate autocomplete="off">
+                <div class="panel-header">
+                    <h2><strong>Loan Details</strong></h2>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Staff Name<span class="important">*</span></label>
+                            <select-guru [data]="StaffData" (valueChanged)="Staff_Change($event)" [placeholder]="'::SELECT::'" name="StaffSysID" [(ngModel)]="LoanData.StaffSysID" #StaffSysID="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="StaffSysID.errors && frmStaffLoan.submitted">
+                                    <div *ngIf="StaffSysID.errors?.required">
+                                        Staff Name is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Salary <span class="important">*</span></label>
+                            <input type="text" class="form-control text-right" name="Salary" [(ngModel)]="LoanData.Salary" #Salary="ngModel" pattern="^[0-9]*$" required />
+                            <div class="error-message">
+                                <div *ngIf="Salary.errors && frmStaffLoan.submitted">
+                                    <div *ngIf="Salary.errors?.required">
+                                        Salary required
+                                    </div>
+                                    <div *ngIf="Salary.errors?.pattern">
+                                        Invalid character
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Loan Amount <span class="important">*</span></label>
+                            <input type="text" (blur)="LoadInstallmentList()" (keydown.tab)="LoadInstallmentList()" (keydown.esc)="LoadInstallmentList()" class="form-control text-right" name="Amount" [(ngModel)]="LoanData.Amount" #Amount="ngModel" pattern="^[0-9]*$" required />
+                            <div class="error-message">
+                                <div *ngIf="Amount.errors && frmStaffLoan.submitted">
+                                    <div *ngIf="Amount.errors?.required">
+                                        Loan Amount required
+                                    </div>
+                                    <div *ngIf="Amount.errors?.pattern">
+                                        Invalid character
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Installment <span class="important">*</span></label>
+                            <input type="text" (blur)="LoadInstallmentList()" (keydown.tab)="LoadInstallmentList()" (keyup.esc)="LoadInstallmentList()" class="form-control text-right" name="Installment" [(ngModel)]="LoanData.Installment" #Installment="ngModel" pattern="^[0-9]*$"
+                                required />
+                            <div class="error-message">
+                                <div *ngIf="Installment.errors && frmStaffLoan.submitted">
+                                    <div *ngIf="Installment.errors?.required">
+                                        Installment required
+                                    </div>
+                                    <div *ngIf="Installment.errors?.pattern">
+                                        Invalid character
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Account <span class="important">*</span></label>
+                            <select-guru name="AccountSysID" [(ngModel)]="LoanData.AccountSysID" #AccountSysID="ngModel" [data]="dsAccount" [placeholder]="':: SELECT ::'" required>
+                            </select-guru>
+                            <div class="error-message">
+                                <div *ngIf="AccountSysID.errors && frmStaffLoan.submitted">
+                                    <div *ngIf="AccountSysID.errors?.required">
+                                        Account is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                <button type="button" class="btn btn-sm btn-danger" (click)="btnEntryCancel_Click()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6" *ngIf="!isListMode">
+        <div class="panel" id="pnInstallmentList">
+            <div class="panel-content">
+                <p-dataTable [value]="LoanData.Trans" [tableStyleClass]="'tbl-list-guru'">
+                    <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="Installment" header="Installment" [style]="{'width':'85px'}"></p-column>
+                    <p-column field="InstallmentDate" header="Installemt Date">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <p-calendar [monthNavigator]="true" [yearNavigator]="true" yearRange="{{YearRange}}" dataType="string" dateFormat="dd-mm-yy" [showIcon]="true" [(ngModel)]="data.InstallmentDate" name="InstallmentDate-{{rowIndex}}"></p-calendar>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="Amount" header="Amount" [style]="{'width' : '120px'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <input type="number" class="form-control" style="text-align : right; height: 26px !important;" [(ngModel)]="data.Amount" name="{{rowIndex + 1}}" />
+                        </ng-template>
+                    </p-column>
+                    <p-footerColumnGroup>
+                        <p-row>
+                            <p-column footer="Totals:" colspan="2"></p-column>
+                            <p-column>
+                                <ng-template let-data pTemplate="footer">
+                                    <div class="" style="text-align:right !important; font-weight: 700; ">
+                                        {{(calculateTotal()) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                        </p-row>
+                    </p-footerColumnGroup>
+                </p-dataTable>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmLoanCancel="ngForm" (ngSubmit)="frmLoanCancel.valid && btnCancel_Click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Loan </strong>Cancellation({{LoanData.StaffName}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="LoanData.CancelledReason" #CancelledReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmLoanCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+
+<modal #mdPayment [keyboard]="false" [backdrop]="'static'" cssClass="modal-md" id="PaymentModal">
+    <form #frmPaymentInfo="ngForm" (ngSubmit)="frmPaymentInfo.valid && btnIssue_Click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Loan </strong>Issue To ({{LoanData.StaffName}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Account <span class="important">*</span></label>
+                    <select-guru name="AccountSysID" [dropdownParent]="'PaymentModal'" (valueChanged)="Account_Change($event.value)" [(ngModel)]="LoanData.AccountSysID" #AccountSysID="ngModel" [data]="dsAccount" [placeholder]="':: SELECT ::'" required>
+                    </select-guru>
+                    <div class="error-message">
+                        <div *ngIf="AccountSysID.errors && frmPaymentInfo.submitted">
+                            <div *ngIf="AccountSysID.errors?.required">
+                                Account is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Payment Type<span class="important">*</span></label>
+                    <select-guru [data]="dsPaymentType" [dropdownParent]="'PaymentModal'" (valueChanged)="dsPaymentTypeDataChanged($event)" [allowClear]="true" [placeholder]="'::SELECT::'" name="ddlPaymentType" [(ngModel)]="LoanData.PaymodeMaster.PaymodeTypeSysID" #ddlPaymentType="ngModel"
+                        required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="ddlPaymentType.errors && frmPaymentInfo.submitted">
+                            <div *ngIf="ddlPaymentType.errors?.required">
+                                Payment Type is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Transaction No.<span class="important">*</span></label>
+                    <input type="text" class="form-control" name="TransactionNo" [(ngModel)]="LoanData.PaymodeMaster.TransactionNo" #TransactionNo="ngModel" [disabled]="paymentDisabled" required/>
+                    <div class="error-message">
+                        <div *ngIf="TransactionNo.errors && frmPaymentInfo.submitted && !paymentDisabled">
+                            <div *ngIf="TransactionNo.errors?.required">
+                                Transaction No is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Transaction Date<span class="important">*</span></label>
+                    <p-calendar dateFormat="dd-mm-yy" dataType="string" [minDate]="minDate" showIcon="true" name="TransactionDate" [(ngModel)]="LoanData.PaymodeMaster.TransactionDate" [disabled]="paymentDisabled" #TransactionDate="ngModel" required></p-calendar>
+                    <div class="error-message">
+                        <div *ngIf="TransactionDate.errors && frmPaymentInfo.submitted && !paymentDisabled">
+                            <div *ngIf="TransactionDate.errors?.required">
+                                Transaction Date No is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Bank Name<span class="important">*</span></label>
+                    <select-guru [data]="dsBankName" [dropdownParent]="'PaymentModal'" [allowClear]="true" [placeholder]="'::SELECT::'" [(ngModel)]="LoanData.PaymodeMaster.TransactionBankSysID" #BankSysID="ngModel" [disabled]="paymentDisabled" name="BankSysID" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="BankSysID.errors && frmPaymentInfo.submitted && !paymentDisabled">
+                            <div *ngIf="BankSysID.errors?.required">
+                                Bank is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Company Bank Name<span class="important">*</span></label>
+                    <select-guru [data]="dsCompanyBankName" [dropdownParent]="'PaymentModal'" [allowClear]="true" [placeholder]="'::SELECT::'" [(ngModel)]="LoanData.PaymodeMaster.LedgerSysID" #LedgerSysID="ngModel" [disabled]="paymentDisabled" name="LedgerSysID" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="LedgerSysID.errors && frmPaymentInfo.submitted && !paymentDisabled">
+                            <div *ngIf="LedgerSysID.errors?.required">
+                                Company Bank is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Amount <span class="important">*</span></label>
+                    <input type="number" class="form-control text-right" [disabled]="true" name="txtAmount" [(ngModel)]="LoanData.PaymodeMaster.Amount" #txtAmount="ngModel" />
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdPayment.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

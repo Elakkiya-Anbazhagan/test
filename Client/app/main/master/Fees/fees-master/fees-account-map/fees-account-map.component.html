@@ -1,0 +1,83 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <form #frmCategoryEntry="ngForm" (ngSubmit)="frmCategoryEntry.valid && btnView_Click()" novalidate autocomplete="off">
+        <div class="col-md-4">
+            <div class="panel" id="pnMapData">
+                <div class="panel-header">
+                    <h2><strong>Account & Fee Type</strong></h2>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Academic Year <span class="important">*</span></label>
+                            <select-guru [data]="AcademicYearData" [disabled]="!isViewMode" [placeholder]="'::SELECT::'" name="AcademicYearSysId" [(ngModel)]="ViewData.AcademicYearSysId"
+                                #AcademicYearSysId="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="AcademicYearSysId.errors && frmCategoryEntry.submitted">
+                                    <div *ngIf="AcademicYearSysId.errors?.required">
+                                        Academic Year is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Account Type <span class="important">*</span></label>
+                            <select-guru [data]="AccountTypeData" [disabled]="!isViewMode" [placeholder]="'::SELECT::'" name="AccountSysID" [(ngModel)]="ViewData.AccountSysID"
+                                #AccountSysID="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="AccountSysID.errors && frmCategoryEntry.submitted">
+                                    <div *ngIf="AccountSysID.errors?.required">
+                                        Account type is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Fees Type <span class="important">*</span></label>
+                            <select-guru [data]="FeesData" [disabled]="!isViewMode" [placeholder]="'::SELECT::'" name="FeeSysID" [(ngModel)]="ViewData.FeeSysID"
+                                #FeeSysID="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="FeeSysID.errors && frmCategoryEntry.submitted">
+                                    <div *ngIf="FeeSysID.errors?.required">
+                                        Fees Type is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <label *ngIf="!isViewMode && isApproved" class="btn btn-sm btn-warning">fees structure approved</label>
+                                <button type="submit" *ngIf="isViewMode" class="btn btn-sm btn-primary" tooltip="View" tooltipPlacement="top"><i class="fa fa-search"></i> </button>
+                                <button type="button" *ngIf="!isViewMode && !isApproved" class="btn btn-sm btn-primary" (click)="btnSave_click()">Map</button>
+                                <button type="button" *ngIf="!isViewMode" class="btn btn-sm btn-danger" (click)="btnCancel_Click()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="panel" id="pnMapList">
+                <div class="panel-header">
+                    <h2><strong>Fees Category List</strong></h2>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="MapData" [(selection)]="SelectedData">
+                        <p-column [style]="{'width':'25px'}" field="isMapped" selectionMode="multiple"></p-column>
+                        <p-column header="#" [style]="{'width':'20px','text-align':'center'}">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="AcademicYearID" header="Academic Year"></p-column>
+                        <p-column field="FeeName" header="Fees Type"></p-column>
+                        <p-column field="CategoryName" header="Fees Category"></p-column>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

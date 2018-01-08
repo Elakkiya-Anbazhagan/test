@@ -1,0 +1,55 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-10">
+            <form #frmDayBookInfo="ngForm" (ngSubmit)="frmDayBookInfo.valid && btnView_click()" novalidate autocomplete="off">
+                <div class="panel" id="pnCategoryList">
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-5">
+                                <label class="control-label">Account <span class="important">*</span></label>
+                                <select-guru [data]="dsAccount" [placeholder]="'::SELECT::'" name="ddlAccount" [(ngModel)]="DayBookData.AccountSysID" #ddlAccount="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlAccount.errors && frmDayBookInfo.submitted">
+                                        <div *ngIf="ddlAccount.errors?.required">
+                                            Account is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">From Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="FromDate" required [(ngModel)]="DayBookData.FromDate"
+                                    #FromDate="ngModel"></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="FromDate.errors && frmDayBookInfo.submitted">
+                                        <div *ngIf="FromDate.errors?.required">
+                                            From Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">To Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="ToDate" required [(ngModel)]="DayBookData.ToDate"
+                                    #ToDate="ngModel"></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="ToDate.errors && frmDayBookInfo.submitted">
+                                        <div *ngIf="ToDate.errors?.required">
+                                            To Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label class="control-label">&nbsp;</label>
+                                <button class="btn btn-primary from-control" type="submit" name="btnView">View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div style="height:200px;"></div>
+        </div>
+    </div>
+</div>

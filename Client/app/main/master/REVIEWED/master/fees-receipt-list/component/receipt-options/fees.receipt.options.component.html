@@ -1,0 +1,33 @@
+<button class="btn btn-sm btn-info" tooltip="Print" tooltipPlacement="left" *ngIf="AllowPrint && !IsCancelled" (click)="btnPrintReceipt_Click()"><i class="fa fa-print"></i></button>
+
+<button class="btn btn-sm btn-danger" tooltip="Cancel" *ngIf="!IsCancelled && AllowCancel" tooltipPlacement="left" (click)="btnCancelReceipt_Click()">
+    <i class="icon-rounded-cross"></i>
+</button>
+<label class="btn btn-sm btn-warning" style="{{CancelLabelStyle}}" *ngIf="IsCancelled"> Cancelled</label>
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmReceiptCancel="ngForm" (ngSubmit)="frmReceiptCancel.valid && frmCancelSubmit()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Receipt </strong>Cancellation({{ReceiptNo}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="mlCancelReason.CancelledReason" #CancelledReason="ngModel"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmReceiptCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                Cancelled Reason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnReceiptCancel" class="btn btn-success">Save</button>
+            <button type="button" name="btnClose_ReceiptCancel" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

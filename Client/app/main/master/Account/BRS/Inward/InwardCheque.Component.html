@@ -1,0 +1,234 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="PanelList">
+        <div class="panel-header" style="height: 70px;">
+            <h2>&nbsp;</h2>
+            <div class="panel-tools" style="width:98%">
+                <form #frmInwardView="ngForm" (ngSubmit)="frmInwardView.valid && btnView_click()" novalidate autocomplete="off">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Account Type<span class="important">*</span></label>
+                        <select-guru [data]="AccountData" [placeholder]="'::SELECT::'" [(ngModel)]="ViewData.AccountSysID" (valueChanged)="AccountTypeChanged($event)" #AccountSysID="ngModel" name="AccountSysID" [allowClear]="true" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="AccountSysID.errors && frmInwardView.submitted">
+                                <div *ngIf="AccountSysID.errors?.required">
+                                    Account Type is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Status<span class="important">*</span></label>
+                        <select-guru [data]="StatusData" [placeholder]="'::SELECT::'" [(ngModel)]="ViewData.StatusSysID" (valueChanged)="StautsChanged($event)" #StatusSysID="ngModel" name="StatusSysID" [allowClear]="true" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="StatusSysID.errors && frmInwardView.submitted">
+                                <div *ngIf="StatusSysID.errors?.required">
+                                    Cheque Status is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3" *ngIf="SearchDate">
+                        <label class="control-label">From Date</label>
+                        <p-calendar dateFormat="dd-mm-yy" dataType="string" name="FromDate" [(ngModel)]="ViewData.FromDate" readonlyInput="true" #FromDate="ngModel"></p-calendar>
+                        <div class="error-message">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3" *ngIf="SearchDate">
+                        <label class="control-label">To Date</label>
+                        <p-calendar dateFormat="dd-mm-yy" dataType="string" name="ToDate" [(ngModel)]="ViewData.ToDate" readonlyInput="true" #ToDate="ngModel"></p-calendar>
+                        <div class="error-message">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label class="control-label">&nbsp;</label>
+                        <button class="btn btn-primary from-control" type="submit" name="btnView">View</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="panel-content error-style">
+            <p-dataTable [value]="ChequeData" [(selection)]="SelectedData" [rows]="10" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20,50]" [tableStyle]="{'table-layout':'auto'}">
+                <p-headerColumnGroup>
+                    <p-row>
+                        <p-column rowspan="2" [style]="{'width': '25px'}" selectionMode="multiple" *ngIf="Present || Clear"></p-column>
+                        <p-column header="#" rowspan="2" [style]="{'width': '30px','text-align': 'right'}"></p-column>
+                        <p-column header="PayMode" rowspan="2" [style]="{'width':'95px','text-align': 'center'}"></p-column>
+                        <p-column header="Receipt/Voucher" colspan="3"></p-column>
+                        <p-column header="Bank" colspan="3"></p-column>
+                        <p-column header="Presented" *ngIf="ShowPresentDate" colspan="2"></p-column>
+                        <p-column header="Bounced" *ngIf="BouncedReason" colspan="2"></p-column>
+                        <p-column header="Narration" rowspan="2" *ngIf="!BouncedReason"></p-column>
+                        <p-column header="Amount" rowspan="2" [style]="{'width':'90px'}"></p-column>
+                        <p-column header="Option" rowspan="2" [style]="{'width':'80px','text-align':'center'}" *ngIf="Clear"></p-column>
+                    </p-row>
+                    <p-row>
+                        <p-column header="No" colspan="1" [style]="{'width':'50px','text-align': 'center'}"></p-column>
+                        <p-column header="Date" colspan="1" [style]="{'width':'75px'}"></p-column>
+                        <p-column header="Name" colspan="1" [style]="{'width':'110px'}"></p-column>
+
+                        <p-column header="Name" colspan="1" [style]="{'width':'80px'}"></p-column>
+                        <p-column header="No." colspan="1" [style]="{'width':'110px'}"></p-column>
+                        <p-column header="Date" colspan="1" [style]="{'width':'75px'}"></p-column>
+
+                        <p-column header="Bank" *ngIf="ShowPresentDate" colspan="1" [style]="{'width':'130px'}"></p-column>
+                        <p-column header="Date" *ngIf="ShowPresentDate" colspan="1" [style]="{'width':'75px'}"></p-column>
+
+                        <p-column header="Reason" *ngIf="BouncedReason" colspan="1"></p-column>
+                        <p-column header="Date" *ngIf="BouncedReason" colspan="1" [style]="{'width':'75px'}"></p-column>
+                    </p-row>
+                </p-headerColumnGroup>
+                <p-column selectionMode="multiple" *ngIf="Present || Clear"></p-column>
+                <p-column>
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="PayMode"></p-column>
+                <p-column field="VoucherNo"></p-column>
+                <p-column>
+                    <ng-template let-data="rowData" pTemplate="body">
+                        {{lib.datafunc.YMD_TO_DMY(data.VoucherDate)}}
+                    </ng-template>
+                </p-column>
+                <p-column field="LedgerName"></p-column>
+                <p-column field="BankName"></p-column>
+                <p-column field="TransactionNo"></p-column>
+                <p-column>
+                    <ng-template let-data="rowData" pTemplate="body">
+                        {{lib.datafunc.YMD_TO_DMY(data.TransactionDate)}}
+                    </ng-template>
+                </p-column>
+                <p-column field="PresentedBank" *ngIf="ShowPresentDate"></p-column>
+                <p-column field="ClearedDate" *ngIf="ShowPresentDate">
+                    <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+
+
+                        <div style="text-align:right !important">{{lib.datafunc.YMD_TO_DMY(data.ClearedDate)}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="BouncedDate" *ngIf="BouncedReason">
+                    <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{lib.datafunc.YMD_TO_DMY(data.BouncedDate)}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="CancelledReason" *ngIf="BouncedReason"></p-column>
+                <p-column field="Narration" *ngIf="!BouncedReason"></p-column>
+                <p-column field="Amount">
+                    <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important"> {{data.Amount | number:'1.2-2'}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column header="Option" [style]="{'width':'80px','text-align':'center'}" *ngIf="Clear">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-warning" *ngIf="isAllowBounce" tooltip="Delete" tooltipPlacement="top" (click)="btnBounceView_click(data)">Bounce</button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-sm btn-primary" type="button" name="btnView" (click)="btnPresent_Click()" *ngIf="Present && isAllowPresent">Present</button>
+                        <button class="btn btn-sm btn-success" type="button" name="btnView" (click)="btnClear_Click()" *ngIf="Clear && isAllowRealise">Realise</button>
+                        <button class="btn btn-sm btn-danger" type="button" name="btnView" (click)="btnCancel_Click()">Reset Form</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<modal #mdBounce [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmBounce="ngForm" (ngSubmit)="frmBounce.valid && btnBounce_Click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Bounce</strong>({{BounceData.TransactionNo}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+
+                <div class="form-group col-md-12" *ngIf="Clear">
+                    <label class="control-label">Bounced Date<span class="important">*</span></label>
+                    <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="BouncedDate" [(ngModel)]="BounceData.BouncedDate" #BouncedDate="ngModel" required></p-calendar>
+                    <div class="error-message">
+                        <div *ngIf="BouncedDate.errors && frmBounce.submitted">
+                            <div *ngIf="BouncedDate.errors?.required">
+                                Bounced Date is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="BounceData.CancelledReason" #CancelledReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmBounce.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                Bounce Reason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnBounceSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnBounceCloseEntry" class="btn btn-danger" (click)="btnBounce_Close_Click()">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+<modal #mdPresent [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm" id="PresentModal">
+    <form #frmPresent="ngForm" (ngSubmit)="frmPresent.valid && btnPresent_Model_Click()" novalidate autocomplete="off">
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Bank Name<span class="important"  >*</span></label>
+                    <select-guru [data]="BankData" [placeholder]="'::SELECT::'" name="BankSysID" [(ngModel)]="ViewData.BankSysID" #BankSysID="ngModel" [allowClear]="true" required [dropdownParent]="'PresentModal'"></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="BankSysID.errors && frmPresent.submitted">
+                            <div *ngIf="BankSysID.errors?.required">
+                                Bank Name is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label">Present Date<span class="important">*</span></label>
+                    <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="PresentedDate" [(ngModel)]="ViewData.PresentedDate" #PresentedDate="ngModel" required></p-calendar>
+                    <div class="error-message">
+                        <div *ngIf="PresentedDate.errors && frmPresent.submitted">
+                            <div *ngIf="PresentedDate.errors?.required">
+                                Present Date is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnPresentSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnPresentCloseEntry" class="btn btn-danger" (click)="btnPresent_Close_Click()">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+<modal #mdRealized [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmRealized="ngForm" (ngSubmit)="frmRealized.valid && btnRealized_Model_Click()" novalidate autocomplete="off">
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12" *ngIf="Clear">
+                    <label class="control-label">Realized Date<span class="important">*</span></label>
+                    <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="RealizedDate" [(ngModel)]="ViewData.RealizedDate" #RealizedDate="ngModel" required></p-calendar>
+                    <div class="error-message">
+                        <div *ngIf="RealizedDate.errors && frmRealized.submitted">
+                            <div *ngIf="RealizedDate.errors?.required">
+                                Realized Date is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnRealizedSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnRealizedCloseEntry" class="btn btn-danger" (click)="btnClear_Close_Click()">Close</button>
+        </modal-footer>
+    </form>
+</modal>

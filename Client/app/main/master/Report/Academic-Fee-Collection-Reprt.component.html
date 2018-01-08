@@ -1,0 +1,106 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-12">
+            <form #frmfeeEntry="ngForm" novalidate autocomplete="off">
+                <div class=" panel " id="pnCategoryList ">
+                    <div class="panel-header ">
+                        <h2><strong>Fee Info</strong></h2>
+                        <div class="panel-tools error-style" style="width: 120px">
+                            <div class="form-group">
+                                <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" name="ddlAcademicYear" [(ngModel)]="FeeEntry.AcademicYearSysID"
+                                    (valueChanged)="ddlAcademicYear_Change($event)" #ddlAcademicYear="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlAcademicYear.errors && frmfeeEntry.submitted">
+                                        <div *ngIf="ddlAcademicYear.errors?.required">
+                                            AcademicYear is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row ">
+
+                            <div class="form-group col-md-3 ">
+                                <label class="control-label ">Class <span class="important">*</span></label>
+                                <p-multiSelect [options]="dsClass" [(ngModel)]="FeeEntry.selectedClass" name="msClass" #msClass="ngModel" required></p-multiSelect>
+                                <div *ngIf="msClass.errors && frmfeeEntry.submitted">
+                                    <div class="error-message">
+                                        <div *ngIf="msClass.errors?.required">
+                                            Class is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3 ">
+                                <label class="control-label ">Term <span class="important">*</span></label>
+                                <p-multiSelect [options]="dsTerm" [(ngModel)]="FeeEntry.selectedTerm" name="msTerm" (onChange)="Term_Change($event)" #msTerm="ngModel"
+                                    required></p-multiSelect>
+                                <div *ngIf="msTerm.errors && frmfeeEntry.submitted">
+                                    <div class="error-message">
+                                        <div *ngIf="msTerm.errors?.required">
+                                            Term is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Report Type <span class="important">*</span></label>
+                                <select-guru [data]="dsReportType" [placeholder]="'::SELECT::'" (valueChanged)="ReportType_Change($event)" name="ddlReportType"
+                                    [disabled]="ReportTypeDisabled" [(ngModel)]="FeeEntry.ReportSysID" #ddlReportType="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlReportType.errors && frmfeeEntry.submitted && !ReportTypeDisabled">
+                                        <div *ngIf="ddlReportType.errors?.required">
+                                            Report Type is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-3 ">
+                                <label class="control-label ">Columns <span class="important">*</span></label>
+                                <p-multiSelect [options]="dsType" [(ngModel)]="FeeEntry.selectedType" name="msType" [disabled]="paymentDisabled" #msType="ngModel"
+                                    required></p-multiSelect>
+                                <div *ngIf="msType.errors && frmfeeEntry.submitted && !paymentDisabled">
+                                    <div class="error-message">
+                                        <div *ngIf="msType.errors?.required">
+                                            Type is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <div class="btn-group" dropdown="">
+                                        <button type="button" class="btn btn-success" [disabled]="!frmfeeEntry.valid">View As</button>
+                                        <button type="button" dropdown-toggle="" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                            [disabled]="!frmfeeEntry.valid" aria-expanded="false"> 
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                        <span class="dropdown-arrow"></span>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li> <a (click)="btnViewExcel_click();">Excel</a>
+                                            </li>
+                                            <li><a (click)="btnViewPDF_click();">PDF</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div style="height:200px;"></div>
+        </div>
+    </div>
+</div>

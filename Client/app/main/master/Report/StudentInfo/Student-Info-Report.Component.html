@@ -1,0 +1,105 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-3">
+            <form #frmStudentInfo="ngForm" (ngSubmit)="frmStudentInfo.valid && btnView_click()" novalidate autocomplete="off">
+                <div class=" panel " id="pnCategoryList ">
+                    <div class="panel-header ">
+                        <h2><strong>Student Info</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row ">
+                            <div class="form-group col-md-12">
+                                <label class="control-label ">Academic Year <span class="important">*</span></label>
+                                <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" name="ddlAcademicYear" [(ngModel)]="StudentInfo.AcademicYearSysID"
+                                    (valueChanged)="ddlAcademicYear_Change($event.value)" #ddlAcademicYear="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlAcademicYear.errors && frmStudentInfo.submitted">
+                                        <div *ngIf="ddlAcademicYear.errors?.required">
+                                            AcademicYear is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label ">Class <span class="important">*</span></label>
+                                <select-guru [data]="dsClass" [placeholder]="'::SELECT::'" name="ClassSysID" [(ngModel)]="StudentInfo.selectedClass" (valueChanged)="ddlClass_Change($event.value)"
+                                    #ClassSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ClassSysID.errors && frmStudentInfo.submitted">
+                                        <div *ngIf="ClassSysID.errors?.required">
+                                            Class is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label ">Section <span class="important">*</span></label>
+                                <select-guru [data]="dsSection" [placeholder]="'::SELECT::'" name="SectionSysID" [(ngModel)]="StudentInfo.selectedSection"
+                                    #SectionSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="SectionSysID.errors && frmStudentInfo.submitted">
+                                        <div *ngIf="SectionSysID.errors?.required">
+                                            Section is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Type <span class="important">*</span></label>
+                                <select-guru [data]="dstypeData" [placeholder]="'::SELECT::'" name="ddlType" [(ngModel)]="StudentInfo.TypeSysID" #ddlType="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlType.errors && frmStudentInfo.submitted">
+                                        <div *ngIf="ddlType.errors?.required">
+                                            Type is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-sm btn-info" (click)="btnPrint_Click()"><i class="fa fa-print"></i> Print</button>
+                                    <!--<button type="submit" class="btn btn-sm btn-blue"><i class="fa fa-search"></i></button>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div style="height:200px;"></div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel" id="pnStudentList ">
+                <div class="panel-content">
+                    <p-dataTable [value]="StudentList" [rows]="10" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]" #dt scrollable="true"
+                        scrollHeight="250px" [responsive]="true">
+                        <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                            <ng-template let-pageno="page" let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="AdmissionNo" header="Adm. No." [filter]="true" [style]="{'width':'120px','text-align':'center'}" [sortable]="true"></p-column>
+                        <p-column field="StudentName" header="Student" [filter]="true" [sortable]="true"></p-column>
+                        <p-column field="ClassName" header="Class" [style]="{'width':'100px'}" [filter]="true" [sortable]="true">
+                            <ng-template pTemplate="filter" let-col>
+                                <p-dropdown [options]="dsClassFilter" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
+                                    styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="SectionName" header="Section" [style]="{'width':'100px'}" [filter]="true" [sortable]="true">
+                            <ng-template pTemplate="filter" let-col>
+                                <p-dropdown [options]="dsSectionFilter" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)"
+                                    styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ContactMobileNo" header="Mobile" [filter]="true" [style]="{'width':'100px','text-align':'center'}" [sortable]="true"></p-column>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

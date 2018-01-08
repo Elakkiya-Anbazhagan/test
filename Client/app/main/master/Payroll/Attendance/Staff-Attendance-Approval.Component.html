@@ -1,0 +1,83 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnStaffAttedanceList" *ngIf="!isPermission && !isLeave">
+        <div class="panel-header  error-style" style="height: 75px;">
+            <h2>&nbsp;</h2>
+            <div class="panel-tools" style="width:98%">
+                <form #frmStaffAttendanceView="ngForm" (ngSubmit)="frmStaffAttendanceView.valid && btnView_click()" novalidate autocomplete="off">
+                    <div class="form-group col-md-4">
+                        <label class="control-label">Attendance Type<span class="important">*</span></label>
+                        <select-guru [data]="TypeData" [placeholder]="'::SELECT::'" [(ngModel)]="AttedanceViewData.StatusSysID" #StatusSysID="ngModel" name="StatusSysID" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="StatusSysID.errors && frmStaffAttendanceView.submitted">
+                                <div *ngIf="StatusSysID.errors?.required">
+                                    Attendance Type is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">From Date<span class="important">*</span></label>
+                        <p-calendar dateFormat="dd-mm-yy" dataType="string" name="FromDate" [(ngModel)]="AttedanceViewData.FromDate" readonlyInput="true" #FromDate="ngModel" required></p-calendar>
+                        <div class="error-message">
+                            <div *ngIf="FromDate.errors && frmStaffAttendanceView.submitted">
+                                <div *ngIf="FromDate.errors?.required">
+                                    FromDate is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">To Date<span class="important">*</span></label>
+                        <p-calendar dateFormat="dd-mm-yy" dataType="string" name="ToDate" [(ngModel)]="AttedanceViewData.ToDate" readonlyInput="true" #ToDate="ngModel" required></p-calendar>
+                        <div class="error-message">
+                            <div *ngIf="ToDate.errors && frmStaffAttendanceView.submitted">
+                                <div *ngIf="ToDate.errors?.required">
+                                    ToDate is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label class="control-label">&nbsp;</label>
+                        <button class="btn btn-primary from-control" type="submit" name="btnView">View</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="panel-content">
+            <p-dataTable [value]="AttendanceList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="StaffID" header="StaffID" [style]="{'width':'60px','text-align':'center'}" filter="true" filterMatchMode="contains"></p-column>
+                <p-column field="StaffName" header="Name" filter="true" filterMatchMode="contains"></p-column>
+                <p-column field="ShiftName" header="Shift" [style]="{'width':'190px','text-align':'center'}"></p-column>
+                <p-column field="AttendanceDate" header="Date" [style]="{'width':'75px','text-align':'center'}"></p-column>
+                <p-column field="InTime" header="InTime" [style]="{'width':'55px','text-align':'center'}"></p-column>
+                <p-column field="OutTime" header="OutTime" [style]="{'width':'60px','text-align':'center'}"></p-column>
+                <p-column field="FNStatusName" header="FN" [style]="{'width':'140px','text-align':'center'}"></p-column>
+                <p-column field="ANStatusName" header="AN" [style]="{'width':'140px','text-align':'center'}"></p-column>
+                <p-column field="PermissionHours" header="Permission" [style]="{'width':'70px','text-align':'center'}"></p-column>
+                <p-column header="Option" [style]="{'width':'85px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" style="width: 73px !important;" *ngIf="data.FNStatusName !== 'NA' && data.ANStatusName !== 'NA' && data.IsAllowPermissionReduction && isAllowPermission" (click)="btnPermission_Click(data)">Permission</button>
+                        <button type="button" class="btn btn-sm btn-primary" style="width: 73px !important;" *ngIf="(data.FNStatusName === 'NA' || data.ANStatusName === 'NA') && data.IsAllowLeaveReduction && isAllowLeave" (click)="btnLeave_Click(data)">Leave</button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" name="btnApprove" type="button" (click)="btnApprove_Click()"  *ngIf="isAllowApprove">Approve</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <Leave-master [StaffSysID]="AttendanceData.StaffSysID" [AttendanceDate]="AttendanceData.AttendanceDate" (onclose)="onClose();" *ngIf="isLeave"></Leave-master>
+    <permission-master [StaffSysID]="AttendanceData.StaffSysID" [AttendanceDate]="AttendanceData.AttendanceDate" (onclose)="onClose();" *ngIf="isPermission"></permission-master>
+</div>

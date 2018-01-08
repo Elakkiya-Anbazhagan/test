@@ -1,0 +1,18 @@
+<div class="error-page" style="height: 100%">
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
+            <div class="error-container">
+                <div class="error-main">
+                    <h1><span id="ErrorCode" style="padding: 0px">{{Code}}</span></h1>
+                    <h3><span id="ErrorMessage" style="text-transform: none">{{Message}}</span></h3>
+                    <br>
+                    <div class="row" id="content-404" style="display: block">
+                        <div class="col-md-6 col-md-offset-3 text-center">
+                            <a class="btn btn-dark" [routerLink]="['/auth/login']">Go To Login</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

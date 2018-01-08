@@ -1,0 +1,96 @@
+<div class="topbar">
+    <div class="header-left">
+        <div class="topnav">
+            <a class="menutoggle" href="Javascript:void()" data-toggle="sidebar-collapsed">
+                <span class="menu__handle"><span>Menu</span></span>
+            </a>
+        </div>
+    </div>
+    <div class="header-right">
+        <ul class="header-menu nav navbar-nav">
+            <!-- BEGIN USER DROPDOWN -->
+            <li class="dropdown" id="user-header">
+                <a href="Javascript:void()" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                    <img src="{{UserImage}}" alt="" data-type="User" />
+                    <span class="username" style="max-width: none;">Hi, {{Fullname}} <i class="fa fa-caret-down"></i></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a (click)="btnChangePassword();"><i class="icon-user"></i><span>Change Password</span></a>
+                    </li>
+                    <li>
+                        <a (click)="btnLogOut();"><i class="icon-power"></i><span>Logout</span></a>
+                    </li>
+                </ul>
+            </li>
+            <!-- END USER DROPDOWN -->
+        </ul>
+    </div>
+    <!-- header-right -->
+</div>
+<modal #mdChangePassword [keyboard]="false" [backdrop]="'static'" id="ChangepasswordModal">
+    <form #frmChangePasswordEntry="ngForm" (ngSubmit)="frmChangePasswordEntry.valid && btnChange(frmChangePasswordEntry.value, frmChangePasswordEntry)"
+        novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Entry</strong></h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Username <span class="important">*</span></label>
+                    <input autofocus type="text" class="form-control" name="UserName" [(ngModel)]="mlchange.UserName" #UserName="ngModel" required
+                        [disabled]="true" />
+                    <div class="error-message">
+                        <div *ngIf="UserName.errors && frmChangePasswordEntry.submitted">
+                            <div *ngIf="UserName.errors?.required">
+                                UserName is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label class="control-label">Old Password <span class="important">*</span></label>
+                    <input autofocus type="text" class="form-control" name="OldPassword" [(ngModel)]="mlchange.OldPassword" #OldPassword="ngModel"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="OldPassword.errors && frmChangePasswordEntry.submitted">
+                            <div *ngIf="OldPassword.errors?.required">
+                                OldPassword is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">New Password <span class="important">*</span></label>
+                    <input autofocus type="text" class="form-control" name="NewPassword" [(ngModel)]="mlchange.NewPassword" #NewPassword="ngModel"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="NewPassword.errors && frmChangePasswordEntry.submitted">
+                            <div *ngIf="NewPassword.errors?.required">
+                                NewPassword is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Confirm Password <span class="important">*</span></label>
+                    <input autofocus type="text" class="form-control" name="ConfirmPassword" [(ngModel)]="mlchange.ConfirmPassword" #ConfirmPassword="ngModel"
+                        required />
+                </div>
+                <!--<div class="error-message">
+                        <div *ngIf="CategoryName.errors && frmChangePasswordEntry.submitted">
+                            <div *ngIf="CategoryName.errors?.required">
+                                Category is required
+                            </div>
+                        </div>
+                    </div>-->
+
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveCategory" class="btn btn-success">Save </button>
+            <button type="button" name="btnCloseCategoryEntry" class="btn btn-danger" (click)="mdChangePassword.close(); frmChangePasswordEntry.resetForm();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

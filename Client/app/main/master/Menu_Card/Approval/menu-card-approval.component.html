@@ -1,0 +1,73 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnMenuCardList">
+        <div class="panel-header">
+            <h2><strong>List</strong></h2>
+            <div class="panel-tools" style="width: 300px">
+                <div class="form-group col-md-6">
+                    <p-calendar dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="2014:2030" readonlyInput="readonlyInput"
+                        dataType="string" [yearNavigator]="true" name="FromDate" [(ngModel)]="FromDate"></p-calendar>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="input-group">
+                        <p-calendar dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="2014:2030" readonlyInput="readonlyInput"
+                            dataType="string" name="ToDate" [(ngModel)]="ToDate"></p-calendar>
+                        <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="LoadData()"><i class="fa fa-search"></i></button>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-content">
+            <p-dataTable [value]="MenuCardList">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="MenuCardDate" header="Date" [style]="{'width':'75px','text-align':'center'}"></p-column>
+                <p-column field="MenuCard" header="Menu card"></p-column>
+                <p-column header="Option" [style]="{'width':'120px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" style="width: 65px;" class="btn btn-sm btn-blue" *ngIf="!data.IsApproved && !data.Iscancelled" tooltipPlacement="left"
+                            (click)="btnApproval_Click(data)" tooltip="Approve">Approve
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" *ngIf="!data.IsApproved &&!data.Iscancelled" tooltipPlacement="left"
+                            (click)="btnCancel_Click(data)" tooltip="Cancel"><i class="icon-rounded-cross"></i>
+                        </button>
+                        <label class="btn btn-sm btn-success" style="width: 105px;" *ngIf="data.IsApproved"> Approved</label>
+                        <label class="btn btn-sm btn-danger" style="width: 105px;" *ngIf="data.Iscancelled"> Cancelled</label>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+    </div>
+</div>
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmMenuCancel="ngForm" (ngSubmit)="frmMenuCancel.valid && btnMenuCancel_Click(frmMenuCancel)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Menu </strong>Cancellation({{mlmenuentry.MenuCard}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="mlmenuentry.CancelledReason" #CancelledReason="ngModel"
+                        required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmMenuCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

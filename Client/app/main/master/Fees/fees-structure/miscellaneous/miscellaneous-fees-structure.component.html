@@ -1,0 +1,92 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <form #frmFeesStructureEntry="ngForm" (ngSubmit)="frmFeesStructureEntry.valid && btnView_Click()" novalidate autocomplete="off">
+        <div class="col-md-4">
+            <div class="panel" id="pnMapData">
+                <div class="panel-header">
+                    <h2><strong>Fees Details</strong></h2>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Academic Year <span class="Validation">*</span></label>
+                            <select-guru [data]="AcademicYearData" [disabled]="!isViewMode" (valueChanged)="onAcademicYear_Changed($event.value)" [placeholder]="'::SELECT::'" name="ddlAcademicYear" [(ngModel)]="mlmisInfo.AcademicYearSysID" #ddlAcademicYear required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlAcademicYear.errors && frmFeesStructureEntry.submitted">
+                                    <div *ngIf="ddlAcademicYear.errors?.required">
+                                        Academic Year is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Class <span class="Validation">*</span></label>
+                            <select-guru [data]="ClassData" [disabled]="!isViewMode" (valueChanged)="ClassChange($event.value)" [placeholder]="'::SELECT::'" name="ClassSysID" [(ngModel)]="mlmisInfo.ClassSysID" #ClassSysID="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ClassSysID.errors && frmFeesStructureEntry.submitted">
+                                    <div *ngIf="ClassSysID.errors?.required">
+                                        Class is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Section <span class="Validation">*</span></label>
+                            <select-guru [data]="SectionData" [disabled]="!isViewMode" [placeholder]="'::SELECT::'
+                                   " name="SectionSysID" [(ngModel)]="mlmisInfo.SectionSysID" #SectionSysID="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="SectionSysID.errors && frmFeesStructureEntry.submitted">
+                                    <div *ngIf="SectionSysID.errors?.required">
+                                        Section is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <label *ngIf="!isViewMode && isApproved" class="btn btn-sm btn-success">Miscellaneous fees has been approved</label>
+                                <button type="submit" *ngIf="isViewMode" class="btn btn-sm btn-primary" tooltip="View" tooltipPlacement="top"><i class="fa fa-search"></i> </button>
+                                <button type="button" *ngIf="!isViewMode && !isApproved" class="btn btn-sm btn-primary" (click)="btnSave_click()">Map</button>
+                                <button type="button" *ngIf="!isViewMode" class="btn btn-sm btn-danger" (click)="BtnCancel_Click()">Cancel</button>
+                                <button type="button" *ngIf="isApproveMode" class="btn btn-sm btn-warning" (click)="btnGoback_Click()">Go Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <!--<div class="row col-md-offset-3">-->
+            <div class="panel" id="pnList">
+                <div class="panel-header">
+                    <h2><strong>Fees List</strong></h2>
+
+                </div>
+
+                <div class="panel-content">
+                    <p-dataTable [value]="CategoryData" [sortField]="'CategoryName'">
+                        <p-column header="#" [style]="{ 'width': '20px', 'text-align': 'center'}">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="CategoryName" header="Category Name"></p-column>
+                        <p-column header="Amount">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <input type="number" class="form-control" style="text-align : right" [(ngModel)]="data.Amount
+                                   " name="{{rowIndex + 1}}" />
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+
+            </div>
+        </div>
+
+
+    </form>
+</div>

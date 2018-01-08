@@ -1,0 +1,230 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="PanelList">
+        <div class="panel-header">
+            <h2><strong>Day Book List</strong></h2>
+            <div class="panel-tools" style="width:150px">
+                <select-guru [data]="dsAccountData" (valueChanged)="AccountTypeChanged($event)" [placeholder]="':: SELECT Account ::'" name="AccountSysID"
+                    [selectedvalue]="'1'" required>
+                </select-guru>
+            </div>
+            <div class="panel-content error-style">
+                <p-dataTable [value]="DayBookData.DayBookList">
+                    <p-header [style]="{'text-align': 'right'}">
+                        <div style="text-align:right !important"> {{DayBookData.Details.JournalDate | date:'dd/MM/yyyy'}} - {{AccountName}} - Opening Balane : {{DayBookData.OpeningBalance}}</div>
+                    </p-header>
+                    <p-column header="#" [style]="{ 'width': '25px', 'text-align': 'right'}">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="JournalNo" header="TransNo" [style]="{ 'width': '90px'}"></p-column>
+                    <p-column header="Transaction Date" [style]="{ 'width' : '140px'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important"> {{data.JournalDate | date:'dd/MM/yyyy'}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="Narration" header="Narration"></p-column>
+                    <p-column header="Credit" [style]="{ 'width' : '90px'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important"> {{data.Credit | number:'1.2-2'}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column header="Debit" [style]="{ 'width' : '90px'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important"> {{data.Debit | number:'1.2-2'}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-footerColumnGroup>
+                        <p-row>
+                            <p-column footer="Totals:" colspan="4" [style]="{'text-align': 'right'}"></p-column>
+                            <p-column>
+                                <ng-template let-data pTemplate="footer">
+                                    <div class="" style="text-align:right !important; font-weight: 700; ">
+                                        {{(Credit) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                            <p-column>
+                                <ng-template let-data pTemplate="footer">
+                                    <div class="" style="text-align:right !important; font-weight: 700; ">
+                                        {{(Debit) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+
+                            </p-column>
+                        </p-row>
+                        <p-row>
+                            <p-column footer="Closing Balance:" colspan="4" [style]="{'text-align': 'right'}">
+                            </p-column>
+                            <p-column colspan="2">
+                                <ng-template let-data pTemplate="footer">
+                                    <div class="" style="text-align:center !important; font-weight: 700; ">
+                                        {{(DayBookData.OpeningBalance+(Credit - Debit)) | currency:'INR':true:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                        </p-row>
+                    </p-footerColumnGroup>
+
+                </p-dataTable>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button class="btn btn-sm btn-success" type="button" name="btnDayBook" (click)="btnClose_Click()"> DayBook Close</button>
+                            <button class="btn btn-sm btn-danger" type="button" name="btnClose" (click)="btnCancel_Click()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+    <modal #mdDenomination [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+        <form #frmDenomination="ngForm" (ngSubmit)="frmDenomination.valid && btnBounce_Click()" novalidate autocomplete="off">
+            <modal-header>
+                <h1 class="modal-title"> <strong>Denomination</strong></h1>
+            </modal-header>
+            <modal-body class="error-style">
+                <div class="row">
+                    <div class="form-group col-md-5">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input autofocus type="number" class="form-control" name="TwoThousand" [(ngModel)]="DayBookCloseData.Trans.TwoThousand" #TwoThousand="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                     <div class="form-group col-md-5">
+                        <label class="control-label">FiveHundred<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input autofocus type="number" class="form-control" name="FiveHundred" [(ngModel)]="DayBookCloseData.Trans.FiveHundred" #FiveHundred="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label class="control-label">FiveHundred<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label class="control-label">OneHundred<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input autofocus type="number" class="form-control" name="OneHundred" [(ngModel)]="DayBookCloseData.Trans.OneHundred" #OneHundred="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label class="control-label">OneHundred<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label class="control-label">Fifty<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <input autofocus type="number" class="form-control" name="Fifty" [(ngModel)]="DayBookCloseData.Trans.Fifty" #Fifty="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Fifty<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                     <div class="form-group col-md-5">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input autofocus type="number" class="form-control" name="TwoThousand" [(ngModel)]="DayBookCloseData.Trans.TwoThousand" #TwoThousand="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                     <div class="form-group col-md-5">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input autofocus type="number" class="form-control" name="TwoThousand" [(ngModel)]="DayBookCloseData.Trans.TwoThousand" #TwoThousand="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                     <div class="form-group col-md-5">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input autofocus type="number" class="form-control" name="TwoThousand" [(ngModel)]="DayBookCloseData.Trans.TwoThousand" #TwoThousand="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                     <div class="form-group col-md-5">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input autofocus type="number" class="form-control" name="TwoThousand" [(ngModel)]="DayBookCloseData.Trans.TwoThousand" #TwoThousand="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                     <div class="form-group col-md-5">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">X<span class="Validation">*</span></label>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input autofocus type="number" class="form-control" name="TwoThousand" [(ngModel)]="DayBookCloseData.Trans.TwoThousand" #TwoThousand="ngModel"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">TwoThousand<span class="Validation">*</span></label>
+                    </div>
+                </div>
+            </modal-body>
+            <modal-footer>
+                <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+                <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdDenomination.close();">Close</button>
+            </modal-footer>
+        </form>
+    </modal>-->

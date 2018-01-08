@@ -1,0 +1,107 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="col-md-6">
+        <form #frmTransportInfo="ngForm" (ngSubmit)="frmTransportInfo.valid && frmFeeStruct_Submit()" novalidate autocomplete="off">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2><strong>Trasnport Info</strong></h2>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Acadamic Year <span class="important">*</span></label>
+                            <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" name="ddlAcademicYear" [(ngModel)]="mlTransportInfo.AcademicYearSysID"
+                                [selectedvalue]="AcademicYearSysID" [disabled]="!isSearchMode || isApproveMode" #ddlAcademicYear="ngModel"
+                                required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlAcademicYear.errors && frmTransportInfo.submitted">
+                                    <div *ngIf="ddlAcademicYear.errors?.required">
+                                        Acadamic Year is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Route <span class="important">*</span></label>
+                            <select-guru [data]="dsRoute" [placeholder]="'::SELECT::'" name="ddlRoute" [(ngModel)]="mlTransportInfo.RouteSysID" #ddlRoute="ngModel"
+                                [disabled]="!isSearchMode" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlRoute.errors && frmTransportInfo.submitted">
+                                    <div *ngIf="ddlRoute.errors?.required">
+                                        Route is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Vehicle <span class="important">*</span></label>
+                            <select-guru [data]="dsVehicle" [placeholder]="'::SELECT::'" name="ddlVehicle" [(ngModel)]="mlTransportInfo.VehicleSysID"
+                                [disabled]="!isSearchMode" #ddlVehicle="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlVehicle.errors && frmTransportInfo.submitted">
+                                    <div *ngIf="ddlVehicle.errors?.required">
+                                        Vehicle is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Trip <span class="important">*</span></label>
+                            <select-guru [data]="dsTrip" [placeholder]="'::SELECT::'" name="ddlTrip" [(ngModel)]="mlTransportInfo.TripSysID" [disabled]="!isSearchMode"
+                                #ddlTrip="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlTrip.errors && frmTransportInfo.submitted">
+                                    <div *ngIf="ddlTrip.errors?.required">
+                                        Trip is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="pull-right">
+                                <label *ngIf="!isSearchMode && isApproved" class="btn btn-sm btn-success">Trasnport fees has been approved</label>
+                                <button type="submit" *ngIf="isSearchMode" class="btn btn-sm btn-primary" tooltip="View" tooltipPlacement="top"><i class="fa fa-search"></i> </button>
+                                <button type="button" *ngIf="!isSearchMode && !isApproved" class="btn btn-sm btn-primary" (click)="btnFeeStructSave_Click()">Save</button>
+                                <button type="button" *ngIf="!isSearchMode" class="btn btn-sm btn-danger" (click)="btnFeeStructCancel_Click()">Cancel</button>
+                                <button type="button" *ngIf="isApproveMode" class="btn btn-sm btn-warning" (click)="btnGoback_Click()">Go Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="panel" id="pnMapList">
+            <div class="panel-header">
+                <h2><strong>Stoppage Amount List</strong></h2>
+                <div class="panel-tools">
+                    <div class="input-group col-md-3 pull-right">
+                        <input type="text" [disabled]="isApproved" class="form-control text-right" name="txtAmount"
+                            placeholder="Amount" [(ngModel)]="mlTransportInfo.Amount" #txtAmount="ngModel" maxlength="7">
+                        <span class="input-group-addon btn btn-sm btn-warning" (click)="!isApproved && txtAmount_Change(mlTransportInfo.Amount)"><i class=" fa fa-refresh "></i> </span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel-content ">
+                <p-dataTable [value]="dsTransportFeeAmountLsit" [(selection)]="Selected_dsTransportFeeAmountLsit" [rows]="30" [paginator]="true"
+                    [pageLinks]="3" [rowsPerPageOptions]="[5,10,20,30,40,50]" scrollable="true" scrollHeight="400px">
+                    <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                    <p-column field="StopName" header="Stoppage" [filter]="true" [sortable]="true"></p-column>
+                    <p-column header="Amount" [filter]="true" [sortable]="true">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <input type="text" class="form-control text-right" [disabled]="isApproved" [(ngModel)]="data.Amount
+                                " name="{{rowIndex + 1}}" />
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+    </div>
+</div>

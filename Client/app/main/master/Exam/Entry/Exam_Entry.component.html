@@ -1,0 +1,70 @@
+<div class="panel" id="pnExamMarkList" *ngIf="PanelList">
+    <div class="panel-header">
+        <h2><strong>List</strong></h2>
+    </div>
+    <div class="panel-content">
+        <div class="table-responsive" style="width:1016px; overflow: hidden">
+            <p-dataTable [value]="ExamMarkList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" scrollable="true" scrollHeight="380px">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="ExamName" header="Exam" [filter]="true" [sortable]="true">
+                </p-column>
+                <p-column header="Options" [style]="{'width':'90px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <button class="btn btn-sm btn-danger" tooltip="Cancel Exam" tooltipPlacement="left" (click)="btnDelete_Click(data)">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-warning" tooltip="Edit Exam" (click)="btnEdit_Click(data)" tooltipPlacement="left">
+                            <i class="fa fa-pencil-square-o"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pull-right">
+                    <button class="btn btn-primary" name="btnAdd" tooltip="Add Exam" tooltipPlacement="left" (click)="btnAdd_Click()" type="button"><i class="fa fa-plus-circle"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<modal #mdExamEntry [keyboard]="false" [backdrop]="'static'" id="CategoryModal" cssClass="modal-sm">
+    <form #frmExamEntry="ngForm" (ngSubmit)="frmExamEntry.valid && btnSave_click(frmExamEntry.value,frmExamEntry)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Entry</strong> ({{(isEditMode)? mlExam.ExamName: 'New' }})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Exam Name</label>
+                    <input type="text" class="form-control" name="txtExamName" [(ngModel)]="mlExam.ExamName" #txtExamName="ngModel" maxlength="50" required/>
+                    <div class="error-message">
+                        <div *ngIf="txtExamName.errors && frmExamEntry.submitted">
+                            <div *ngIf="txtExamName.errors?.required">
+                                Exam is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </modal-body>
+        <modal-footer>
+
+            <button type="submit" name="btnSaveMenu" class="btn btn-success">{{isEditMode ? 'Update': 'Save' }}</button>
+            <button type="button" name="btnCloseMenuEntry" class="btn btn-danger" (click)="mdExamEntry.close(); frmExamEntry.resetForm();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

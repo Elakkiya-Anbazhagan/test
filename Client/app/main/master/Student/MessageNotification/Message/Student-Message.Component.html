@@ -1,0 +1,128 @@
+<div class="animated fadeInRight">
+    <div class="panel" id="pnList">
+        <div class="panel-header">
+            <h2><strong>Message Approval List</strong></h2>
+        </div>
+        <div class="panel-content">
+            <div class="row">
+                <p-dataTable [value]="MessageApprovalList" [(selection)]="SelectedMessage" [style]="{'width':'100%'}">
+                    <p-column [style]="{'width':'30px','text-align': 'center'}" selectionMode="multiple"></p-column>
+                    <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="Class" header="Class"></p-column>
+                    <p-column field="Section" header="Section"></p-column>
+                    <p-column field="Student" header="Student"></p-column>
+                    <p-column field="CategoryName" header="Category"></p-column>
+                    <p-column field="Title" header="Title" [style]="{'width':'35%'}"></p-column>
+                    <p-column styleClass="col-button" header="Options" [style]="{'width':'100px', 'text-align':'center'}">
+                        <ng-template let-data="rowData" pTemplate="body">
+                            <button type="button" class="btn btn-sm btn-primary" (click)="btnMessageEdit_Click(data)">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" (click)="btnMessageDelete_Click(data)" tooltip="Delete" tooltipPlacement="top">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button type="submit" name="btnMessageApprove" class="btn btn-success" (click)="btnMessageApprove_Click(SelectedMessage)">Approve</button>
+                        <button class="btn btn-md btn-primary" name="btnMessageAdd" (click)="btnAdd_click()" tooltip="Add" tooltipPlacement="top">
+                            <i class="fa fa-plus-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal #mdEntry [keyboard]="false" [backdrop]="'static'" [cssClass]="modal-lg" id="MessageModeModal">
+    <form #MessageForm="ngForm" (ngSubmit)="MessageForm.valid && btnSave_click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title">{{(IMessage.MessageSysID === "0")? "NEW " : "EDIT "}}<strong> MESSAGE</strong></h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="control-label">Class<span class="important">*</span></label>
+                    <select-guru [data]="ClassData" (valueChanged)="ddlClass_Change($event.value)" [dropdownParent]="'MessageModeModal'" [placeholder]="'::SELECT::'" name="ClassSysID" [(ngModel)]="IMessage.ClassSysID" #ClassSysID="ngModel" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="ClassSysID.errors && MessageForm.submitted">
+                            <div *ngIf="ClassSysID.errors?.required">
+                                Class is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Section<span class="important">*</span></label>
+                    <select-guru [data]="SectionData" (valueChanged)="ddlSection_Change($event.value)" [dropdownParent]="'MessageModeModal'" [placeholder]="'::SELECT::'" name="SectionSysID" [(ngModel)]="IMessage.SectionSysID" #SectionSysID="ngModel" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="SectionSysID.errors && MessageForm.submitted">
+                            <div *ngIf="SectionSysID.errors?.required">
+                                Section is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Student<span class="important">*</span></label>
+                    <select-guru [data]="StudentData" [dropdownParent]="'MessageModeModal'" [placeholder]="'::SELECT::'" [(ngModel)]="IMessage.StudentSysID" #StudentSysID="ngModel" name="StudentSysID" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="StudentSysID.errors && MessageForm.submitted">
+                            <div *ngIf="StudentSysID.errors?.required">
+                                Student is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Category<span class="important">*</span></label>
+                    <select-guru [data]="CategoryData" [dropdownParent]="'MessageModeModal'" [placeholder]="'::SELECT::'" [(ngModel)]="IMessage.CategorySysID" #CategorySysID="ngModel" name="CategorySysID" required></select-guru>
+                    <div class="error-message">
+                        <div *ngIf="CategorySysID.errors && MessageForm.submitted">
+                            <div *ngIf="CategorySysID.errors?.required">
+                                Category is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label">Title<span class="important">*</span></label>
+                    <input type="text" class="form-control" [(ngModel)]="IMessage.Title" #Title="ngModel" name="Title" required>
+                    <div class="error-message">
+                        <div *ngIf="Title.errors && MessageForm.submitted">
+                            <div *ngIf="Title.errors?.required">
+                                Title is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label">Message<span class="important">*</span></label>
+                    <textarea class="form-control" rows="5" style="width:100% !important;height: 100% !important;" [(ngModel)]="IMessage.Message" #Message="ngModel" name="Message" required></textarea>
+                    <div class="error-message">
+                        <div *ngIf="Message.errors && MessageForm.submitted">
+                            <div *ngIf="Message.errors?.required">
+                                Message is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveStudent" class="btn btn-success">{{(IMessage.MessageSysID === "0")? "Save" : "Update"}}</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdEntry.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

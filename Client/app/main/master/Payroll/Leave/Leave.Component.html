@@ -1,0 +1,183 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnStaffEntry" *ngIf="isListMode">
+            <div class="panel-header">
+                    <h2><strong>&nbsp;</strong></h2>
+                <div class="panel-tools" style="width: 500px">
+                    <form #frmLeaveInfo="ngForm" (ngSubmit)="frmLeaveInfo.valid && btnView_click()" novalidate autocomplete="off">
+                        <div class="form-group col-md-6">
+                            <p-calendar dateFormat="dd/mm/yy" [inputStyleClass]="((FromDate.errors && FromDate.errors?.required && frmLeaveInfo.submitted) ? 'validation_error' : '')"
+                                dataType="string" [(ngModel)]="mlSearchInfo.FromDate" #FromDate="ngModel" name="FromDate"
+                                required></p-calendar>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <p-calendar dateFormat="dd/mm/yy" [inputStyleClass]="(ToDate.errors && ToDate.errors?.required && frmLeaveInfo.submitted) ? 'validation_error' : ''"
+                                    dataType="string" name="ToDate" [(ngModel)]="mlSearchInfo.ToDate" #ToDate="ngModel" required></p-calendar>
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <div class="panel-content">
+            <p-dataTable [value]="LeaveList" [(selection)]="SelectedLeaveList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+                <p-column selectionMode="multiple" [style]="{'width':'25px'}"></p-column>
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="StaffID" header="StaffID" [style]="{'width':'60px'}"  filter="true" filterMatchMode="contains"></p-column>
+                <p-column field="StaffName" header="Name"  filter="true" filterMatchMode="contains"></p-column>
+                <p-column field="FromDate" header="From Date" [style]="{'width':'75px','text-align':'center'}"></p-column>
+                <p-column field="ToDate" header="ToDate" [style]="{'width':'75px','text-align':'center'}"></p-column>
+                <p-column field="NoOfDays" header="NoOfDays" [style]="{'width':'65px','text-align':'center'}"></p-column>
+                <p-column field="Reason" header="Reason"></p-column>
+                <p-column field="StatusName" header="Status" [style]="{'width':'130px'}"></p-column>
+                <p-column header="Option" [style]="{'width':'140px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                            <button type="button" class="btn btn-sm btn-primary" tooltip="Approve" tooltipPlacement="top" (click)="btnApprove_Click(data)" *ngIf="isAllowApprove && !data.IsApproved"> Approve
+                            </button>
+                            <label class="btn btn-sm btn-success" *ngIf="data.IsApproved">Approved</label>
+                            <button type="button" class="btn btn-sm btn-danger" tooltip="Delete" tooltipPlacement="top" (click)="btnDelete_Click(data)"  *ngIf="isAllowDelete">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" tooltip="Add" tooltipPlacement="left" name="btnAdd" type="button" (click)="btnAdd_Click()" *ngIf="isAllowAdd"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" *ngIf="!isListMode">
+        <div class="panel" id="pnEntry">
+            <form #frmStaffLeave="ngForm" (submit)="frmStaffLeave.valid && btnSave_Click()" novalidate autocomplete="off">
+                <div class="panel-header">
+                    <h2><strong>Leave Details</strong></h2>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Staff Name<span class="important">*</span></label>
+                            <select-guru [data]="StaffData" [disabled]="showGoBack" (valueChanged)="Staff_Change($event)" [placeholder]="'::SELECT::'" name="StaffSysID" [(ngModel)]="LeaveData.StaffSysID" #StaffSysID="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="StaffSysID.errors && frmStaffLeave.submitted">
+                                    <div *ngIf="StaffSysID.errors?.required">
+                                        Staff Name is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Leave Type<span class="important">*</span></label>
+                            <select-guru [data]="TypeData" (valueChanged)="Leave_Change($event)" [placeholder]="'::SELECT::'" name="StatusSysID" [(ngModel)]="LeaveData.StatusSysID" #StatusSysID="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="StatusSysID.errors && frmStaffLeave.submitted">
+                                    <div *ngIf="StatusSysID.errors?.required">
+                                        Leave Type is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">From Date<span class="important">*</span></label>
+                            <p-calendar dateFormat="dd-mm-yy" [disabled]="showGoBack" dataType="string" showIcon="true" name="FromDate" [(ngModel)]="LeaveData.FromDate" #FromDate="ngModel" required></p-calendar>
+                            <div class="error-message">
+                                <div *ngIf="FromDate.errors && frmStaffLeave.submitted">
+                                    <div *ngIf="FromDate.errors?.required">
+                                        From Date is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">To Date<span class="important">*</span></label>
+                            <p-calendar dateFormat="dd-mm-yy" [disabled]="showGoBack" dataType="string" showIcon="true" name="ToDate" [(ngModel)]="LeaveData.ToDate" #ToDate="ngModel" required></p-calendar>
+                            <div class="error-message">
+                                <div *ngIf="ToDate.errors && frmStaffLeave.submitted">
+                                    <div *ngIf="ToDate.errors?.required">
+                                        To Date is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Meridian<span class="important">*</span></label>
+                            <select-guru [data]="MeridianData" (valueChanged)="Meridian_Change($event)" [placeholder]="'::SELECT::'" name="MeridianSysID" [(ngModel)]="LeaveData.MeridianSysID" #MeridianSysID="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="MeridianSysID.errors && frmStaffLeave.submitted">
+                                    <div *ngIf="MeridianSysID.errors?.required">
+                                        Meridian is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Reason</label>
+                            <textarea rows="5" style="width:100% !important;height: 100% !important;" name="Reason" [(ngModel)]="LeaveData.Reason" #Reason="ngModel" maxlength="250" required></textarea>
+                            <div class="error-message">
+                                <div *ngIf="Reason.errors && frmStaffLeave.submitted">
+                                    <div *ngIf="Reason.errors?.required">
+                                        Reason is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                <button type="button" class="btn btn-sm btn-danger" *ngIf="!showGoBack" (click)="btnCancel_Click()">Cancel</button>
+                                <button type="button" class="btn btn-sm btn-danger" *ngIf="showGoBack" (click)="btnGoBack_Click()">GoBack</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6" *ngIf="isPaidMode">
+        <div class="panel" id="pnDetail">
+            <div class="panel-header">
+                <h2><strong>Available Leave Details</strong></h2>
+            </div>
+            <div class="panel-content error-style">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">No Of EL <span class="important">*</span></label>
+                        <input type="text" [disabled]="true" class="form-control" name="NoOfLeaveEL" [(ngModel)]="LeaveDetails.NoOfLeaveEL" #NoOfLeaveEL="ngModel" />
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Balance EL <span class="important">*</span></label>
+                        <input type="text" [disabled]="true" class="form-control" name="BalanceEL" [(ngModel)]="LeaveDetails.BalanceEL" #BalanceEL="ngModel" />
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">No Of CL <span class="important">*</span></label>
+                        <input type="text" [disabled]="true" class="form-control" name="NoOfLeaveCL" [(ngModel)]="LeaveDetails.NoOfLeaveCL" #NoOfLeaveCL="ngModel" />
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Balance CL <span class="important">*</span></label>
+                        <input type="text" [disabled]="true" class="form-control" name="BalanceCL" [(ngModel)]="LeaveDetails.BalanceCL" #BalanceCL="ngModel" />
+                        <div class="error-message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

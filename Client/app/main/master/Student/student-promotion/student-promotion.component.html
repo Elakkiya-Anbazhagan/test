@@ -1,0 +1,151 @@
+<form #frmPromotionEntry="ngForm" (ngSubmit)="frmPromotionEntry.valid && frmPromotion_Submit(frmPromotionEntry)" novalidate
+    autocomplete="off">
+    <div class="=row">
+        <!-- PROMOTE FROM -->
+
+        <div class="col-md-6">
+            <div class="panel" id="pnPrvYrSudentInfo">
+                <div class="panel-header">
+                    <h2><strong>Promote From</strong></h2>
+                    <div class="panel-tools error-style" style='width: 120px;'>
+                        <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" (valueChanged)="AcademicYear_SelectedIndexChange($event,'from')"
+                            [(ngModel)]="PromoteFrom.AcademicYearSysID" name="ddlPrvYrAcademicYear" [disabled]="!feeaprove" #ddlPrvYrAcademicYear="ngModel"
+                            required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="ddlPrvYrAcademicYear.errors && frmPromotionEntry.submitted">
+                                <div *ngIf="ddlPrvYrAcademicYear.errors?.required">
+                                    Please select academic year
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Class<span class="important">*</span></label>
+                            <select-guru [data]="dsPrvYrClass" [placeholder]="'::SELECT::'" (valueChanged)="Class_SelectedIndexChange($event,'from')"
+                                name="ddlPrvYrClass" [(ngModel)]="PromoteFrom.ClassSysID" [disabled]="!feeaprove" #ddlPrvYrClass="ngModel"
+                                required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlPrvYrClass.errors && frmPromotionEntry.submitted">
+                                    <div *ngIf="ddlPrvYrClass.errors?.required">
+                                        Please select prv. year class
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Section<span class="important">*</span></label>
+                            <select-guru [data]="dsPrvYrSection" [placeholder]="'::SELECT::'" (valueChanged)="Section_SelectedIndexChange($event,'from')"
+                                name="ddlPrvYrSection" [(ngModel)]="PromoteFrom.SectionSysID" [disabled]="!feeaprove" #ddlPrvYrSection="ngModel"
+                                required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlPrvYrSection.errors && frmPromotionEntry.submitted">
+                                    <div *ngIf="ddlPrvYrSection.errors?.required">
+                                        Please select prv. year section
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive" style="width:450px; overflow: hidden">
+                                <p-dataTable [value]="prvYrStudentList" selectionMode="multiple" [(selection)]="prvYrSelectedStudentList" [responsive]="true"
+                                    [rows]="30" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" scrollable="true"
+                                    scrollHeight="380px">
+                                    <p-column selectionMode="multiple" [style]="{ 'width': '20px', 'text-align': 'center'}"></p-column>
+                                    <p-column [style]="{ 'width': '25px', 'text-align': 'center'}" header="#">
+                                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                                        </ng-template>
+                                    </p-column>
+                                    <p-column field="AdmissionNo" header="Admission No" [style]="{'width':'100px'}" [filter]="true" [sortable]="true"></p-column>
+                                    <p-column field="StudentName" header="Student Name" [style]="{'width':'130px'}" [filter]="true" [sortable]="true"></p-column>
+                                </p-dataTable>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button class="btn btn-sm btn-primary" type="submit" [disabled]="!feeaprove" name="btnPromote">Promote</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PROMOTE TO -->
+
+        <div class="col-md-6">
+            <div class="panel" id="pnCurYrSudentInfo">
+                <div class="panel-header">
+                    <h2><strong>Promote To</strong></h2>
+                    <div class="panel-tools error-style" style='width: 120px;'>
+                        <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" [disabled]="isCurYrAcademicYrDisabled" (valueChanged)="AcademicYear_SelectedIndexChange($event, 'to')"
+                            [selectedvalue]="ActiveAcademicYear" [disabled]="isPrvYrAcademicYrDisabled" [(ngModel)]="PromoteTo.AcademicYearSysID"
+                            name="ddlCurYrAcademicYear" required></select-guru>
+                    </div>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Class<span class="important">*</span></label>
+                            <select-guru [data]="dsCurYrClass" [placeholder]="'::SELECT::'" (valueChanged)="Class_SelectedIndexChange($event, 'to')"
+                                name="ddlCurYrClass" [(ngModel)]="PromoteTo.ClassSysID" [disabled]="!feeaprove" #ddlCurYrClass="ngModel"
+                                required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlCurYrClass.errors && frmPromotionEntry.submitted">
+                                    <div *ngIf="ddlCurYrClass.errors?.required">
+                                        Please select cur. year class
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Section<span class="important">*</span></label>
+                            <select-guru [data]="dsCurYrSection" [placeholder]="'::SELECT::'" (valueChanged)="Section_SelectedIndexChange($event, 'to')"
+                                [disabled]="!feeaprove" name="ddlCurYrSection" [(ngModel)]="PromoteTo.SectionSysID" #ddlCurYrSection="ngModel"
+                                required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlCurYrSection.errors && frmPromotionEntry.submitted">
+                                    <div *ngIf="ddlCurYrSection.errors?.required">
+                                        Please select cur. year section
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive" style="width:450px; overflow: hidden">
+                                <p-dataTable [value]="curYrStudentList" [responsive]="true" [rows]="30" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]"
+                                    scrollable="true" scrollHeight="380px">
+                                    <p-column [style]="{ 'width': '10px', 'text-align': 'center'}" header="#">
+                                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                                        </ng-template>
+                                    </p-column>
+                                    <p-column field="StudentName" header="Student Name" [filter]="true" [sortable]="true" [style]="{'width':'130px'}"></p-column>
+                                </p-dataTable>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button class="btn btn-sm btn-primary" type="submit" style="display: none">De-Promote</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,171 @@
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel" id="pnOtherFeesList">
+                <div class="panel-header">
+                    <h2><strong> {{AccountName }} - {{AcademicYear}} - {{FeeName}} LIST</strong></h2>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="OtherFeeData" [tableStyleClass]="'tbl-list-guru'">
+                        <p-column [style]="{ 'width': '30px', 'text-align': 'center'} " header="# ">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="CategoryName" header="Category Name"></p-column>
+                        <p-column field="FeeCategoryName" header="Type"></p-column>
+                        <p-column field="TotalAmount" header="Total" [style]="{'width' : '80px'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <div style="text-align:right !important"> {{data.TotalAmount | number:'1.2-2'}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="PaidAmount" header="Paid" [style]="{'width' : '80px'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <div style="text-align:right !important"> {{data.PaidAmount | number:'1.2-2'}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="Receivable" header="Receivable" [style]="{'width' : '120px'}">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <input type="number" class="form-control" style="text-align : right; height: 26px !important" [(ngModel)]="data.Receivable" name="{{rowIndex + 1}}" [disabled]="data.TotalAmount===data.PaidAmount" />
+                            </ng-template>
+                        </p-column>
+                        <p-column field="BalAmount" header="Balance" [style]="{'width' : '80px'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <div style="text-align:right !important">
+                                    {{(data.TotalAmount-data.PaidAmount-data.Receivable) | currency:'INR':true:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-footerColumnGroup>
+                            <p-row>
+                                <p-column footer="Totals:" colspan="3"></p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculateTotal()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculatePaid()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculateReceivable()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculateBalance()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                            </p-row>
+                        </p-footerColumnGroup>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel" id="PanelEntry">
+                <form #frmPaymentInfo="ngForm" (ngSubmit)="frmPaymentInfo.valid && frmPaymentInfo_submit(frmPaymentInfo)" novalidate autocomplete="off">
+                    <div class="panel-header">
+                        <h2><strong>Payment Info</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Receipt Date<span class="important">*</span></label>
+                                    <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="ReceiptDate" [(ngModel)]="Receiptdate" [disabled]="true" #ReceiptDate="ngModel" required></p-calendar>
+                                    <div class="error-message">
+                                        <div *ngIf="ReceiptDate.errors && frmPaymentInfo.submitted">
+                                            <div *ngIf="ReceiptDate.errors?.required">
+                                                Receipt Date No is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label class="control-label">Payment Type<span class="important">*</span></label>
+                                    <select-guru [data]="dsPaymentType" (valueChanged)="dsPaymentTypeDataChanged($event)" [allowClear]="true" [placeholder]="'::SELECT::'" name="ddlPaymentType" [(ngModel)]="PaymentData.PaymodeTypeSysID" #ddlPaymentType="ngModel" required></select-guru>
+                                    <div class="error-message">
+                                        <div *ngIf="ddlPaymentType.errors && frmPaymentInfo.submitted">
+                                            <div *ngIf="ddlPaymentType.errors?.required">
+                                                Payment Type is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Transaction No.<span class="important">*</span></label>
+                                    <input type="text" class="form-control" name="TransactionNo" [(ngModel)]="PaymentData.TransactionNo" #TransactionNo="ngModel" [disabled]="paymentDisabled" required/>
+                                    <div class="error-message">
+                                        <div *ngIf="TransactionNo.errors && frmPaymentInfo.submitted && !paymentDisabled">
+                                            <div *ngIf="TransactionNo.errors?.required">
+                                                Transaction No is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Transaction Date<span class="important">*</span></label>
+                                    <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="TransactionDate" [(ngModel)]="PaymentData.TransactionDate" [minDate]="minDate" [disabled]="paymentDisabled" #TransactionDate="ngModel" required></p-calendar>
+                                    <div class="error-message">
+                                        <div *ngIf="TransactionDate.errors && frmPaymentInfo.submitted && !paymentDisabled">
+                                            <div *ngIf="TransactionDate.errors?.required">
+                                                Transaction Date No is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Bank Name<span class="important">*</span></label>
+                                    <select-guru [data]="dsBankName" [allowClear]="true" [placeholder]="'::SELECT::'" [(ngModel)]="PaymentData.TransactionBankSysID" #BankSysID="ngModel" [disabled]="paymentDisabled" name="BankSysID" required></select-guru>
+                                    <div class="error-message">
+                                        <div *ngIf="BankSysID.errors && frmPaymentInfo.submitted && !paymentDisabled">
+                                            <div *ngIf="BankSysID.errors?.required">
+                                                Bank is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Company Bank Name<span class="important">*</span></label>
+                                    <select-guru [data]="dsCompanyBankName" [allowClear]="true" [placeholder]="'::SELECT::'" [(ngModel)]="PaymentData.LedgerSysID" #LedgerSysID="ngModel" [disabled]="paymentDisabled" name="LedgerSysID" required></select-guru>
+                                    <div class="error-message">
+                                        <div *ngIf="LedgerSysID.errors && frmPaymentInfo.submitted && !paymentDisabled">
+                                            <div *ngIf="LedgerSysID.errors?.required">
+                                                Company Bank is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Amount <span class="important">*</span></label>
+                                    <input type="number" [disabled]="true" class="form-control text-right" name="txtAmount" [(ngModel)]="PaymentData.Amount" #txtAmount="ngModel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="pull-right">
+                                <button type="submit" class="btn btn-sm btn-success" name="frmOtherFeecollection_save">Save</button>
+                                <button type="button" (click)="BtnCancelOtherFeeCollection_Click()" class="btn btn-sm btn-danger" name="btnOtherCancelEntry">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

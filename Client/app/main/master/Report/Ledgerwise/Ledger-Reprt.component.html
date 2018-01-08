@@ -1,0 +1,65 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-12">
+            <form #frmLedgerEntry="ngForm" (ngSubmit)="frmLedgerEntry.valid && btnSave_click(frmLedgerEntry.value)" novalidate autocomplete="off">
+                <div class=" panel " id="pnCategoryList ">
+                    <div class="panel-header ">
+                        <h2><strong>Ledger Info</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row ">
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Ledger <span class="important">*</span></label>
+                                <select-guru [data]="dsLedgerdata" [placeholder]="'::SELECT::'" name="ddlLedger" [(ngModel)]="LedgerData.LedgerSysID" #ddlLedger="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlLedger.errors && frmLedgerEntry.submitted">
+                                        <div *ngIf="ddlLedger.errors?.required">
+                                            Ledger is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">From Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="FromDate" required [(ngModel)]="LedgerData.FromDate"
+                                    #FromDate="ngModel"></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="FromDate.errors && frmLedgerEntry.submitted">
+                                        <div *ngIf="FromDate.errors?.required">
+                                            From Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">To Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="ToDate" required [(ngModel)]="LedgerData.ToDate"
+                                    #ToDate="ngModel"></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="ToDate.errors && frmLedgerEntry.submitted">
+                                        <div *ngIf="ToDate.errors?.required">
+                                            To Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-sm btn-blue">View</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div style="height:200px;"></div>
+        </div>
+    </div>
+</div>

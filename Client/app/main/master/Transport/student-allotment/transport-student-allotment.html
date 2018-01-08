@@ -1,0 +1,179 @@
+<div class="">
+    <div class="col-md-6">
+        <form #frmFeeStruct="ngForm" (ngSubmit)="frmFeeStruct.valid && frmFeeStruct_Submit()" novalidate autocomplete="off">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2><strong>Trasnport Info</strong></h2>
+                </div>
+                <div class="panel-content error-style">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Acadamic Year <span class="important">*</span></label>
+                            <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" name="ddlAcademicYear" [(ngModel)]="mlTransportInfo.AcademicYearSysID" (valueChanged)="loadRouteList($event)" [selectedvalue]="AcademicYearSysID" [disabled]="!isSearchMode" #ddlAcademicYear="ngModel"
+                                required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlAcademicYear.errors && frmFeeStruct.submitted">
+                                    <div *ngIf="ddlAcademicYear.errors?.required">
+                                        Acadamic Year is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Route <span class="important">*</span></label>
+                            <select-guru [data]="dsRoute" [placeholder]="'::SELECT::'" name="ddlRoute" [(ngModel)]="mlTransportInfo.RouteSysID" #ddlRoute="ngModel" (valueChanged)="loadStoppageList($event, ddlAcademicYear)" [disabled]="!isSearchMode" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlRoute.errors && frmFeeStruct.submitted">
+                                    <div *ngIf="ddlRoute.errors?.required">
+                                        Route is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Stoppage <span class="important">*</span></label>
+                            <select-guru [data]="dsStoppage" [placeholder]="'::SELECT::'" name="ddlStoppage" [(ngModel)]="mlTransportInfo.StopSysID" [disabled]="!isSearchMode" (valueChanged)="loadVehicleList($event, ddlAcademicYear, ddlRoute)" #ddlStoppage="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlStoppage.errors && frmFeeStruct.submitted">
+                                    <div *ngIf="ddlStoppage.errors?.required">
+                                        Vehicle is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Vehicle <span class="important">*</span></label>
+                            <select-guru [data]="dsVehicle" [placeholder]="'::SELECT::'" name="ddlVehicle" [(ngModel)]="mlTransportInfo.VehicleSysID" (valueChanged)="loadTripList($event.value, ddlStoppage, ddlAcademicYear, ddlRoute)" [selectedvalue]="VehicleSysID" [disabled]="!isSearchMode"
+                                #ddlVehicle="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlVehicle.errors && frmFeeStruct.submitted">
+                                    <div *ngIf="ddlVehicle.errors?.required">
+                                        Vehicle is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Trip <span class="important">*</span></label>
+                            <select-guru [data]="dsTrip" [placeholder]="'::SELECT::'" name="ddlTrip" [(ngModel)]="mlTransportInfo.TripSysID" [disabled]="!isSearchMode" [selectedvalue]="TripSysID" #ddlTrip="ngModel" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlTrip.errors && frmFeeStruct.submitted">
+                                    <div *ngIf="ddlTrip.errors?.required">
+                                        Trip is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12 pull-right">
+                            <div class="pull-right">
+                                <!--<button class="btn btn-sm btn-primary"><i class="fa fa-search" ></i> Show Student</button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-header">
+                <h2><strong>Student Info</strong></h2>
+            </div>
+            <div class="panel-content">
+                <p-dataTable [value]="dsAllotedStudentList" scrollable="true" scrollHeight="350px" [tableStyleClass]="'tbl-list-guru'">
+                    <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="AdmissionNo" header="Adm.No." [style]="{'width': '75px'}"></p-column>
+                    <p-column field="StudentName" header="Student"></p-column>
+                    <p-column field="ClassName" header="Class" [style]="{'width': '75px'}"></p-column>
+                    <p-column field="SectionName" header="Section" [style]="{'width': '75px'}"></p-column>
+                    <p-column [style]="{'width':'50px','text-align':'center'}" header="Option">
+                        <ng-template let-data="rowData" pTemplate="body">
+                            <button class="btn btn-sm btn-success" tooltip="InActive" tooltipPlacement="left" *ngIf="data.IsActive" (click)="btnInActive_click(data)"><i class="fa fa-lock"></i></button>
+                            <button class="btn btn-sm btn-danger" tooltip="Active" tooltipPlacement="left" *ngIf="!data.IsActive" (click)="btnActive_click(data)"><i class="fa fa-lock"></i></button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 pull-right">
+                        <div class="pull-right">
+                            <button class="btn btn-sm btn-primary" (click)="LoadStudentList()"><i class="fa fa-search" ></i> Show Student</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<modal #mdStudentList [keyboard]="false" [backdrop]="'static'">
+    <form #frmStudentList="ngForm" (ngSubmit)="btnMap_click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Student</strong> List</h1>
+        </modal-header>
+        <modal-body>
+            <p-dataTable [value]="dsUnAllotedStudentList" [(selection)]="dsUnAllotedStudentListSelected" [responsive]="true" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" scrollable="true" scrollHeight="250px" #dt>
+                <p-column [style]="{'width':'28px'}" selectionMode="multiple"></p-column>
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="AdmissionNo" header="Adm. No." [style]="{'width':'120px'}" [filter]="true" [sortable]="true"></p-column>
+                <p-column field="StudentName" header="Student" [filter]="true" [style]="{'width':'220px'}" [sortable]="true"></p-column>
+                <p-column field="ClassName" header="Class" [style]="{'width':'120px'}" [filter]="true" [sortable]="true">
+                    <ng-template pTemplate="filter" let-col>
+                        <p-dropdown [options]="dsClassFilter" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+                    </ng-template>
+                </p-column>
+                <p-column field="SectionName" header="Section" [style]="{'width':'120px'}" [filter]="true" [sortable]="true">
+                    <ng-template pTemplate="filter" let-col>
+                        <p-dropdown [options]="dsSectionFilter" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveTerm" class="btn btn-success">Map</button>
+            <button type="button" name="btnCloseTermEntry" class="btn btn-danger" (click)="mdStudentList.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+
+
+<modal #mdInActive [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmInActiveCancel="ngForm" (ngSubmit)="frmInActiveCancel.valid && btnInActive_save_click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>InActive </strong>({{dsAllotedStudentInactive.StudentName}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="InActiveReason" [(ngModel)]="dsAllotedStudentInactive.InActiveReason" #InActiveReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="InActiveReason.errors &&  frmInActiveCancel.submitted">
+                            <div *ngIf="InActiveReason.errors?.required">
+                                InActiveReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdInActive.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

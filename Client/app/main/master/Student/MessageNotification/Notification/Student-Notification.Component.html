@@ -1,0 +1,59 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnCategoryList">
+        <div class="panel-header">
+            <h2><strong>List</strong></h2>
+        </div>
+        <div class="panel-content">
+            <p-dataTable [value]="CategoryList">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="CategoryName" header="Category"></p-column>
+                <p-column header="Option" [style]="{'width':'60px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="top" (click)="btnEdit_Click(data)">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" tooltip="Add" tooltipPlacement="left" name="btnAdd" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<modal #mdCategoryEntry [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmCategoryEntry="ngForm" (ngSubmit)="frmCategoryEntry.valid && btnSave_click(frmCategoryEntry.value, frmCategoryEntry)" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"><strong>Entry</strong> ({{(isEditMode)? category.CategoryName: 'New' }})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Category <span class="important">*</span></label>
+                    <input autofocus type="text" class="form-control toUppercase" name="CategoryName" [(ngModel)]="category.CategoryName" #CategoryName="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CategoryName.errors && frmCategoryEntry.submitted">
+                            <div *ngIf="CategoryName.errors?.required">
+                                Category is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveCategory" class="btn btn-success">{{(isEditMode ? 'Update': 'Save')}}</button>
+            <button type="button" name="btnCloseCategoryEntry" class="btn btn-danger" (click)="mdCategoryEntry.close(); frmCategoryEntry.resetForm();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

@@ -1,0 +1,29 @@
+<section>
+    <systemic-sidebar-left></systemic-sidebar-left>
+    <div class="main-content">
+        <systemic-topbar></systemic-topbar>
+        <div class="page-content">
+            <div class="header">
+                <h2 style="font-size: 20px;">
+                    <strong>{{lib.PageTitle}}</strong></h2>
+                <div class="breadcrumb-wrapper">
+                    <ol class="breadcrumb">
+                        <li>
+                            <a [routerLink]="['/app']">School</a>
+                        </li>
+                        <li *ngFor="let url of UrlList; let i = index" [attr.data-index]="i">
+                            <a routerLink="{{url.link}}">{{url.name}}</a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <router-outlet></router-outlet>
+                    <div style="height: 200px !important;"></div>
+                </div>
+            </div>
+            <systemic-footer></systemic-footer>
+        </div>
+    </div>
+</section>

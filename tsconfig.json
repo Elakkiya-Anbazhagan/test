@@ -1,0 +1,50 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "noEmit": true,
+        "importHelpers": false,
+        "noEmitHelpers": false,
+        "noUnusedLocals": false,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "noImplicitReturns": true,
+        "baseUrl": ".",
+        "paths": {
+            "systemic/helper": ["Client/app/main/master/REVIEWED/helper"],
+            "systemic/service": ["Client/app/main/master/REVIEWED/service"]
+        },
+        "lib": [
+            "dom",
+            "es6"
+        ],
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "types": [
+            "hammerjs",
+            "jasmine",
+            "node",
+            "source-map",
+            "uglify-js",
+            "webpack"
+        ]
+    },
+    "exclude": [
+        "node_modules",
+        "dist",
+        "compiled"
+    ],
+    "compileOnSave": true,
+    "buildOnSave": true,
+    "plugins": [{
+        "name": "@angular/language-service"
+    }]
+}

@@ -1,0 +1,35 @@
+<div class="container" id="Login-block">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
+            <div class="account-wall" style="background: rgba(255, 255, 255, 0.24); border-radius: 5px;">
+                <i class="user-img icons-faces-users-03" style="position:inherit; top:0px"></i>
+                    <form class="form-signin" #frmLogin="ngForm"  (ngSubmit)="frmLogin.valid && btnLoginclick()" >
+                        <div class="append-icon form-group">
+                            <input autofocus="" class="form-control" name="Username" [(ngModel)]="login.Username" #Username="ngModel" 
+                                placeholder="UserName" required type="text" />
+                                <i class="icon-user"></i>
+                                <div *ngIf="Username.errors && (Username.dirty || frmLogin.submitted)" class="text-danger">
+                                    <div *ngIf="Username.errors?.required">
+                                        User Name is required
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="append-icon form-group">
+                        <input class="form-control" name="Password"  [(ngModel)]="login.Password" #Password="ngModel" placeholder="Password" 
+                            required type="password" />
+                            <i class="icon-lock"></i>
+                            <div *ngIf="Password.errors && (Password.dirty || frmLogin.submitted)" class="text-danger">
+                                <div *ngIf="Password.errors?.required">
+                                Password is required
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-lg btn-danger btn-block" type="submit">Submit</button>
+                    </form>
+            </div>
+    </div>
+    <p class="account-copyright">
+        <span>Copyright � {{Copyrightyear}}</span>
+        <span>Systemic Info Solution Pvt. Ltd.</span>.
+        <span>All rights reserved.</span></p>
+</div>

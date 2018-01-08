@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="admin-themes-lab">
+    <meta name="author" content="themes-lab">
+    <title>School Expert</title>
+    <base href="/" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.4.4/sweetalert2.min.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
+    <link href="/assets/css/theme.css" rel="stylesheet">
+    <link href="/assets/css/ui.css" rel="stylesheet">
+    <link href="/assets/css/layout.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/assets/plugins/primeng/themes/bootstrap/theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/plugins/primeng/primeng.min.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/plugins/noty/lib/noty.css" />
+    
+
+    @* Custom.css must be last stylesheet *@
+    <link href="/assets/css/custom.css" rel="stylesheet" />
+    <script src="/assets/plugins/modernizr/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+
+    <script src="/assets/plugins/jquery/jquery-3.1.0.min.js"></script>
+    <script src="/assets/plugins/jquery/jquery-migrate-3.0.0.min.js"></script>
+    <script src="/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/assets/plugins/jquery-block-ui/jquery.blockUI.min.js"></script>
+    <script src="/assets/plugins/gsap/main-gsap.min.js"></script>
+    <script src="/assets/plugins/tether/js/tether.min.js"></script>
+    <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/plugins/appear/jquery.appear.js"></script>
+    <script src="/assets/plugins/jquery-cookies/jquery.cookies.min.js"></script> <!-- Jquery Cookies, for theme -->
+    <script src="/assets/plugins/inputmask/dist/jquery.inputmask.bundle.js"></script>
+    <script src="/assets/plugins/jquery-block-ui/jquery.blockUI.min.js"></script> <!-- simulate synchronous behavior when using AJAX -->
+    <script src="/assets/plugins/mcustom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script> <!-- Custom Scrollbar sidebar -->
+    <script src="/assets/plugins/bootstrap-dropdown/bootstrap-hover-dropdown.min.js"></script> <!-- Show Dropdown on Mouseover -->
+    <script src="/assets/plugins/retina/retina.min.js"></script> <!-- Retina Display -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.min.js"></script> <!-- Select Inputs -->
+    <script src="/assets/plugins/backstretch/backstretch.min.js"></script> <!-- Background Image -->
+    <script src="/assets/plugins/velocity/velocity.min.js"></script> <!-- Background Image -->
+    <script src="/assets/plugins/noty/lib/noty.min.js"></script> <!-- Background Image -->
+    <script src="/assets/plugins/stringfy/stringfy.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.4.4/sweetalert2.min.js"></script>
+    <script>
+        var HelloGuru;
+        var application = {};
+        application = {
+            Progress: {
+                Start: function() {
+                    try {
+                        $.blockUI({
+                            message: '<div class="sk-cube-grid">' +
+                                '<div class="sk-cube sk-cube1"></div>' +
+                                '<div class="sk-cube sk-cube2"></div>' +
+                                '<div class="sk-cube sk-cube3"></div>' +
+                                '<div class="sk-cube sk-cube4"></div>' +
+                                '<div class="sk-cube sk-cube5"></div>' +
+                                '<div class="sk-cube sk-cube6"></div>' +
+                                '<div class="sk-cube sk-cube7"></div>' +
+                                '<div class="sk-cube sk-cube8"></div>' +
+                                '<div class="sk-cube sk-cube9"></div>' +
+                                '</div>'
+                        });
+                    } catch (e) {
+                        console.log(e);
+                    }
+
+                },
+                Stop: function() {
+                    try {
+                        $.unblockUI.apply();
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    @RenderBody()
+
+
+    
+
+    <script src="/assets/plugins/tether/js/tether.min.js"></script>
+    <script src="/assets/plugins/typed/typed.js"></script>
+    <script src="/assets/js/application.js"></script> <!-- Main Application Script -->
+    <script src="/assets/js/layout.js"></script> <!-- Main Application Script -->
+</body>
+</html>

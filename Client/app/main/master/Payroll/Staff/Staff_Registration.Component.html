@@ -1,0 +1,435 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnStaffEntry" *ngIf="isListMode">
+        <div class="panel-content">
+            <p-dataTable [value]="StaffList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="StaffName" header="Name" filter="true" filterMatchMode="contains"></p-column>
+                <p-column field="StaffID" header="StaffID" [style]="{'width':'60px'}" filter="true" filterMatchMode="contains"></p-column>
+                <p-column field="ShiftName" header="Shift" [style]="{'width':'180px','text-align':'center'}"></p-column>
+                <p-column field="Department" header="Department" [style]="{'width':'95px'}"></p-column>
+                <p-column field="Designation" header="Designation" [style]="{'width':'95px'}"></p-column>
+                <p-column field="StaffType" header="StaffType" [style]="{'width':'95px'}"></p-column>
+                <p-column field="Salary" header="Salary" [style]="{'width':'85px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.Salary | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column header="Option" [style]="{'width':'130px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-blue" tooltip="Sync" tooltipPlacement="top" [disabled]="data.BioID===0" (click)="btnStaff_Device_Sync_Click(data)">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="top" (click)="btnEdit_Click(data)">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                        <button type="button" class="btn btn-sm btn-success" tooltip="Lock" tooltipPlacement="top" *ngIf="!data.Locked.IsLocked" (click)="btnLock_Click(data,frmStaffLock)">
+                        <i class="fa fa-unlock-alt"></i>
+                    </button>
+                        <button type="button" class="btn btn-sm btn-danger" tooltip="UnLock" tooltipPlacement="top" *ngIf="data.Locked.IsLocked" (click)="btnLock_Click(data,frmStaffLock)">
+                        <i class="fa fa-lock"></i>
+                    </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" name="btnAddDeviceStaff" type="button" (click)="btnAddDeviceStaff_Click()"><i class="fa fa-plus-circle"></i>  Add Staff From Device</button>
+                        <button class="btn btn-primary" name="btnAddStaff" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i>  Add New Staff</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form #frmStaffEntry="ngForm" (ngSubmit)="frmStaffEntry.valid && btnSave_click()" novalidate autocomplete="off" *ngIf="!isListMode">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel" id="pnStaffPersonalDetails">
+                    <div class="panel-header">
+                        <h2><strong>PERSONAL</strong> <strong>{{(EmployeeCode !== 0 ? (EmployeeCode) :'' )}} </strong> </h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-8">
+                                <label class="control-label">Staff Name <span class="important">*</span></label>
+                                <input type="text" class="form-control" name="StaffName" [(ngModel)]="StaffEntry.StaffName" #StaffName="ngModel" required />
+                                <div class="error-message">
+                                    <div *ngIf="StaffName.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="StaffName.errors?.required">
+                                            Staff Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Mobile <span class="important">*</span></label>
+                                <input type="text" class="form-control" name="MobileNo" [(ngModel)]="StaffEntry.MobileNo" #MobileNo="ngModel" pattern="^([7-9]{1})([0-9]{9})$" maxlength="10" required />
+                                <div class="error-message">
+                                    <div *ngIf="MobileNo.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="MobileNo.errors?.required">
+                                            Mobile No required
+                                        </div>
+                                        <div *ngIf="MobileNo.errors?.pattern">
+                                            Invalid Mobile No character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Join Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="JoinDate" [(ngModel)]="StaffEntry.JoinDate" #JoinDate="ngModel" required></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="JoinDate.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="JoinDate.errors?.required">
+                                            Join Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Staff Type <span class="important">*</span></label>
+                                <select-guru name="StaffTypeSysID" [(ngModel)]="StaffEntry.StaffTypeSysID" #StaffTypeSysID="ngModel" [data]="dsStaffType" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="StaffTypeSysID.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="StaffTypeSysID.errors?.required">
+                                            Staff Type is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Department <span class="important">*</span></label>
+                                <select-guru name="DepartmentSysID" [(ngModel)]="StaffEntry.DepartmentSysID" #DepartmentSysID="ngModel" [data]="dsDepartment" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="DepartmentSysID.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="DepartmentSysID.errors?.required">
+                                            Department is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Designation <span class="important">*</span></label>
+                                <select-guru (valueChanged)="Designation_Change($event.value)" name="DesignationSysID" [(ngModel)]="StaffEntry.DesignationSysID" #DesignationSysID="ngModel" [data]="dsDesignation" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="DesignationSysID.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="DesignationSysID.errors?.required">
+                                            Designation is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label class="control-label">Shift Name <span class="important">*</span></label>
+                                <select-guru name="ShiftSysID" [(ngModel)]="StaffEntry.ShiftSysID" #ShiftSysID="ngModel" [data]="dsShift" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ShiftSysID.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="ShiftSysID.errors?.required">
+                                            Shift Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel" id="pnStaffSalaryDetails">
+                    <div class="panel-header">
+                        <h2><strong>SALARY</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Account <span class="important">*</span></label>
+                                <select-guru name="AccountSysID" [(ngModel)]="StaffEntry.AccountSysID" #AccountSysID="ngModel" [data]="dsAccount" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="AccountSysID.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="AccountSysID.errors?.required">
+                                            Account is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Paymode <span class="important">*</span></label>
+                                <select-guru name="PayModeSysID" [(ngModel)]="StaffEntry.PayModeSysID" #PayModeSysID="ngModel" [data]="dsPayMode" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="PayModeSysID.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="PayModeSysID.errors?.required">
+                                            Paymode is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">BasicPay <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="BasicPay" [(ngModel)]="StaffEntry.BasicPay" #BasicPay="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="BasicPay.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="BasicPay.errors?.required">
+                                            BasicPay required
+                                        </div>
+                                        <div *ngIf="BasicPay.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">GradePay <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="GradePay" [(ngModel)]="StaffEntry.GradePay" #GradePay="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="GradePay.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="GradePay.errors?.required">
+                                            GradePay required
+                                        </div>
+                                        <div *ngIf="GradePay.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">DA <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="DA" [(ngModel)]="StaffEntry.DA" #DA="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="DA.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="DA.errors?.required">
+                                            DA required
+                                        </div>
+                                        <div *ngIf="DA.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">CA <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="CA" [(ngModel)]="StaffEntry.CA" #CA="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="CA.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="CA.errors?.required">
+                                            CA required
+                                        </div>
+                                        <div *ngIf="CA.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">HRA <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="HRA" [(ngModel)]="StaffEntry.HRA" #HRA="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="HRA.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="HRA.errors?.required">
+                                            HRA required
+                                        </div>
+                                        <div *ngIf="HRA.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">MA <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="MA" [(ngModel)]="StaffEntry.MA" #MA="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="MA.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="MA.errors?.required">
+                                            MA required
+                                        </div>
+                                        <div *ngIf="MA.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="panel" id="pnStaffDeducation">
+                    <div class="panel-header">
+                        <h2><strong>DEDUCATION</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-1">
+                                <label class="control-label">Leave</label>
+                                <div>
+                                    <p-checkbox binary="true" (onChange)="Chk_Leave_Change()" name="IsAllowLeaveReduction" [(ngModel)]="StaffEntry.IsAllowLeaveReduction" #IsAllowLeaveReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label class="control-label">Permission</label>
+                                <div>
+                                    <p-checkbox binary="true" (onChange)="Chk_Permission_Change()" name="IsAllowPermissionReduction" [(ngModel)]="StaffEntry.IsAllowPermissionReduction" #IsAllowPermissionReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label class="control-label">PF</label>
+                                <div>
+                                    <p-checkbox binary="true" name="IsAllowPFReduction" [(ngModel)]="StaffEntry.IsAllowPFReduction" #IsAllowPFReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                            <!-- <div class="form-group col-md-2">
+                                <label class="control-label">&nbsp;</label>
+                                <div>
+                                    <p-checkbox binary="true" label="Deduct ESI" name="IsAllowEsiReduction" [(ngModel)]="StaffEntry.IsAllowEsiReduction" #IsAllowEsiReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div> -->
+                            <div class="form-group col-md-1">
+                                <label class="control-label">TDS</label>
+                                <div>
+                                    <p-checkbox binary="true" name="IsAllowTDSReduction" [(ngModel)]="StaffEntry.IsAllowTDSReduction" #IsAllowTDSReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="control-label">CL (Days)<span class="important" *ngIf="StaffEntry.IsAllowLeaveReduction">*</span></label>
+                                <input type="text" class="form-control text-right" name="NoOfLeaveCL" [(ngModel)]="StaffEntry.NoOfLeaveCL" #NoOfLeaveCL="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="NoOfLeaveCL.errors && frmStaffEntry.submitted && StaffEntry.IsAllowLeaveReduction">
+                                        <div *ngIf="NoOfLeaveCL.errors?.required">
+                                            CL required
+                                        </div>
+                                        <div *ngIf="NoOfLeaveCL.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="control-label">EL (Days)<span class="important" *ngIf="StaffEntry.IsAllowLeaveReduction">*</span></label>
+                                <input type="text" class="form-control text-right" name="NoOfLeaveEL" [(ngModel)]="StaffEntry.NoOfLeaveEL" #NoOfLeaveEL="ngModel" pattern="^[0-9]+(\.[0-9]{1,2})?$" required />
+                                <div class="error-message">
+                                    <div *ngIf="NoOfLeaveEL.errors && frmStaffEntry.submitted && StaffEntry.IsAllowLeaveReduction">
+                                        <div *ngIf="NoOfLeaveEL.errors?.required">
+                                            EL required
+                                        </div>
+                                        <div *ngIf="NoOfLeaveEL.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="control-label">Permission (Hours)<span class="important" *ngIf="StaffEntry.IsAllowPermissionReduction">*</span></label>
+                                <input type="text" class="form-control text-right" name="NoOfPermission" [(ngModel)]="StaffEntry.NoOfPermission" #NoOfPermission="ngModel" pattern="^[0-9]+(\.[0-9]{1,2})?$" required />
+                                <div class="error-message">
+                                    <div *ngIf="NoOfPermission.errors && frmStaffEntry.submitted && StaffEntry.IsAllowPermissionReduction">
+                                        <div *ngIf="NoOfPermission.errors?.required">
+                                            No Of Permission required
+                                        </div>
+                                        <div *ngIf="NoOfPermission.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="control-label">Grace Hours<span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="GraceHours" [(ngModel)]="StaffEntry.GraceHours" #GraceHours="ngModel" pattern="^[0-9]+(\.[0-9]{1,2})?$" required />
+                                <div class="error-message">
+                                    <div *ngIf="GraceHours.errors && frmStaffEntry.submitted">
+                                        <div *ngIf="GraceHours.errors?.required">
+                                            Grace Hours required
+                                        </div>
+                                        <div *ngIf="NoOfLeaveCL.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-primary" tooltip="Save" tooltipPlacement="left" name="btnSave">Save</button>
+                                    <button type="button" class="btn btn-danger" tooltip="Cancel" tooltipPlacement="left" name="btnCancel" (click)="btnCancel_click()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<modal #mdStafflist [keyboard]="false" [backdrop]="'static'" cssClass="modal-md">
+    <modal-header>
+        <h1 class="modal-title"><strong>Staff </strong> UnRegistered List</h1>
+    </modal-header>
+    <modal-body class="error-style">
+        <p-dataTable [value]="UnMappedStaffList" [rows]="5" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+            <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                    <div style="text-align:right !important">{{rowIndex+1}}</div>
+                </ng-template>
+            </p-column>
+            <p-column field="EmployeeName" header="Name" [filter]="true" filterMatchMode="contains"></p-column>
+            <p-column field="EmployeeCode" header="Code" [style]="{'width':'120px'}" [filter]="true" filterMatchMode="contains"></p-column>
+            <p-column header="Option" [style]="{'width':'55px','text-align':'center'}">
+                <ng-template let-data="rowData" pTemplate="body">
+                    <button type="button" class="btn btn-sm btn-primary" tooltip="Add" tooltipPlacement="top" (click)="btnStaffAdd_Click(data)">
+                                <i class="fa fa-plus-circle"></i>
+                            </button>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+    </modal-body>
+    <modal-footer>
+        <button type="button" name="btnUnRegisteredCloseEntry" class="btn btn-danger" (click)="mdStafflist.close();">Close</button>
+    </modal-footer>
+</modal>
+
+<modal #mdLock [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmStaffLock="ngForm" (ngSubmit)="frmStaffLock.valid && LockStaff()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Route</strong>Lock({{LockData.Staff}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input type="text" class="form-control" name="LockedReason" [(ngModel)]="LockData.Locked.LockedReason" #LockedReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="LockedReason.errors &&  frmStaffLock.submitted">
+                            <div *ngIf="LockedReason.errors?.required">
+                                LockedReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Lock</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdLock.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

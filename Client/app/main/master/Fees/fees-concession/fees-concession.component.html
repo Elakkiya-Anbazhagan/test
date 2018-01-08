@@ -1,0 +1,119 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel" id="pnEntry">
+                <form #frmStudentInfo="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="frmStudentInfo.valid && btnStudentFee_Click()"
+                    novalidate autocomplete="off">
+                    <div class="panel-header">
+                        <h2><strong>Student Info</strong></h2>
+                        <div class="panel-tools" style="width:118pxl">
+                            <input type="text" class="form-control" (keyup.enter)="LoadStudentDetails()" name="AdmissionNo" [(ngModel)]="AdmissionNo"
+                                [placeholder]="' :: Admission No :: '" />
+                        </div>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Class<span class="Validation">*</span></label>
+                                <select-guru [data]="dsClassData" [placeholder]="'::SELECT::'" [disabled]="ViewAcademicPaydetail" name="ddlClass" [(ngModel)]="StudentInfo.ClassSysID"
+                                    (valueChanged)="ddlClass_Valuechanged($event.value)" #ddlClass="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlClass.errors && frmStudentInfo.submitted">
+                                        <div *ngIf="ddlClass.errors?.required">
+                                            Class is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Section <span class="Validation">*</span></label>
+                                <select-guru [data]="dsSectionData" [placeholder]="'::SELECT::'" [disabled]="ViewAcademicPaydetail" name="ddlSection" [(ngModel)]="StudentInfo.SectionSysID"
+                                    [selectedvalue]="'-1'" (valueChanged)="ddlSection_Valuechanged($event.value)" #ddlSection="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlSection.errors && frmStudentInfo.submitted" class="text-danger">
+                                        <div *ngIf="ddlSection.errors?.required">
+                                            Section is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Student  <span class="Validation">*</span></label>
+                                <select-guru [data]="dsStudentData" [placeholder]="'::SELECT::'" [disabled]="ViewAcademicPaydetail && !isPayMode" name="ddlStudent"
+                                    [(ngModel)]="StudentInfo.StudentSysID" #ddlStudent="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlStudent.errors && frmStudentInfo.submitted" class="text-danger">
+                                        <div *ngIf="ddlStudent.errors?.required">
+                                            Please Select Student
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-sm btn-primary" *ngIf="!isViewMode" name="btnStudentFee" tooltip="View Fee Info" tooltipPlacement="left"><i class="fa fa-search"></i> </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel" id="pnList">
+                <div class="panel-header">
+                    <h2><strong>Fee Info</strong></h2>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="dsFeeInfoList" rowGroupMode="subheader" groupField="AccountName">
+                        <ng-template pTemplate="rowgroupheader" let-rowData>{{rowData['AccountName']}}</ng-template>
+                        <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="AcademicYearID" header="Academic" [style]="{'width' : '80px'}"></p-column>
+                        <p-column field="FeeName" header="Fee"></p-column>
+                        <p-column field="BalanceAmount" header="Amount" [style]="{'width' : '80px', 'text-align' : 'right'}">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                {{data.BalanceAmount | number:'1.2-2'}}
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ConcessionAmount" header="Concession" [style]="{'width' : '90px', 'text-align' : 'right'}">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                {{data.ConcessionAmount | number:'1.2-2'}}
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Option" [style]="{'width':'90px','text-align':'center'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <button type="button" *ngIf="((data.FeeName === lib.MasterData.FeeName.ACADEMICFEE)? isAllowAcademicCollection : isAllowTransportCollection) && !isPayMode"
+                                    (click)="btnFeePay_click(data)" class="btn btn-sm btn-primary">Concession</button>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <academic-fees-concession [StudentSysID]="StudentInfo.StudentSysID" [FeeSysID]="StudentInfo.FeeSysID" [AcademicYearSysID]="StudentInfo.AcademicYearSysID"
+                [AcademicYear]="Account.AcademicYearID" [AccountName]="Account.AccountName" [FeeName]="Account.FeeName" [AccountSysID]="StudentInfo.AccountSysID"
+                (onclose)="onClose();" *ngIf="ViewAcademicPaydetail">
+            </academic-fees-concession>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <transport-fees-concession [StudentSysID]="StudentInfo.StudentSysID" [FeeSysID]="StudentInfo.FeeSysID" [AcademicYearSysID]="StudentInfo.AcademicYearSysID"
+                [AcademicYear]="Account.AcademicYearID" [AccountName]="Account.AccountName" [FeeName]="Account.FeeName" [AccountSysID]="StudentInfo.AccountSysID"
+                (onclose)="onClose();" *ngIf="isTransportPayMode">
+            </transport-fees-concession>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel" id="pnAdmissionList">
+                <div class="panel-header">
+                    <h2><strong>&nbsp;</strong></h2>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="mlAttendanceInfo.lstClassSection" [responsive]="true" [tableStyleClass]="'tbl-list-guru'" [rows]="100" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20,30,50,100,200]" sortField="ClassOrder" rowGroupMode="rowspan"
+                        groupField="ClassName" #dt>
+                        <!--rowGroupMode="subheader" groupField="ClassName" expandableRowGroups="true" [sortableRowGroup]="false"-->
+                        <!--<ng-template pTemplate="rowgroupheader" let-rowData>{{rowData['ClassName']}}</ng-template>-->
+                        <!--<p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                            <ng-template let-pageno="page" let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>-->
+                        <p-column field="ClassOrder" header="Class" sortable="true">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                {{data.ClassName}}
+                            </ng-template>
+                        </p-column>
+                        <p-column field="SectionName" header="Section"></p-column>
+                        <p-column header="Total" [style]="{'width':'80px','text-align':'center'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <label class="label label-sm label-primary">{{data.Total}}</label>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Present" [style]="{'width':'60px','text-align':'center'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <label class="label label-sm label-success">{{data.PRESENT}}</label>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Absent" [style]="{'width':'60px','text-align':'center'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <label class="label label-sm label-danger">{{data.ABSENT}}</label>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Leave" [style]="{'width':'60px','text-align':'center'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <label class="label label-sm label-warning">{{data.LEAVE}}</label>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Options" [style]="{'width':'100px','text-align':'center'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <button type="button" class="btn btn-sm btn-primary" tooltip="View Students" tooltipPlacement="left" (click)="Show_Student(data)">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button class="btn btn-success btn-sm" *ngIf="mlPermission.isAllowSave" tooltip="Save Attendance" tooltipPlacement="left" name="btnAdd" type="button" (click)="Save_Attendance()">Save Attendance</button>
+                                <button class="btn btn-primary btn-sm" *ngIf="mlPermission.isAllowApprove" tooltip="Approve Attendance" tooltipPlacement="left" name="btnAdd" type="button" (click)="Approve_Attendance()">Approve Attendance</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal #mdStudentList [keyboard]="false" [backdrop]="'static'" id="mdStudentList">
+    <modal-header>
+        <h1 class="modal-title"><strong>Student List</strong></h1>
+    </modal-header>
+    <modal-body class="no-padding">
+        <p-dataTable [value]="mlStudentClassSection.lstStudentInfo" [responsive]="true" [tableStyleClass]="'tbl-list-guru'" [rows]="10" [paginator]="true" [pageLinks]="50" [rowsPerPageOptions]="[5,10,20,30,50,100,200]" #dtStu>
+            <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                <ng-template let-pageno="page" let-rowIndex="rowIndex" pTemplate="body">
+                    <div style="text-align:right !important">{{rowIndex+1}}</div>
+                </ng-template>
+            </p-column>
+            <p-column field="AdmissionNo" header="Adm. No." [style]="{'width':'80px'}" [filter]="true" filterMatchMode="contains"></p-column>
+            <p-column field="StudentName" header="Student Name" [style]="{'width':'120px'}" [filter]="true" filterMatchMode="contains"></p-column>
+            <p-column header="Status" [style]="{'width':'120px','text-align':'center'}">
+                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                    <p-dropdown [options]="lstStu_Attendance_Status" [(ngModel)]="data.StatusSysID"></p-dropdown>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+    </modal-body>
+    <modal-footer class="no-padding">
+        <button type="submit" name="btnUpdate_Stu_Attendance" style="margin-right: 0px;" class="btn btn-success" (click)="Save_Student_Attendance()">Save</button>
+    </modal-footer>
+</modal>

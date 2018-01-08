@@ -1,0 +1,355 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnDesignationEntry" *ngIf="isListMode">
+        <div class="panel-content">
+            <p-dataTable [value]="DesignationList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="Designation" header="Designation"></p-column>
+                <p-column field="ShiftName" header="Shift" [style]="{'width':'180px','text-align':'center'}"></p-column>
+                <p-column field="BasicPay" header="BasicPay" [style]="{'width':'85px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.BasicPay | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="GradePay" header="GradePay" [style]="{'width':'85px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.GradePay | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="DA" header="DA" [style]="{'width':'65px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.DA | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="CA" header="CA" [style]="{'width':'65px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.CA | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="HRA" header="HRA" [style]="{'width':'65px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.HRA | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column field="MA" header="MA" [style]="{'width':'65px'}">
+                    <ng-template let-data="rowData" pTemplate type="body">
+                        <div style="text-align:right !important"> {{data.MA | number:'1.2-2'}}
+                        </div>
+                    </ng-template>
+                </p-column>
+                <p-column header="Option" [style]="{'width':'85px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="top" (click)="btnEdit_Click(data)">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                        <button type="button" class="btn btn-sm btn-success" tooltip="Lock" tooltipPlacement="top" *ngIf="!data.Locked.IsLocked" (click)="btnLock_Click(data,frmDesignationLock)">
+                        <i class="fa fa-unlock-alt"></i>
+                    </button>
+                        <button type="button" class="btn btn-sm btn-danger" tooltip="UnLock" tooltipPlacement="top" *ngIf="data.Locked.IsLocked" (click)="btnLock_Click(data,frmDesignationLock)">
+                        <i class="fa fa-lock"></i>
+                    </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" tooltip="Add" tooltipPlacement="left" name="btnAdd" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form #frmDesignationEntry="ngForm" (ngSubmit)="frmDesignationEntry.valid && btnSave_click()" novalidate autocomplete="off" *ngIf="!isListMode">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel" id="pnDesignationList">
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-8">
+                                <label class="control-label">Designation <span class="important">*</span></label>
+                                <input type="text" class="form-control" name="Designation" [(ngModel)]="DesignationEntry.Designation" #Designation="ngModel" required />
+                                <div class="error-message">
+                                    <div *ngIf="Designation.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="Designation.errors?.required">
+                                            Designation is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Shift Name <span class="important">*</span></label>
+                                <select-guru name="ShiftSysID" [(ngModel)]="DesignationEntry.ShiftSysID" #ShiftSysID="ngModel" [data]="dsShift" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ShiftSysID.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="ShiftSysID.errors?.required">
+                                            Shift Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">BasicPay <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="BasicPay" [(ngModel)]="DesignationEntry.BasicPay" #BasicPay="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="BasicPay.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="BasicPay.errors?.required">
+                                            BasicPay required
+                                        </div>
+                                        <div *ngIf="BasicPay.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">GradePay <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="GradePay" [(ngModel)]="DesignationEntry.GradePay" #GradePay="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="GradePay.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="GradePay.errors?.required">
+                                            GradePay required
+                                        </div>
+                                        <div *ngIf="GradePay.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">DA <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="DA" [(ngModel)]="DesignationEntry.DA" #DA="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="DA.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="DA.errors?.required">
+                                            DA required
+                                        </div>
+                                        <div *ngIf="DA.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">CA <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="CA" [(ngModel)]="DesignationEntry.CA" #CA="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="CA.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="CA.errors?.required">
+                                            CA required
+                                        </div>
+                                        <div *ngIf="CA.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">HRA <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="HRA" [(ngModel)]="DesignationEntry.HRA" #HRA="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="HRA.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="HRA.errors?.required">
+                                            HRA required
+                                        </div>
+                                        <div *ngIf="HRA.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">MA <span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="MA" [(ngModel)]="DesignationEntry.MA" #MA="ngModel" pattern="^[0-9]*$" required />
+                                <div class="error-message">
+                                    <div *ngIf="MA.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="MA.errors?.required">
+                                            MA required
+                                        </div>
+                                        <div *ngIf="MA.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Account <span class="important">*</span></label>
+                                <select-guru name="AccountSysID" [(ngModel)]="DesignationEntry.AccountSysID" #AccountSysID="ngModel" [data]="dsAccount" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="AccountSysID.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="AccountSysID.errors?.required">
+                                            Account is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Paymode <span class="important">*</span></label>
+                                <select-guru name="PayModeSysID" [(ngModel)]="DesignationEntry.PayModeSysID" #PayModeSysID="ngModel" [data]="dsPayMode" [placeholder]="':: SELECT ::'" required>
+                                </select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="PayModeSysID.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="PayModeSysID.errors?.required">
+                                            Paymode is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel" id="pnDesignationList">
+                    <div class="panel-header">
+                        <h2><strong>Deducation</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">&nbsp;</label>
+                                <div>
+                                    <p-checkbox binary="true" label="Allow Leave" (onChange)="Chk_Leave_Change()" name="IsAllowLeaveReduction" [(ngModel)]="DesignationEntry.IsAllowLeaveReduction" #IsAllowLeaveReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">CL<span class="important" *ngIf="DesignationEntry.IsAllowLeaveReduction">*</span></label>
+                                <input type="text" [disabled]="!DesignationEntry.IsAllowLeaveReduction" class="form-control text-right" name="NoOfLeaveCL" [(ngModel)]="DesignationEntry.NoOfLeaveCL" #NoOfLeaveCL="ngModel" pattern="^[0-9]+(\.[0-9]{1,2})?$" required />
+                                <div class="error-message">
+                                    <div *ngIf="NoOfLeaveCL.errors && frmDesignationEntry.submitted && DesignationEntry.IsAllowLeaveReduction">
+                                        <div *ngIf="NoOfLeaveCL.errors?.required && DesignationEntry.IsAllowLeaveReduction">
+                                            CL required
+                                        </div>
+                                        <div *ngIf="NoOfLeaveCL.errors?.pattern && DesignationEntry.IsAllowLeaveReduction">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">EL <span class="important" *ngIf="DesignationEntry.IsAllowLeaveReduction">*</span></label>
+                                <input type="text" [disabled]="!DesignationEntry.IsAllowLeaveReduction" class="form-control text-right" name="NoOfLeaveEL" [(ngModel)]="DesignationEntry.NoOfLeaveEL" #NoOfLeaveEL="ngModel" pattern="^[0-9]+(\.[0-9]{1,2})?$" required />
+                                <div class="error-message">
+                                    <div *ngIf="NoOfLeaveEL.errors && frmDesignationEntry.submitted && DesignationEntry.IsAllowLeaveReduction">
+                                        <div *ngIf="NoOfLeaveEL.errors?.required && DesignationEntry.IsAllowLeaveReduction">
+                                            EL required
+                                        </div>
+                                        <div *ngIf="NoOfLeaveEL.errors?.pattern && DesignationEntry.IsAllowLeaveReduction">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">&nbsp;</label>
+                                <div>
+                                    <p-checkbox binary="true" (onChange)="Chk_Permission_Change()" label="Allow Permission" name="IsAllowPermissionReduction" [(ngModel)]="DesignationEntry.IsAllowPermissionReduction" #IsAllowPermissionReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">No Of Permission <span class="important" *ngIf="DesignationEntry.IsAllowPermissionReduction">*</span></label>
+                                <input type="text" [disabled]="!DesignationEntry.IsAllowPermissionReduction" class="form-control text-right" name="NoOfPermission" [(ngModel)]="DesignationEntry.NoOfPermission" #NoOfPermission="ngModel" pattern="^[0-9]+(\.[0-9]{1,2})?$" required />
+                                <div class="error-message">
+                                    <div *ngIf="NoOfPermission.errors && frmDesignationEntry.submitted && DesignationEntry.IsAllowPermissionReduction">
+                                        <div *ngIf="NoOfPermission.errors?.required && DesignationEntry.IsAllowPermissionReduction">
+                                            No Of Permission required
+                                        </div>
+                                        <div *ngIf="NoOfPermission.errors?.pattern && DesignationEntry.IsAllowPermissionReduction">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Grace Hours<span class="important">*</span></label>
+                                <input type="text" class="form-control text-right" name="GraceHours" [(ngModel)]="DesignationEntry.GraceHours" #GraceHours="ngModel" pattern="^[0-9]+(\.[0-9]{1,2})?$" required />
+                                <div class="error-message">
+                                    <div *ngIf="GraceHours.errors && frmDesignationEntry.submitted">
+                                        <div *ngIf="GraceHours.errors?.required">
+                                            Grace Hours required
+                                        </div>
+                                        <div *ngIf="NoOfLeaveCL.errors?.pattern">
+                                            Invalid character
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">&nbsp;</label>
+                                <div>
+                                    <p-checkbox binary="true" label="Allow PF" name="IsAllowPFReduction" [(ngModel)]="DesignationEntry.IsAllowPFReduction" #IsAllowPFReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">&nbsp;</label>
+                                <div>
+                                    <p-checkbox binary="true" label="Allow ESI" name="IsAllowEsiReduction" [(ngModel)]="DesignationEntry.IsAllowEsiReduction" #IsAllowEsiReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">&nbsp;</label>
+                                <div>
+                                    <p-checkbox binary="true" label="Allow TDS" name="IsAllowTDSReduction" [(ngModel)]="DesignationEntry.IsAllowTDSReduction" #IsAllowTDSReduction="ngModel"></p-checkbox>
+                                </div>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-primary" tooltip="Save" tooltipPlacement="left" name="btnSave">Save</button>
+                                    <button type="button" class="btn btn-danger" tooltip="Cancel" tooltipPlacement="left" name="btnCancel" (click)="btnCancel_click()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<modal #mdLock [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmDesignationLock="ngForm" (ngSubmit)="frmDesignationLock.valid && LockDesignation()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Designation</strong>Lock({{LockData.Designation}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input type="text" class="form-control" name="LockedReason" [(ngModel)]="LockData.Locked.LockedReason" #LockedReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="LockedReason.errors &&  frmDesignationLock.submitted">
+                            <div *ngIf="LockedReason.errors?.required">
+                                LockedReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Lock</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdLock.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

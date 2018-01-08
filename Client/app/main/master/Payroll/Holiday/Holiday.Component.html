@@ -1,0 +1,153 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnHolidayData" *ngIf="!isSpecialDay">
+        <div class="panel-content">
+            <p-dataTable [value]="HolidayList" [rows]="10" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" [tableStyleClass]="'tbl-list-guru'">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="HolidayDate" header="Date" [style]="{'width':'75px'}"></p-column>
+                <p-column field="Meridian" header="Meridian" [style]="{'width':'75px','text-align':'center'}"></p-column>
+                <p-column field="Status" header="Status" [style]="{'width':'75px'}"></p-column>
+                <p-column field="Reason" header="Reason" [filter]="true" filterMatchMode="contains"></p-column>
+                <p-column header="SpecialDay" [style]="{'width':'72px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-success" tooltip="SpecialDay" tooltipPlacement="left" (click)="btnSpecialDay_Click(data)" *ngIf="data.IsApproved  && data.IsSpecialDay">
+                            <i class="fa fa-plus-circle"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+                <p-column header="Option" [style]="{'width':'140px','text-align':'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Approve" tooltipPlacement="left" (click)="btnApprove_Click(data)" *ngIf="!data.IsApproved && !data.IsCancelled">
+                            <i class="fa fa-check"></i>
+                        </button>
+                        <label class="btn btn-sm btn-danger" *ngIf="!data.IsApproved  && data.IsCancelled " style="width: 70px !important;">Cancelled</label>
+                        <label class="btn btn-sm btn-success" *ngIf="data.IsApproved  && !data.IsCancelled " style="width: 70px !important;">Approved</label>
+                        <button type="button" class="btn btn-sm btn-primary" tooltip="Edit" tooltipPlacement="left" (click)="btnEdit_Click(data)" *ngIf="!data.IsApproved  && !data.IsCancelled">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" tooltip="Cancel" tooltipPlacement="left" (click)="btnHoliday_Cancel_Click(data)" *ngIf="!data.IsApproved  && !data.IsCancelled">
+                            <i class="icon-rounded-cross"></i>
+                        </button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" tooltip="Add" tooltipPlacement="left" name="btnAdd" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<SpecialDay [HolidaySysID]="HolidayData.HolidaySysID" [SpecialDayDate]="HolidayData.HolidayDate" (onclose)="onClose();" *ngIf="isSpecialDay"></SpecialDay>
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmHolidayCancel="ngForm" (ngSubmit)="frmHolidayCancel.valid && btnCancel_Click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Holiday </strong>Cancellation</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="HolidayData.CancelledReason" #CancelledReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmHolidayCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>
+
+<modal #mdHolidayEntry [keyboard]="false" [backdrop]="'static'" cssClass="modal-md" id="HolidayModal">
+    <form #frmHoliday="ngForm" (ngSubmit)="frmHoliday.valid && btnSave_Click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong> </strong></h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Holiday Date<span class="important">*</span></label>
+                        <p-calendar dateFormat="dd-mm-yy" dataType="string" showIcon="true" name="HolidayDate" [(ngModel)]="HolidayData.HolidayDate" #HolidayDate="ngModel" [disabled]="isEditMode" required></p-calendar>
+                        <div class="error-message">
+                            <div *ngIf="HolidayDate.errors && frmHoliday.submitted">
+                                <div *ngIf="HolidayDate.errors?.required">
+                                    Holiday Date No is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Leave Type <span class="important">*</span></label>
+                        <select-guru [data]="dsStatus" [dropdownParent]="'HolidayModal'" name="StatusSysID" [(ngModel)]="HolidayData.StatusSysID" #StatusSysID="ngModel" [placeholder]="':: SELECT ::'" required>
+                        </select-guru>
+                        <div class="error-message">
+                            <div *ngIf="StatusSysID.errors && frmHoliday.submitted">
+                                <div *ngIf="StatusSysID.errors?.required">
+                                    Leave Type is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Meridian<span class="important">*</span></label>
+                        <select-guru [data]="MeridianData" [dropdownParent]="'HolidayModal'" [placeholder]="'::SELECT::'" name="MeridianSysID" [(ngModel)]="HolidayData.MeridianSysID" #MeridianSysID="ngModel" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="MeridianSysID.errors && frmHoliday.submitted">
+                                <div *ngIf="MeridianSysID.errors?.required">
+                                    Meridian is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Reason</label>
+                        <textarea rows="5" style="width:100% !important;height: 100% !important;" name="Reason" [(ngModel)]="HolidayData.Reason" #Reason="ngModel" maxlength="250" required></textarea>
+                        <div class="error-message">
+                            <div *ngIf="Reason.errors && frmHoliday.submitted">
+                                <div *ngIf="Reason.errors?.required">
+                                    Reason is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group col-md-12">
+                        <p-dataTable [value]="DepartmentList" [(selection)]="HolidayData.Trans" [tableStyleClass]="'tbl-list-guru'">
+                            <p-column selectionMode="multiple" [style]="{'width':'30px','text-align':'center'}"></p-column>
+                            <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                                <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                    <div style="text-align:right !important">{{rowIndex+1}}</div>
+                                </ng-template>
+                            </p-column>
+                            <p-column field="Department" header="Department"></p-column>
+                        </p-dataTable>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="btnEntryCancel_Click();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

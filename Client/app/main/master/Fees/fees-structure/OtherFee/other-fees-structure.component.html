@@ -1,0 +1,211 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnList" *ngIf="isEntryMode">
+        <div class="panel-content">
+            <p-dataTable [value]="dtOtherFeeList">
+                <p-column header="#" [style]="{ 'width': '20px', 'text-align': 'center'}">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column field="CategoryName" header="Category Name"></p-column>
+                <p-column field="AcademicYearID" header="AcademicYearID" [style]="{'width': '150px'}"></p-column>
+                <p-column field="TypeName" header="TypeName" [style]="{'width': '90px'}"></p-column>
+                <p-column field="FeeCategoryName" header="FeeCategoryName" [style]="{'width': '150px'}"></p-column>
+                <p-column header="Option" [style]="{'width' : '100px', 'text-align': 'center'}">
+                    <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                        <button type="button" class="btn btn-sm btn-primary" (click)="btnEdit_click(data)" *ngIf="!data.IsApproved && !data.IsCancelled"><i class="fa fa-pencil"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="btnOtherFeeCancel_click(data)" *ngIf="!data.IsApproved && !data.IsCancelled"><i class="fa fa-trash-o"></i></button>
+                        <label class="btn btn-sm btn-success" *ngIf="data.IsApproved && !data.IsCancelled">Approved</label>
+                        <label class="btn btn-sm btn-danger" *ngIf="!data.IsApproved && data.IsCancelled">Cancelled</label>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-sm btn-primary" (click)="btnAdd_click()"><i class="fa fa-plus-circle"></i> </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!isEntryMode">
+        <div class="col-md-6">
+            <div class="panel" id="pnEntry">
+                <form #frmFeesStructureEntry="ngForm" (ngSubmit)="frmFeesStructureEntry.valid && btnView_Click()" novalidate autocomplete="off">
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Academic Year<span class="important">*</span></label>
+                                <select-guru [data]="AcademicYearData" [disabled]="!isViewMode" (valueChanged)="onAcademicYear_Changed($event.value)" [placeholder]="'::SELECT::'" name="AcademicYearSysID" [(ngModel)]="OtherFeeViewdata.AcademicYearSysID" #AcademicYearSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="AcademicYearSysID.errors && frmFeesStructureEntry.submitted">
+                                        <div *ngIf="AcademicYearSysID.errors?.required">
+                                            Academic year is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Class<span class="important">*</span></label>
+                                <select-guru [data]="ClassData" [disabled]="!isViewMode" [placeholder]="'::SELECT::'" name="ClassSysID" [(ngModel)]="OtherFeeViewdata.ClassSysID" #ClassSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ClassSysID.errors && frmFeesStructureEntry.submitted">
+                                        <div *ngIf="ClassSysID.errors?.required">
+                                            Class is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Section<span class="important">*</span></label>
+                                <select-guru [data]="SectionData" [disabled]="!isViewMode" [placeholder]="'::SELECT::'" name="SectionSysID" [(ngModel)]="OtherFeeViewdata.SectionSysID" #SectionSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="SectionSysID.errors && frmFeesStructureEntry.submitted">
+                                        <div *ngIf="SectionSysID.errors?.required">
+                                            Section is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Fees<span class="important">*</span></label>
+                                <select-guru [data]="OtherFeeData" [disabled]="!isViewMode" [placeholder]="'::SELECT::'" name="FeeCategorySysID" [(ngModel)]="OtherFeeViewdata.FeeCategorySysID" #FeeCategorySysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="FeeCategorySysID.errors && frmFeesStructureEntry.submitted">
+                                        <div *ngIf="FeeCategorySysID.errors?.required">
+                                            Fees is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Type<span class="important">*</span></label>
+                                <select-guru [data]="TypeData" (valueChanged)="Type_Changed($event)" [disabled]="!isViewMode" [placeholder]="'::SELECT::'" name="TypeSysID" [(ngModel)]="OtherFeeViewdata.TypeSysID" #TypeSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="TypeSysID.errors && frmFeesStructureEntry.submitted">
+                                        <div *ngIf="TypeSysID.errors?.required">
+                                            Type is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Category Name<span class="important">*</span></label>
+                                <input type="text" class="form-control" [disabled]="!isViewMode" name="CategoryName" [(ngModel)]="OtherFeeViewdata.CategoryName" #CategoryName="ngModel" required />
+                                <div class="error-message">
+                                    <div *ngIf="CategoryName.errors && frmFeesStructureEntry.submitted">
+                                        <div *ngIf="CategoryName.errors?.required">
+                                            Category Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-sm btn-primary" *ngIf="isViewMode"><i class="fa fa-search"></i></button>
+                                    <button type="button" class="btn btn-sm btn-primary" *ngIf="!isViewMode" (click)="btnSave_click()">{{(OtherFeeViewdata.CategorySysID !== 0) ? "Update" : "Save"}}</button>
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="btnCancel_click();">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel" id="pnClassList">
+                <div class="panel-header">
+                    <h2><strong>Class & Section</strong></h2>
+                    <div class="panel-tools">
+                        <div class="input-group col-md-4 pull-right">
+                            <input type="text" [disabled]="isApproved" class="form-control text-right" name="txtAmount" placeholder="Amount" [(ngModel)]="OtherFeeViewdata.Amount" #txtAmount="ngModel" maxlength="7">
+                            <span class="input-group-addon btn btn-sm btn-warning" (click)="txtAmount_Change(OtherFeeViewdata.Amount)"><i class=" fa fa-refresh "></i> </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="dtClassSectionList" [(selection)]="dtSelectedClassSectionList" sortField="ClassName" rowGroupMode="subheader" groupField="ClassName" expandableRowGroups="true" [sortableRowGroup]="false" scrollable="true" scrollHeight="380px">
+                        <p-column [style]="{'width':'28px'}" selectionMode="multiple"></p-column>
+                        <ng-template pTemplate="rowgroupheader" let-rowData>{{rowData['ClassName']}}</ng-template>
+                        <p-column header="#" [style]="{ 'width': '20px', 'text-align': 'center'}">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ClassName" header="Class"></p-column>
+                        <p-column field="SectionName" header="Section"></p-column>
+                        <p-column field="StudentList" header="Stu. Cnt." [style]="{ 'width': '90px', 'text-align': 'center'}" *ngIf="isPaid">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <a (click)="btnstudentList(data.StudentList);">{{CalculateCount(data.StudentList)}}</a>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="Amount" header="Amount" [style]="{'width' : '100px'}">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <input type="number" class="form-control" style="text-align : right; height: 26px !important;" [(ngModel)]="data.Amount" name="{{rowIndex + 1}}" />
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal #mdStudentList [keyboard]="false" [backdrop]="'static'" cssClass="modal-md">
+    <modal-header>
+        <h1 class="modal-title"> <strong>Student List</strong></h1>
+    </modal-header>
+    <modal-body class="error-style">
+        <p-dataTable [value]="dtStudentList" scrollable="true" scrollHeight="350px">
+            <p-column header="#" [style]="{ 'width': '20px', 'text-align': 'center'}">
+                <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                    <div style="text-align:right !important">{{rowIndex + 1}}</div>
+                </ng-template>
+            </p-column>
+            <p-column field="StudentName" header="Name"></p-column>
+            <p-column field="AdmissionNo" header="AdmNo"></p-column>
+            <p-column field="IsSelected" header="Option" [style]="{'width' : '70px', 'text-align': 'center'}">
+                <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                    <p-checkbox [(ngModel)]="data.IsSelected" [binary]="true" [value]="data.IsSelected"></p-checkbox>
+                </ng-template>
+            </p-column>
+        </p-dataTable>
+    </modal-body>
+    <modal-footer>
+        <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="btnStuModelClose_Click();">Close</button>
+    </modal-footer>
+</modal>
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmCancel="ngForm" (ngSubmit)="frmCancel.valid && btnOtherFeeCancel_Save_click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Other Fees </strong>Cancellation</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="CancelOtherFeeData.CancelledReason" #CancelledReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

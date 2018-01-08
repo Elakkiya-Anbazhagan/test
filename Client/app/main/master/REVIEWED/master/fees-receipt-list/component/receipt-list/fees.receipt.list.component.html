@@ -1,0 +1,218 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel" id="pnList">
+                <div class="panel-header">
+                    <h2><strong>{{mlReceiptFilter.FromDate}} | {{mlReceiptFilter.ToDate}}</strong></h2>
+                    <div class="panel-tools" style="width: 50%;">
+                        <form #frmConcessionInfo="ngForm" (ngSubmit)="frmConcessionInfo.valid && frmSearchSubmit()" novalidate autocomplete="off">
+                            <div class="form-group col-md-4">
+                                <select-guru [data]="mlRoleList" [placeholder]="':: SELECT ROLE ::'" name="RoleSysID" [(ngModel)]="mlReceiptFilter.RoleSysID"
+                                    #RoleSysID="ngModel" required>
+                                </select-guru>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <calendar-guru dateFormat="dd-mm-yy" (onSelect)="lib.DateRange(FromDate, ToDate)" [monthNavigator]="true" [yearNavigator]="true"
+                                    yearRange="2014:2030" readonlyInput="readonlyInput" [inputStyleClass]="((FromDate.errors && FromDate.errors?.required && frmConcessionInfo.submitted) ? 'validation_error' : '')"
+                                    dataType="string" [yearNavigator]="true" [(ngModel)]="mlReceiptFilter.FromDate" #FromDate="ngModel"
+                                    name="FromDate" required>
+                                </calendar-guru>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="input-group">
+                                    <calendar-guru dateFormat="dd-mm-yy" (onSelect)="lib.DateRange(FromDate, ToDate)" [monthNavigator]="true" [yearNavigator]="true"
+                                        yearRange="2014:2030" readonlyInput="readonlyInput" [inputStyleClass]="(ToDate.errors && ToDate.errors?.required && frmConcessionInfo.submitted) ? 'validation_error' : ''"
+                                        dataType="string" name="ToDate" [(ngModel)]="mlReceiptFilter.ToDate" #ToDate="ngModel"
+                                        required></calendar-guru>
+                                    <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+                                        </span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="mlReceiptInfoList" [responsive]="true" selectionMode="single" [tableStyleClass]="'tbl-list-guru'" [rows]="10"
+                        [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20,30,50,100,200]" #dt>
+
+                        <p-column [style]="{'width':'35px','text-align':'center'}" header="#">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ReceiptDate" header="Date" [style]="{'width':'75px'}" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <span>{{lib.datafunc.YMD_TO_DMY(data.ReceiptDate)}}</span>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ReceiptNo" header="Rec. #" [filter]="true" [sortable]="true" [style]="{'width':'65px'}">
+
+                        </p-column>
+
+                        <p-column field="AdmissionNo" header="Adm. #" [style]="{'width':'72px'}" [filter]="true" [sortable]="true"></p-column>
+                        <p-column field="StudentName" header="Student" [filter]="true" [sortable]="true"></p-column>
+                        <p-column field="ClassOrder" header="Class" [style]="{'width':'80px'}" [filter]="true" [sortable]="true">
+                            <ng-template pTemplate="filter" let-col>
+                                <p-dropdown [options]="mlGridFilter.dsClassFilter" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,'ClassName',col.filterMatchMode)"
+                                    styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="SectionName" header="Sec." [style]="{'width':'65px'}" [filter]="true" [sortable]="true">
+                            <ng-template pTemplate="filter" let-col>
+                                <p-dropdown [options]="mlGridFilter.dsSectionFilter" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value,'SectionName',col.filterMatchMode)"
+                                    styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="TypeName" header="Pay Mode" [style]="{'width':'100px'}" [sortable]="true"></p-column>
+                        <p-column field="Amount" header="Amount" [style]="{'width':'100px'}" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <div style="text-align:right !important"> {{data.Amount | number:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Options" [style]="{'width': '90px'}">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <fees-receipt-options (OnReceipt_Cancel)="load_receipt_list()" [AllowPrint]="mlPermissionInfo.AllowPrint" [AllowCancel]="mlPermissionInfo.AllowCancel"
+                                    [ReceiptSysID]="data.ReceiptSysID" [ReceiptNo]="data.ReceiptNo" [ReceiptType]="'Academic_Receipt'"
+                                    [CancelLabelStyle]="'width: 77px;'" [IsCancelled]="data.IsCancelled"></fees-receipt-options>
+                            </ng-template>
+                        </p-column>
+                        <p-footerColumnGroup>
+                            <p-row>
+                                <p-column colspan="4">
+                                    <ng-template pTemplate type="footer">
+                                        <div style="text-align:left !important; font-weight: bold"> Total Receipt : {{lib.GetListSummary(mlReceiptInfoList, 'Amount').count}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column [style]="{'text-align': 'right'}" colspan="4">
+                                    <ng-template pTemplate type="footer">
+                                        <div style="text-align:right !important; font-weight: bold">Totals :
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column [style]="{'text-align': 'right'}">
+                                    <ng-template pTemplate type="footer">
+                                        <div style="text-align:right !important; font-weight: bold"> {{lib.GetListSummary(mlReceiptInfoList, 'Amount').total | number:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column [style]="{'text-align': 'right'}"></p-column>
+                            </p-row>
+                        </p-footerColumnGroup>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 200px"></div>
+</div>
+
+<!-- <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel" id="pnList">
+                <div class="panel-header">
+                    <h2><strong>&nbsp;</strong></h2>
+                    <div class="panel-tools" style="width: 320px;">
+                        <form #frmConcessionInfo="ngForm" (ngSubmit)="frmConcessionInfo.valid && frmSearchSubmit()" novalidate autocomplete="off">
+                            <div class="form-group col-md-6">
+                                <select-guru [data]="dsRoleData" (valueChanged)="dsRoleDataChanged($event.value)" [placeholder]="':: SELECT ROLE ::'" name="RoleSysID"
+                                    [(ngModel)]="RoleSysID" required>
+                                </select-guru>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <p-calendar dateFormat="dd-mm-yy" (onSelect)="lib.DateRange(FromDate, ToDate)" [monthNavigator]="true" [yearNavigator]="true"
+                                    yearRange="2014:2030" readonlyInput="readonlyInput" [inputStyleClass]="((FromDate.errors && FromDate.errors?.required && frmConcessionInfo.submitted) ? 'validation_error' : '')"
+                                    dataType="string" [yearNavigator]="true" [(ngModel)]="mlSearchInfo.FromDate" #FromDate="ngModel"
+                                    name="FromDate" required></p-calendar>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div class="input-group">
+                                    <p-calendar dateFormat="dd-mm-yy" (onSelect)="lib.DateRange(FromDate, ToDate)" [monthNavigator]="true" [yearNavigator]="true"
+                                        yearRange="2014:2030" readonlyInput="readonlyInput" [inputStyleClass]="(ToDate.errors && ToDate.errors?.required && frmConcessionInfo.submitted) ? 'validation_error' : ''"
+                                        dataType="string" name="ToDate" [(ngModel)]="mlSearchInfo.ToDate" #ToDate="ngModel" required></p-calendar>
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="dsReceiptList" [responsive]="true" selectionMode="single" [tableStyleClass]="'tbl-list-guru'" [rows]="10"
+                        [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20,30,50,100,200]" #dt>
+
+                        <p-column [style]="{'width':'35px','text-align':'center'}" header="#">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ReceiptDate" header="Date" [style]="{'width':'75px'}" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <span>{{lib.datafunc.YMD_TO_DMY(data.ReceiptDate)}}</span>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ReceiptNo" header="Rec. #" [filter]="true" [sortable]="true" [style]="{'width':'65px'}">
+
+                        </p-column>
+
+                        <p-column field="AdmissionNo" header="Adm. #" [style]="{'width':'72px'}" [filter]="true" [sortable]="true"></p-column>
+                        <p-column field="StudentName" header="Student" [filter]="true" [sortable]="true"></p-column>
+                        <p-column field="ClassName" header="Class" [style]="{'width':'80px'}" [filter]="true" [sortable]="true">
+                            <ng-template pTemplate="filter" let-col>
+                                <p-dropdown [options]="dsClassFilter" [style]="{'width':'100%'}" (onChange)="filterList(dt, $event.value,col.field,col.filterMatchMode)"
+                                    styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="SectionName" header="Sec." [style]="{'width':'65px'}" [filter]="true" [sortable]="true">
+                            <ng-template pTemplate="filter" let-col>
+                                <p-dropdown [options]="dsSectionFilter" [style]="{'width':'100%'}" (onChange)="filterList(dt, $event.value,col.field,col.filterMatchMode)"
+                                    styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="TypeName" header="Pay Mode" [style]="{'width':'100px'}" [sortable]="true"></p-column>
+                        <p-column field="Amount" header="Amount" [style]="{'width':'100px'}" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <div style="text-align:right !important"> {{data.Amount | number:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Options" [style]="{'width': '90px'}">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <receipt-options (OnReceipt_Cancel)="load_Receipt_List()" [AllowPrint]="isAllowPrint" [AllowCancel]="isAllowCancel" [ReceiptSysID]="data.ReceiptSysID"
+                                    [ReceiptNo]="data.ReceiptNo" [ReceiptType]="'Academic_Receipt'" [CancelLabelStyle]="'width: 77px;'"
+                                    [IsCancelled]="data.IsCancelled"></receipt-options>
+                            </ng-template>
+                        </p-column>
+                        <p-footerColumnGroup>
+                            <p-row>
+                                <p-column colspan="4">
+                                    <ng-template pTemplate type="footer">
+                                        <div style="text-align:left !important; font-weight: bold"> Total Records : {{lib.GetListSummary(dsReceiptList, 'Amount').count}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column [style]="{'text-align': 'right'}" colspan="4">
+                                    <ng-template pTemplate type="footer">
+                                        <div style="text-align:right !important; font-weight: bold">Totals :
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column [style]="{'text-align': 'right'}">
+                                    <ng-template pTemplate type="footer">
+                                        <div style="text-align:right !important; font-weight: bold"> {{lib.GetListSummary(dsReceiptList, 'Amount').total | number:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column [style]="{'text-align': 'right'}"></p-column>
+                            </p-row>
+                        </p-footerColumnGroup>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->

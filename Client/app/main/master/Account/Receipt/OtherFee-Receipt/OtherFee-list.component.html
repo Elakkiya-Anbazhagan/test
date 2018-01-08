@@ -1,0 +1,104 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel" id="pnList">
+                <div class="panel-header">
+                    <h2><strong>Receipt List</strong></h2>
+                    <div class="panel-tools" style="width: 500px">
+                        <form #frmOtherFeeInfo="ngForm" (ngSubmit)="frmOtherFeeInfo.valid && btnView_click()" novalidate autocomplete="off">
+                            <div class="form-group col-md-6">
+                                <p-calendar dateFormat="dd/mm/yy" [inputStyleClass]="((FromDate.errors && FromDate.errors?.required && frmOtherFeeInfo.submitted) ? 'validation_error' : '')" dataType="string" [(ngModel)]="mlSearchInfo.FromDate" #FromDate="ngModel" name="FromDate" required></p-calendar>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div class="input-group">
+                                    <p-calendar dateFormat="dd/mm/yy" [inputStyleClass]="(ToDate.errors && ToDate.errors?.required && frmOtherFeeInfo.submitted) ? 'validation_error' : ''" dataType="string" name="ToDate" [(ngModel)]="mlSearchInfo.ToDate" #ToDate="ngModel" required></p-calendar>
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="dsReceiptList" [responsive]="true" [rows]="30" [paginator]="true" [pageLinks]="6" selectionMode="single" [tableStyleClass]="'tbl-list-guru'" [rowsPerPageOptions]="[5,10,20,30,50,100,200]" scrollable="true" scrollHeight="380px" #dt>
+
+                        <p-column [style]="{'width':'35px','text-align':'center'}" header="#">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ReceiptDate" header="Date" [style]="{'width':'75px'}" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <span>{{data.ReceiptDate | date: 'dd-MM-yyyy'}}</span>
+                            </ng-template>
+                        </p-column>
+                        <!-- <p-column field="AccountID" header="Account" [style]="{'width':'100px'}" [sortable]="true">
+                            </p-column> -->
+                        <p-column field="ReceiptNo" header="Rec. #" [filter]="true" [sortable]="true" [style]="{'width':'65px'}">
+
+                        </p-column>
+
+                        <p-column field="AdmissionNo" header="Adm. #" [style]="{'width':'72px'}" [filter]="true" [sortable]="true"></p-column>
+                        <p-column field="StudentName" header="Student" [filter]="true" [sortable]="true"></p-column>
+                        <p-column field="ClassName" header="Class" [style]="{'width':'80px'}" [filter]="true" [sortable]="true">
+                            <ng-template pTemplate="filter" let-col>
+                                <p-dropdown [options]="dsClassFilter" [style]="{'width':'100%'}" (onChange)="filterList(dt, $event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="SectionName" header="Sec." [style]="{'width':'65px'}" [filter]="true" [sortable]="true">
+                            <ng-template pTemplate="filter" let-col>
+                                <p-dropdown [options]="dsSectionFilter" [style]="{'width':'100%'}" (onChange)="filterList(dt, $event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-dropdown>
+                            </ng-template>
+                        </p-column>
+
+                        <p-column field="TypeName" header="Pay Mode" [style]="{'width':'100px'}" [sortable]="true"></p-column>
+                        <p-column field="Amount" header="Amount" [style]="{'width':'100px'}" [sortable]="true">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <div style="text-align:right !important"> {{data.Amount | number:'1.2-2'}}
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Options" [style]="{'width': '90px'}">
+                            <ng-template let-data="rowData" pTemplate type="body">
+                                <button class="btn btn-sm btn-info" tooltip="Print" tooltipPlacement="left" *ngIf="isAllowPrint && !data.IsCancelled" (click)="BtnPrint_Click(data)"><i class="fa fa-print"></i></button>
+                                <button class="btn btn-sm btn-danger" tooltip="Cancel" tooltipPlacement="left" (click)="btnCancelReceipt_Click(data)" *ngIf="!data.IsCancelled && isAllowCancel"><i class="icon-rounded-cross"></i></button>
+
+                                <label class="btn btn-sm btn-warning" style="width: 77px;" *ngIf="data.IsCancelled"> Cancelled</label>
+                            </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height:200px;"></div>
+</div>
+
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmOtherFeeCancel="ngForm" (ngSubmit)="frmOtherFeeCancel.valid && btnCancel_Click()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Receipt </strong>Cancellation({{mlReceiptList.ReceiptNo}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="mlReceiptList.CancelledReason" #CancelledReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmOtherFeeCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>

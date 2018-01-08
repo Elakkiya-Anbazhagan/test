@@ -1,0 +1,167 @@
+<div class="wrapper wrapper-content">
+    <form #frmTcEntry="ngForm" (ngSubmit)="frmTcEntry.valid && btnSave_click(frmTcEntry.value,frmTcEntry)" novalidate autocomplete="off">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel" id="pnPersonalDetails">
+                    <div class="panel-header  error-style">
+                        <h2><strong>Student Info</strong></h2>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Class <span class="important">*</span></label>
+                                <select-guru [data]="dsClassData" [placeholder]="'::SELECT::'" name="ddlClass" [(ngModel)]="mlTcInfo.ClassSysID" #ddlClass="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlClass.errors && frmTcEntry.submitted">
+                                        <div *ngIf="ddlClass.errors?.required">
+                                            Class is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Section <span class="important">*</span></label>
+                                <select-guru [data]="dsSectionData" [placeholder]="'::SELECT::'" name="ddlSection" [(ngModel)]="mlTcInfo.SectionSysID" #ddlSection="ngModel"
+                                    required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlSection.errors && frmTcEntry.submitted">
+                                        <div *ngIf="ddlSection.errors?.required">
+                                            Section is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Admission No. <span class="important">*</span></label>
+                                <input autofocus type="text" class="form-control" name="txtAdmissionNo" [(ngModel)]="mlTcInfo.AdmisionNo" #txtAdmissionNo="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtAdmissionNo.errors && frmTcEntry.submitted">
+                                        <div *ngIf="txtAdmissionNo.errors?.required">
+                                            Admission No. is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-sm btn-primary" tooltip="View" tooltipPlacement="top"><i class="fa fa-search"></i> </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="panel">
+                    <div class="panel-header">
+
+                    </div>
+
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Student Name <span class="important">*</span></label>
+                                <input autofocus type="text" class="form-control" name="txtStudentName" [(ngModel)]="mlTcInfo.StudentName" #txtStudentName="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtStudentName.errors && frmTcEntry.submitted">
+                                        <div *ngIf="txtStudentName.errors?.required">
+                                            Student Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Father Name <span class="important">*</span></label>
+                                <input autofocus type="text" class="form-control" name="txtFatherName" [(ngModel)]="mlTcInfo.FatherName" #txtFatherName="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtFatherName.errors && frmTcEntry.submitted">
+                                        <div *ngIf="txtFatherName.errors?.required">
+                                            Father Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Date of Birth<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd/mm/yy" dataType="string" showIcon="true" name="txtDOB" [(ngModel)]="mlTcInfo.DOB" #txtDOB="ngModel"
+                                    required></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="txtDOB.errors && frmTcEntry.submitted">
+                                        <div *ngIf="txtDOB.errors?.required">
+                                            DOB is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Admission class <span class="important">*</span></label>
+                                <input autofocus type="text" class="form-control" name="txtAdmissionClass" [(ngModel)]="mlTcInfo.AdmissionClassSysID" #txtAdmissionClass="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtAdmissionClass.errors && frmTcEntry.submitted">
+                                        <div *ngIf="txtAdmissionClass.errors?.required">
+                                            Father Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="form-group col-md-3">
+                                <label class="control-label">Admission Year <span class="important">*</span></label>
+                                <input autofocus type="text" class="form-control" name="txtAdmissionYear" [(ngModel)]="mlTcInfo.AdmissionYear" #txtAdmissionYear="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtAdmissionYear.errors && frmTcEntry.submitted">
+                                        <div *ngIf="txtAdmissionYear.errors?.required">
+                                            Father Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Present Class <span class="important">*</span></label>
+                                <input autofocus type="text" class="form-control" name="txtPresentClass" [(ngModel)]="mlTcInfo.PresentClassSysID" #txtPresentClass="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtPresentClass.errors && frmTcEntry.submitted">
+                                        <div *ngIf="txtPresentClass.errors?.required">
+                                            Father Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Promotion Class <span class="important">*</span></label>
+                                <input autofocus type="text" class="form-control" name="txtPromotionClass" [(ngModel)]="mlTcInfo.PromotionClassSysID" #txtPromotionClass="ngModel"
+                                    required />
+                                <div class="error-message">
+                                    <div *ngIf="txtPromotionClass.errors && frmTcEntry.submitted">
+                                        <div *ngIf="txtPromotionClass.errors?.required">
+                                            Father Name is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <button class="btn btn-md btn-success" tooltip="Save" tooltipPlacement="top">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

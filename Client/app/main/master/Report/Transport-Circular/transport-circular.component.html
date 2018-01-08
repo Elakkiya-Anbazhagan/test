@@ -1,0 +1,87 @@
+<form #frmtransportcircular="ngForm" (ngSubmit)="frmtransportcircular.valid && btnView_Click()" novalidate autocomplete="off">
+    <div class="wrapper wrapper-content">
+        <div class="panel">
+            <div class="panel-header">
+                <h2><strong>Transport Circular List</strong></h2>
+            </div>
+            <div class="panel-content">
+                <!--<div class="row col-md-offset-2">-->
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label class="control-label">Academic Year <span class="important">*</span></label>
+                        <select-guru [data]="dsAcademicYear" [placeholder]="'::SELECT::'" name="ddlAcademicYear" [(ngModel)]="mlTransCircular.AcademicYearSysID"
+                            (valueChanged)="ddlYear_Change($event.value)" #ddlAcademicYear="ngModel" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="ddlAcademicYear.errors && frmtransportcircular.submitted">
+                                <div *ngIf="ddlAcademicYear.errors?.required">
+                                    Academic Year is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">Class <span class="important">*</span></label>
+                        <select-guru [data]="dsClass" [placeholder]="'::SELECT::'" name="ddlClass" [(ngModel)]="mlTransCircular.ClassSysID" (valueChanged)="ddlClass_Change($event.value)"
+                            #ddlClass="ngModel" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="ddlClass.errors && frmtransportcircular.submitted">
+                                <div *ngIf="ddlClass.errors?.required">
+                                    Class is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">Section <span class="important">*</span></label>
+                        <select-guru [data]="dsSection" [placeholder]="'::SELECT::'" name="ddlSection" [(ngModel)]="mlTransCircular.SectionSysID"
+                            #ddlSection="ngModel" required></select-guru>
+                        <div class="error-message">
+                            <div *ngIf="ddlSection.errors && frmtransportcircular.submitted">
+                                <div *ngIf="ddlSection.errors?.required">
+                                    Section is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-responsive" style="width:1016px; overflow: hidden">
+                        <p-dataTable [value]="mlTransCircularList" [rows]="10" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]"
+                            scrollable="true" scrollHeight="250px">
+                            <p-column [style]="{'width':'40px','text-align':'center'}" header="#">
+                                <ng-template let-pageno="page" let-rowIndex="rowIndex" pTemplate="body">
+                                    <div style="text-align:right !important">{{rowIndex+1}}</div>
+                                </ng-template>
+                            </p-column>
+                            <p-column field="ClassName" header="Class" [filter]="true" [style]="{'width':'80px'}" [sortable]="true"></p-column>
+                            <p-column field="SectionName" header="Section" [filter]="true" [style]="{'width':'100px'}" [sortable]="true"></p-column>
+                            <p-column field="AdmissionNo" header="Adm. No." [filter]="true" [style]="{'width':'100px'}" [sortable]="true"></p-column>
+                            <p-column field="StudentName" header="Student Name" [style]="{'width':'200px'}" [filter]="true" [sortable]="true"></p-column>
+                            <p-column field="ContactMobileNo" header="Mobile" [style]="{'width':'120px'}" [filter]="true" [sortable]="true"></p-column>
+                            <p-column field="VehicleNo" header="Vehicle" [filter]="true" [style]="{'width':'100px'}" [sortable]="true"></p-column>
+                            <p-column field="RouteName" header="Route" [filter]="true" [style]="{'width':'220px'}" [sortable]="true"></p-column>
+                            <p-column field="StopName" header="Stoppage" [filter]="true" [style]="{'width':'220px'}" [sortable]="true"></p-column>
+                            <p-column field="TotalAmount" header="Amount" [filter]="true" [style]="{'width':'100px'}" [sortable]="true">
+                                <ng-template let-data="rowData" pTemplate type="body">
+                                    <div style="text-align:right !important"> {{data.TotalAmount | number:'1.2-2'}}
+                                    </div>
+                                </ng-template>
+                            </p-column>
+                        </p-dataTable>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-sm btn-info" (click)="btnPrint_Click()"><i class="fa fa-print"></i> Print</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</form>

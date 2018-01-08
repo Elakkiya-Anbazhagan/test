@@ -1,0 +1,49 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="panel" id="pnList" *ngIf="isListMode">
+        <div class="panel-header">
+            <h2><strong>Fees Approval List</strong></h2>
+        </div>
+        <div class="panel-content">
+            <p-dataTable [value]="FeeApproveList">
+                <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                    <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                        <div style="text-align:right !important">{{rowIndex+1}}</div>
+                    </ng-template>
+                </p-column>
+                <p-column header="Year">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <label> {{data.AcademicYearID}}</label>
+                        <span class="badge badge-success" style="vertical-align: super; font-size: 10px;" *ngIf="data.isAcdemicFeeCreated && data.isAcdemicFeeApproved">Academic Fee Approved</span>
+                        <span class="badge badge-success" style="vertical-align: super; font-size: 10px;" *ngIf="data.isTransportFeeCreated && data.isTransportFeeApproved">Trasnsport Fee Approved</span>
+                        <span class="badge badge-success" style="vertical-align: super; font-size: 10px;" *ngIf="data.isMiscellaneousFeeCreated && data.isMiscellaneousFeeApproved">Miscellaneous Fee Approved</span>
+                    </ng-template>
+                </p-column>
+                <p-column header="Academic" [style]="{'width' : '140px', 'text-align' : 'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <label class="btn btn-sm btn-warning" *ngIf="!data.isAcdemicFeeCreated && !data.isAcdemicFeeApproved">Not Created</label>
+                        <button class="btn btn-sm btn-primary" *ngIf="data.isAcdemicFeeCreated" (click)="btnEdit_Click(data, 'Academic Fee')">View</button>
+
+                        <button class="btn btn-sm btn-success" *ngIf="data.isAcdemicFeeCreated && !data.isAcdemicFeeApproved && isAllowAcademicFeeApprove"
+                            (click)="btnApprove_Click(data, 'Academic Fee')">Approve</button>
+                    </ng-template>
+                </p-column>
+                <p-column header="Transport" [style]="{'width' : '140px', 'text-align' : 'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <label class="btn btn-sm btn-warning" *ngIf="!data.isTransportFeeCreated && !data.isTransportFeeApproved">Not Created</label>
+                        <button class="btn btn-sm btn-primary" *ngIf="data.isTransportFeeCreated" (click)="btnEdit_Click(data, 'Transport Fee')">View</button>
+                        <button class="btn btn-sm btn-success" *ngIf="data.isTransportFeeCreated && !data.isTransportFeeApproved  && isAllowTransportFeeApprove"
+                            (click)="btnApprove_Click(data, 'Transport Fee')">Approve</button>
+                    </ng-template>
+                </p-column>
+                <p-column header="Miscellaneous" [style]="{'width' : '140px', 'text-align' : 'center'}">
+                    <ng-template let-data="rowData" pTemplate="body">
+                        <label class="btn btn-sm btn-warning" *ngIf="!data.isMiscellaneousFeeCreated && !data.isMiscellaneousFeeApproved">Not Created</label>
+                        <button class="btn btn-sm btn-primary" *ngIf="data.isMiscellaneousFeeCreated" (click)="btnEdit_Click(data, 'Miscellaneous Fee')">View</button>
+                        <button class="btn btn-sm btn-success" *ngIf="data.isMiscellaneousFeeCreated && !data.isMiscellaneousFeeApproved && isAllowMiscFeeApprove"
+                            (click)="btnApprove_Click(data, 'Miscellaneous Fee')">Approve</button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+    </div>
+</div>

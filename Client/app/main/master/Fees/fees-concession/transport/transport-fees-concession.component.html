@@ -1,0 +1,103 @@
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel" id="pnAcademicFeesList">
+                <div class="panel-header">
+                    <h2><strong> {{AccountName }} - {{AcademicYear}} - {{FeeName}} Concession List</strong></h2>
+                    <div class="panel-tools" style="width:150px">
+                        <select-guru [data]="dsTermData" (valueChanged)="dsTermDataChanged($event.value)" [placeholder]="':: SELECT TERM ::'" name="TermSysID"
+                            [(ngModel)]="TermSysID" required>
+                        </select-guru>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <p-dataTable [value]="TransportApproveData" rowGroupMode="subheader" groupField="RouteName" sortField="RouteName" [sortableRowGroup]="false">
+                        <ng-template pTemplate="rowgroupheader" let-rowData>{{rowData['RouteName']}}</ng-template>
+                        <p-column [style]="{ 'width': '30px', 'text-align': 'center'} " header="# ">
+                            <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important">{{rowIndex+1}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="StopName" header="Stop Name"></p-column>
+                        <p-column field="TermName" header="Term Name"></p-column>
+                        <p-column field="TotalAmount" header="Total" [style]="{'width' : '80px'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <div style="text-align:right !important"> {{data.TotalAmount | number:'1.2-2'}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="PaidAmount" header="Paid" [style]="{'width' : '80px'}">
+                            <ng-template let-data="rowData" pTemplate="body">
+                                <div style="text-align:right !important"> {{data.PaidAmount | number:'1.2-2'}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="ReceivableAmount" header="Receivable" [style]="{'width' : '120px'}">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important"> {{data.ReceivableAmount | number:'1.2-2'}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column header="Prev Concession" [style]="{'width' : '125px'}">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <div style="text-align:right !important"> {{data.PrevConcession | number:'1.2-2'}}</div>
+                            </ng-template>
+                        </p-column>
+                        <p-column field="Concession" header="Consession" [style]="{'width' : '120px'}">
+                            <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                                <input type="number" class="form-control" style="text-align : right" [(ngModel)]="data.Concession" name="{{rowIndex + 1}}"
+                                    [disabled]="data.ReceivableAmount===0" />
+                            </ng-template>
+                        </p-column>
+                        <p-footerColumnGroup>
+                            <p-row>
+                                <p-column footer="Totals:" colspan="3"></p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculateTotal()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculatePaid()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculateReceivable()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculatePrevConcession()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                                <p-column>
+                                    <ng-template let-data pTemplate="footer">
+                                        <div class="" style="text-align:right !important; font-weight: 700; ">
+                                            {{(calculateConsession()) | currency:'INR':true:'1.2-2'}}
+                                        </div>
+                                    </ng-template>
+                                </p-column>
+                            </p-row>
+                        </p-footerColumnGroup>
+                    </p-dataTable>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-sm btn-success" name="frmTransPortFeeConcession_save" (click)="frmTransPortFeeConcession_save()">Save</button>
+                            <button type="button" (click)="BtnCancelTransPortFeeConcession_Click()" class="btn btn-sm btn-danger" name="btnTransPortCancelEntry">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

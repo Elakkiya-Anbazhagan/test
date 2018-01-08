@@ -1,0 +1,332 @@
+<div class="wrapper wrapper-content">
+    <form #frmEnquiryEntry="ngForm" (ngSubmit)="frmEnquiryEntry.valid && btnSave_click(frmEnquiryEntry.value,frmEnquiryEntry)" novalidate autocomplete="off">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel" id="pnPersonalDetails" *ngIf="PanelEntry">
+                    <div class="panel-header  error-style">
+                        <h2><strong>Enquiry Info</strong></h2>
+                        <div class="panel-tools" style='width: 120px;'>
+                            <select-guru [placeholder]="'::SELECT::'" name="ddlAcademicYear" [(ngModel)]="mlEnquiry.AcademicYearSysID" #ddlAcademicYear="ngModel" [data]="dsAcademic" required></select-guru>
+                            <div class="error-message">
+                                <div *ngIf="ddlAcademicYear.errors && frmEnquiryEntry.submitted">
+                                    <div *ngIf="ddlAcademicYear.errors?.required">
+                                        Academic YearID is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-content error-style">
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Enquiry Date<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd/mm/yy" dataType="string" showIcon="true" [disabled]="isEditMode" name="txtEnqDate" [(ngModel)]="mlEnquiry.EnquiryDate" #txtEnqDate="ngModel" required></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="txtEnqDate.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="txtEnqDate.errors?.required">
+                                            Enquiry Date is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Enquiry For<span class="important">*</span></label>
+                                <select-guru [allowClear]="true" [data]="dsClass" [placeholder]="'::SELECT::'" [(ngModel)]="mlEnquiry.ClassSysID" #ddlClass="ngModel" name="ddlClass" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="ddlClass.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="ddlClass.errors?.required">
+                                            Enquiry For is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Student Name<span class="important">*</span></label>
+                                <input type="text" class="form-control" name="StudentName" [(ngModel)]="mlEnquiry.StudentName" #StudentName="ngModel" required maxlength="50" />
+                                <div class="error-message">
+                                    <div *ngIf="StudentName.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="StudentName.errors?.required">
+                                            StudentName is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Parent Name<span class="important">*</span></label>
+                                <input type="text" class="form-control" name="ParentName" maxlength="50" name="ParentName" [(ngModel)]="mlEnquiry.ParentName" #ParentName="ngModel" required />
+                                <div class="error-message">
+                                    <div *ngIf="ParentName.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="ParentName.errors?.required">
+                                            ParentName is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Gender<span class="important">*</span></label>
+                                <div style="height: 30px !important;padding: 2px 0px;">
+                                    <p-radioButton name="Gender" value="MALE" label="Male" [(ngModel)]="mlEnquiry.Gender" #Gender="ngModel" required></p-radioButton>
+                                    <p-radioButton name="Gender" value="FEMALE" label="Female" [(ngModel)]="mlEnquiry.Gender" #Gender="ngModel" required></p-radioButton>
+                                </div>
+                                <div class="error-message">
+                                    <div *ngIf="Gender.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="Gender.errors?.required">
+                                            Gender is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Date of Birth<span class="important">*</span></label>
+                                <p-calendar dateFormat="dd/mm/yy" dataType="string" showIcon="true" name="txtDOB" [(ngModel)]="mlEnquiry.DOB" #txtDOB="ngModel" required></p-calendar>
+                                <div class="error-message">
+                                    <div *ngIf="txtDOB.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="txtDOB.errors?.required">
+                                            DOB is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Address1<span class="important">*</span></label>
+                                <input type="text" class="form-control" name="Address1" maxlength="50" [(ngModel)]="mlEnquiry.Address1" #Address1="ngModel" required />
+                                <div class="error-message">
+                                    <div *ngIf="Address1.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="Address1.errors?.required">
+                                            Address1 is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Address2</label>
+                                <input type="text" class="form-control" maxlength="50" name="Address2" [(ngModel)]="mlEnquiry.Address2" #Address2="ngModel" />
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Country<span class="important">*</span></label>
+                                <select-guru placeholder="Select Country" [data]="Country" (valueChanged)="CountryChange($event)" [allowClear]="true" name="CountrySysID" [(ngModel)]="mlEnquiry.CountrySysID" #CountrySysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="CountrySysID.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="CountrySysID.errors?.required">
+                                            Country is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">State<span class="important">*</span></label>
+                                <select-guru placeholder="Select State" [data]="State" (valueChanged)="StateChange($event)" [allowClear]="true" name="StateSysID" [(ngModel)]="mlEnquiry.StateSysID" #StateSysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="StateSysID.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="StateSysID.errors?.required">
+                                            State is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">City<span class="important">*</span></label>
+                                <select-guru placeholder="Select City" [data]="City" [allowClear]="true" name="CitySysID" [(ngModel)]="mlEnquiry.CitySysID" #CitySysID="ngModel" required></select-guru>
+                                <div class="error-message">
+                                    <div *ngIf="CitySysID.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="CitySysID.errors?.required">
+                                            City is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Pincode<span class="important">*</span></label>
+                                <input type="number" class="form-control" name="Pincode" [(ngModel)]="mlEnquiry.Pincode" pattern="([0-9]{6})" #Pincode="ngModel" required />
+                                <div class="error-message">
+                                    <div *ngIf="Pincode.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="Pincode.errors?.required">
+                                            Pincode is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Mobile<span class="important">*</span></label>
+                                <input type="text" class="form-control" name="Mobile" maxlength="50" [(ngModel)]="mlEnquiry.Mobile" #Mobile="ngModel" pattern="^([7-9]{1})([0-9]{9})$" maxlength="10" required/>
+                                <div class="error-message">
+                                    <div *ngIf="Mobile.errors && frmEnquiryEntry.submitted">
+                                        <div *ngIf="Mobile.errors?.required">
+                                            Mobile is required
+                                        </div>
+                                        <div *ngIf="Mobile.errors?.pattern">
+                                            Invalid Mobile No.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Alt.Mobile</label>
+                                <input type="text" class="form-control" name="AlterMobile" [(ngModel)]="mlEnquiry.AlternateMobileNo" maxlength="10" #AlterMobile="ngModel" pattern="^([7-9]{1})([0-9]{9})$" />
+                                <div class="error-message">
+                                    <div *ngIf="AlterMobile.errors?.pattern">
+                                        Invalid Alt.Mobile No.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label">Land-line</label>
+                                <input type="text" class="form-control" name="Phone" [(ngModel)]="mlEnquiry.Phone" #Phone="ngModel" maxlength="11" />
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Email</label>
+                                <input type="text" class="form-control" name="Email" maxlength="50" [(ngModel)]="mlEnquiry.Email" #Email="ngModel" pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$" />
+                                <div class="error-message">
+                                    <div *ngIf="Email.errors?.pattern">
+                                        Invalid Email.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">School Name</label>
+                                <input type="text" class="form-control" name="SchoolName" [(ngModel)]="mlEnquiry.SchoolName" #SchoolName="ngModel" maxlength="50" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-left">
+                                    <div class="form-group">
+                                        <label class="control-label">Application Issued</label>
+                                        <p-radioButton name="Application" value="1" label="YES" [(ngModel)]="mlEnquiry._IsApplicationIssued" #Application="ngModel" [disabled]="isEditMode"></p-radioButton>
+                                        <p-radioButton name="Application" value="0" label="NO" [(ngModel)]="mlEnquiry._IsApplicationIssued" #Application="ngModel" [disabled]="isEditMode"></p-radioButton>
+                                    </div>
+                                </div>
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-md btn-success">{{isEditMode ? 'Update': 'Save' }}</button>
+                                    <button class="btn btn-md btn-danger" (click)="BtnCancel_Click()" type="button">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="panel" id="pnEnquiryList" *ngIf="PanelList">
+        <div class="panel-header">
+            <h2><strong>List</strong></h2>
+        </div>
+        <div class="panel-content">
+            <div class="row col-md-offset-2">
+                <div class="form-group col-md-3">
+                    <label class="control-label">From Date<span class="important">*</span></label>
+                    <p-calendar dateFormat="dd/mm/yy" dataType="string" showIcon="true" [(ngModel)]="mlEnquiry.FromDate" #FromDate="ngModel" name="FromDate"></p-calendar>
+
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="control-label">To Date<span class="important">*</span></label>
+                    <p-calendar dateFormat="dd/mm/yy" dataType="string" showIcon="true" [(ngModel)]="mlEnquiry.ToDate" #ToDate="ngModel" name="ToDate"></p-calendar>
+                </div>
+                <div class="form-group col-md-1">
+                    <div class="row">
+
+                        <button class="btn btn-sm btn-primary m-t-10" (click)="BtnSearch()" type="button" name="btnView"><i class="fa fa-search"></i> </button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive" style="width:1016px; overflow: hidden">
+                <p-dataTable [value]="EnquiryList" [rows]="30" [paginator]="true" [pageLinks]="6" [rowsPerPageOptions]="[5,10,20]" scrollable="true" scrollHeight="380px">
+                    <p-column [style]="{'width':'30px','text-align':'center'}" header="#">
+                        <ng-template let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:right !important">{{rowIndex+1}}</div>
+                        </ng-template>
+                    </p-column>
+                    <!--<p-column header="Status" [style]="{'width':'170px'}" [hidden]="'true'">
+                        <ng-template let-data="rowData" pTemplate type="body">
+                            <label *ngIf="!data.IsApplicationIssued && !data.IsAdmissionConfirmed && !data.IsCancelled">New</label>
+                            <label *ngIf="data.IsApplicationIssued && !data.IsAdmissionConfirmed && !data.IsCancelled">Application Issued</label>
+                            <label *ngIf="data.IsApplicationIssued && data.IsAdmissionConfirmed && !data.IsCancelled">Admission Confirmed</label>
+                            <label *ngIf="data.IsCancelled">Cancelled</label>
+                        </ng-template>
+                    </p-column>-->
+                    <!--<p-column field="AcademicYearID" header="Academic" [style]="{'width':'100px','text-align':'center'}" [filter]="true" [sortable]="true"></p-column>-->
+                    <p-column field="EnquiryDate" header="Date" [filter]="true" [sortable]="true" [style]="{'width':'80px'}">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:left !important"> {{data.EnquiryDate}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="StudentName" header="Student" [filter]="true" [sortable]="true"></p-column>
+                    <p-column field="ParentName" header="Parent" [filter]="true" [sortable]="true"></p-column>
+                    <p-column field="DOB" header="DOB" [style]="{'width':'80px'}" [filter]="true" [sortable]="true">
+                        <ng-template let-data="rowData" let-rowIndex="rowIndex" pTemplate="body">
+                            <div style="text-align:left !important"> {{data.DOB}}</div>
+                        </ng-template>
+                    </p-column>
+                    <p-column field="Mobile" header="Mobile" [style]="{'width':'90px'}" [filter]="true" [sortable]="true"></p-column>
+                    <!--<p-column field="CityName" header="City" [style]="{'width':'160px'}" [filter]="true" [sortable]="true"></p-column>-->
+                    <!--<p-column field="Address1" header="Address" [style]="{'width':'160px'}" [filter]="true" [sortable]="true"></p-column>-->
+                    <p-column field="ClassName" header="Class" [style]="{'width':'80px','text-align':'center'}" [filter]="true" [sortable]="true"></p-column>
+                    <p-column header="Options" [style]="{'width':'130px'}">
+                        <ng-template let-data="rowData" pTemplate type="body">
+                            <!--Issue Application-->
+                            <button type="button" class="btn btn-sm btn-success" *ngIf="!data.IsApplicationIssued && !data.IsAdmissionConfirmed && !data.IsCancelled" tooltip="Issue Application" tooltipPlacement="top" (click)="BtnApplicationIssue(data)">
+                                <i class="icon-doc"></i>
+                            </button>
+                            <!--Convert To Admission-->
+                            <button type="button" class="btn btn-sm btn-blue" (click)="BtnAdmissionConvert(data)" *ngIf="data.IsApplicationIssued && !data.IsAdmissionConfirmed && !data.IsCancelled" tooltip="Convert To Admission" tooltipPlacement="top">
+                                <i class="icon-graduation"></i>
+                            </button>
+                            <!--Cancel Application-->
+                            <button class="btn btn-sm btn-danger" (click)="btnCancelReceipt_Click(data)" *ngIf="data.IsApplicationIssued && !data.IsAdmissionConfirmed && !data.IsCancelled" tooltip="Cancel Application" tooltipPlacement="top" style="text-align:right !important">
+                                <i class="icon-rounded-cross"></i>
+                            </button>
+                            <!--Edit Enquiry-->
+                            <button type="button" (click)="btnEdit_Click(data)" class="btn btn-sm btn-warning" *ngIf="!data.IsApplicationIssued &&!data.IsAdmissionConfirmed && !data.IsCancelled" tooltip="Edit Enquiry" tooltipPlacement="top">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </button>
+                            <label class="label label-sm label-warning" *ngIf="data.IsCancelled">Applicaiton Cancelled</label>
+                            <label class="label label-sm label-success" *ngIf="data.IsAdmissionConfirmed">Admission Confirmed</label>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" name="btnAdd" tooltip="Add Enquiry" tooltipPlacement="top" type="button" (click)="btnAdd_Click()"><i class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal #mdCancel [keyboard]="false" [backdrop]="'static'" cssClass="modal-sm">
+    <form #frmEnquiryCancel="ngForm" (ngSubmit)="frmEnquiryCancel.valid && BtnApplicationCanel()" novalidate autocomplete="off">
+        <modal-header>
+            <h1 class="modal-title"> <strong>Enquiry </strong>Cancellation({{mlCancelEnquiry.StudentName}})</h1>
+        </modal-header>
+        <modal-body class="error-style">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="control-label">Reason<span class="Validation">*</span></label>
+                    <input autofocus type="text" class="form-control" name="CancelledReason" [(ngModel)]="mlCancelEnquiry.CancelledReason" #CancelledReason="ngModel" required />
+                    <div class="error-message">
+                        <div *ngIf="CancelledReason.errors &&  frmEnquiryCancel.submitted">
+                            <div *ngIf="CancelledReason.errors?.required">
+                                CancelledReason is required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <button type="submit" name="btnSaveClass" class="btn btn-success">Save</button>
+            <button type="button" name="btnCloseEntry" class="btn btn-danger" (click)="mdCancel.close();">Close</button>
+        </modal-footer>
+    </form>
+</modal>
